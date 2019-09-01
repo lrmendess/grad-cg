@@ -6,9 +6,12 @@ class Circle {
 
     public:
         Circle(float radius, float x, float y);
+        
+        void setRadius(float radius);
+        void setX(float x);
+        void setY(float y);
+
         float getRadius();
         float getX();
-        void setX(float x);
         float getY();
-        void setY(float y);
 };

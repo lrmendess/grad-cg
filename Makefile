@@ -1,4 +1,4 @@
-OGL_FLAGS = -lGL -lGLU -lglut
+OGL_FLAGS = -lGL -lGLU -lglut -lm
 CPP_FILES = main.cpp circle.cpp
 OUTPUT_FILE = output
 TINYXML_DIR = $(PWD)/tinyxml
