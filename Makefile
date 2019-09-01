@@ -1,5 +1,5 @@
 OGL_FLAGS = -lGL -lGLU -lglut -lm
-CPP_FILES = main.cpp circle.cpp
+CPP_FILES = main.cpp circle.cpp rgbcolor.cpp
 OUTPUT_FILE = output
 TINYXML_DIR = $(PWD)/tinyxml
 
