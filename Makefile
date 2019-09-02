@@ -1,18 +1,21 @@
-OGL_FLAGS = -lGL -lGLU -lglut -lm
-CPP_FILES = main.cpp circle.cpp rgbcolor.cpp
-OUTPUT_FILE = output
-TINYXML_DIR = $(PWD)/tinyxml
+CC = g++ -std=c++11
+DOMAIN_FILES = main.cpp circle.cpp color.cpp
+TINYXML_FOLDER = tinyxml
+TINYXML_FILES = $(TINYXML_FOLDER)/tinyxml.cpp 		\
+				$(TINYXML_FOLDER)/tinyxmlparser.cpp \
+				$(TINYXML_FOLDER)/tinyxmlerror.cpp 	\
+				$(TINYXML_FOLDER)/tinystr.cpp
+OUTPUT_FILE = trab1
+FLAGS = -lGL -lGLU -lglut -lm
 
 all: g++
-	@$(MAKE) -C $(TINYXML_DIR) -Wno-error -w -s > /dev/null
 	@echo "Done."
 
-g++: $(CPP_FILES)
-	@g++ -std=c++11 $(CPP_FILES) -o $(OUTPUT_FILE) $(OGL_FLAGS)
+g++:
+	@$(CC) $(DOMAIN_FILES) $(TINYXML_FILES) -o $(OUTPUT_FILE) $(FLAGS)
 
 run:
 	@./$(OUTPUT_FILE)
 
 clean:
 	@rm -f $(OUTPUT_FILE)
-	@$(MAKE) -C $(TINYXML_DIR) clean -s

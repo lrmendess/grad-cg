@@ -3,7 +3,7 @@
 
 #include <GL/glut.h>
 #include <math.h>
-#include "rgbcolor.h"
+#include "color.h"
 
 class Circle {
     private:
@@ -11,10 +11,10 @@ class Circle {
         float x;
         float y;
 
-        RGBColor color;
+        Color color;
 
     public:
-        Circle(float radius, float x, float y, RGBColor color);
+        Circle(float radius, float x, float y, Color color);
         
         float getRadius();
         void setRadius(float radius);
@@ -25,8 +25,8 @@ class Circle {
         float getY();
         void setY(float y);
 
-        RGBColor getColor();
-        void setColor(RGBColor color);
+        Color getColor();
+        void setColor(Color color);
 
         void draw();
 };

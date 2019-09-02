@@ -1,21 +1,22 @@
-#ifndef RGBCOLOR_H
-#define RGBCOLOR_H
+#ifndef COLOR_H
+#define COLOR_H
 
-class RGBColor {
+class Color {
     private:
         float red;
         float green;
         float blue;
 
     public:
-        RGBColor(float red, float green, float blue);
+        Color(float red, float green, float blue);
         
         float getRed();
-        float getGreen();
-        float getBlue();
-
         void setRed(float red);
+
+        float getGreen();
         void setGreen(float green);
+        
+        float getBlue();
         void setBlue(float blue);
 };
 

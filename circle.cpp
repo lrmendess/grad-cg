@@ -1,6 +1,6 @@
 #include "circle.h"
 
-Circle::Circle(float radius, float x, float y, RGBColor color) : radius(radius), x(x), y(y), color(color) {
+Circle::Circle(float radius, float x, float y, Color color) : radius(radius), x(x), y(y), color(color) {
 
 }
 
@@ -28,11 +28,11 @@ void Circle::setY(float y) {
     this->y = y;
 }
 
-RGBColor Circle::getColor() {
+Color Circle::getColor() {
     return color;
 }
 
-void Circle::setColor(RGBColor color) {
+void Circle::setColor(Color color) {
     this->color = color;
 }
 

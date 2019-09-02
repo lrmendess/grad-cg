@@ -2,13 +2,13 @@
 #include <math.h>
 #include <GL/glut.h>
 #include "circle.h"
-#include "rgbcolor.h"
+#include "color.h"
 
 void init(void);
 void display(void);
 void mouse(int x, int y);
 
-RGBColor white(1.0, 1.0, 1.0);
+Color white(1.0, 1.0, 1.0);
 Circle cursor(0.2, 0.5, 0.5, white);
 
 int main(int argc, char** argv) {
