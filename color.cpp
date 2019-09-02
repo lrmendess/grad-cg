@@ -1,19 +1,25 @@
 #include "color.h"
+#include <iostream>
 
-Color::Color(float red, float green, float blue) : red(red), green(green), blue(blue) {
+Color::Color(float red, float green, float blue, float alpha) 
+    : red(red), green(green), blue(blue), alpha(alpha) {
+        
+}
 
+Color::~Color() {
+    
 }
 
 float Color::getRed() {
-    return red;
+    return this->red;
 }
 
 float Color::getGreen() {
-    return green;
+    return this->green;
 }
 
 float Color::getBlue() {
-    return blue;
+    return this->blue;
 }
 
 void Color::setRed(float red) {
@@ -26,4 +32,12 @@ void Color::setGreen(float green) {
 
 void Color::setBlue(float blue) {
     this->blue = blue;
+}
+
+float Color::getAlpha() {
+    return this->alpha;
+}
+
+void Color::setAlpha(float alpha) {
+    this->alpha = alpha;
 }

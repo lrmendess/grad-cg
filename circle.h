@@ -14,7 +14,9 @@ class Circle {
         Color color;
 
     public:
-        Circle(float radius, float x, float y, Color color);
+        Circle(float radius, float x, float y, Color& color);
+
+        ~Circle();
         
         float getRadius();
         void setRadius(float radius);

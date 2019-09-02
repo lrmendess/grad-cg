@@ -6,9 +6,12 @@ class Color {
         float red;
         float green;
         float blue;
+        float alpha;
 
     public:
-        Color(float red, float green, float blue);
+        Color(float red, float green, float blue, float alpha = 0.9);
+
+        ~Color();
         
         float getRed();
         void setRed(float red);
@@ -18,6 +21,9 @@ class Color {
         
         float getBlue();
         void setBlue(float blue);
+
+        float getAlpha();
+        void setAlpha(float alpha);
 };
 
 #endif

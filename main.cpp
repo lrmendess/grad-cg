@@ -1,22 +1,74 @@
-#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <vector>
 #include <math.h>
 #include <GL/glut.h>
+#include "cursor.h"
 #include "circle.h"
 #include "color.h"
+#include "screen.h"
+#include "tinyxml/tinyxml.h"
 
 void init(void);
 void display(void);
 void mouse(int x, int y);
 
-Color white(1.0, 1.0, 1.0);
-Circle cursor(0.2, 0.5, 0.5, white);
+Screen* screen = nullptr;
+Cursor* cursor = nullptr;
+
+vector<Circle> circles;
 
 int main(int argc, char** argv) {
+    TiXmlDocument doc("test1/config.xml");
+    doc.LoadFile();
+
+    TiXmlElement* root = doc.RootElement();
+
+    /* Janela */
+    TiXmlElement* windowNode = root->FirstChildElement("janela");
+
+    TiXmlElement* dimensionNode = windowNode->FirstChildElement("dimensao");
+    TiXmlElement* backgroundColorNode = windowNode->FirstChildElement("fundo");
+    TiXmlElement* titleNode = windowNode->FirstChildElement("titulo");
+
+    int width = std::stoi(dimensionNode->Attribute("largura"));
+    int height = std::stoi(dimensionNode->Attribute("altura"));
+
+    Color backgroundColor (
+        std::stof(backgroundColorNode->Attribute("corR")),
+        std::stof(backgroundColorNode->Attribute("corG")),
+        std::stof(backgroundColorNode->Attribute("corB"))
+    );
+
+    std::string title = titleNode->GetText();
+
+    screen = new Screen(width, height, backgroundColor, title);
+    
+    /* Circulos e Cursor */
+    TiXmlElement* circleNode = root->FirstChildElement("circulo");
+    TiXmlElement* modelCircleNode = root->FirstChildElement("circuloModelo");
+
+    float radius = 1 / std::stof(circleNode->Attribute("raio"));
+
+    Color cursorColor (
+        std::stof(modelCircleNode->Attribute("corR")),
+        std::stof(modelCircleNode->Attribute("corG")),
+        std::stof(modelCircleNode->Attribute("corB"))
+    );
+
+    Color cursorOverlapColor (
+        std::stof(modelCircleNode->Attribute("corSobreposicaoR")),
+        std::stof(modelCircleNode->Attribute("corSobreposicaoG")),
+        std::stof(modelCircleNode->Attribute("corSobreposicaoB"))
+    );
+
+    cursor = new Cursor(radius, 0, 0, cursorColor, cursorOverlapColor);
+
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(screen->getWidth(), screen->getHeight());
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("Hello");
+    glutCreateWindow(title.c_str());
 
     init();
 
@@ -33,15 +85,22 @@ void display(void) {
     /* Limpar todos os pixels */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    cursor.draw();
+    cursor->draw();
 
     /* Nao esperar! */
     glFlush();
 }
 
 void init(void) {
-    /* Seleciona cor de fundo (vermelho) */
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    /* Seleciona cor de fundo */
+    Color backgroundColor = screen->getColor();
+
+    glClearColor(
+        backgroundColor.getRed(),
+        backgroundColor.getGreen(),
+        backgroundColor.getBlue(),
+        backgroundColor.getAlpha()
+    );
 
     /* Inicializar sistema de viz */
     glMatrixMode(GL_PROJECTION);
@@ -50,10 +109,13 @@ void init(void) {
 }
 
 void mouse(int x, int y) {
-    cursor.setX(x / 500.0);
-    cursor.setY(1 - y / 500.0);
+    float newX = (float) x / screen->getWidth();
+    float newY = (float) y / screen->getHeight();
+
+    cursor->setX(newX);
+    cursor->setY(1 - newY);
 
     glutPostRedisplay();
 
-    printf("(%.2f, %.2f)\n", cursor.getX(), cursor.getY());
+    // printf("(%.2f, %.2f)\n", cursor->getX(), cursor->getY());
 }

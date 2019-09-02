@@ -1,11 +1,16 @@
 #include "circle.h"
 
-Circle::Circle(float radius, float x, float y, Color color) : radius(radius), x(x), y(y), color(color) {
+Circle::Circle(float radius, float x, float y, Color& color)
+    : radius(radius), x(x), y(y), color(color) {
 
 }
 
+Circle::~Circle() {
+    
+}
+
 float Circle::getRadius() {
-    return radius;
+    return this->radius;
 }
 
 void Circle::setRadius(float radius) {
@@ -13,7 +18,7 @@ void Circle::setRadius(float radius) {
 }
 
 float Circle::getX() {
-    return x;
+    return this->x;
 }
 
 void Circle::setX(float x) {
@@ -21,7 +26,7 @@ void Circle::setX(float x) {
 }
 
 float Circle::getY() {
-    return y;
+    return this->y;
 }
 
 void Circle::setY(float y) {
@@ -29,7 +34,7 @@ void Circle::setY(float y) {
 }
 
 Color Circle::getColor() {
-    return color;
+    return this->color;
 }
 
 void Circle::setColor(Color color) {
@@ -38,10 +43,10 @@ void Circle::setColor(Color color) {
 
 void Circle::draw() {
     glColor3f(color.getRed(), color.getGreen(), color.getBlue());
-
-    float angle, px, py;
     
     glBegin(GL_LINE_LOOP);
+        float angle, px, py;
+
         for (int i = 0; i < 360; i++) {
             angle = (i * M_PI) / 180.0;
             px = this->x + (cos(angle) * this->radius);
