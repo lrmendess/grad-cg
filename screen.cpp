@@ -1,7 +1,7 @@
 #include "screen.h"
 
-Screen::Screen(int width, int height, Color color, string title) 
-    : width(width), height(height), color(color), title(title) {
+Screen::Screen(int width, int height, Color& color, string title) 
+    : width(width), height(height), color(&color), title(title) {
 
 }
 
@@ -21,12 +21,12 @@ void Screen::setHeight(int height) {
     this->height = height;
 }
 
-Color Screen::getColor() {
-    return this->color;
+Color& Screen::getColor() {
+    return *this->color;
 }
 
-void Screen::setColor(Color color) {
-    this->color = color;
+void Screen::setColor(Color& color) {
+    this->color = &color;
 }
 
 string Screen::getTitle() {

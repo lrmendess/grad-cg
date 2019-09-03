@@ -6,15 +6,15 @@
 
 class Cursor : public Circle {
     private:
-        Color overlapColor;
+        Color* overlapColor;
 
     public:
         Cursor(float radius, float x, float y, Color& color, Color& overlapColor);
 
         ~Cursor();
 
-        Color getOverlapColor();
-        void setOverlapColor(Color overlapColor);
+        Color& getOverlapColor();
+        void setOverlapColor(Color& overlapColor);
 };
 
 #endif

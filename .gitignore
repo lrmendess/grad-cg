@@ -1,8 +1,8 @@
-./.vscode
-./*.o
-./tinyxml/*.o
-./output
-./test1
-./test2
-./*.pdf
-./trab1
+.vscode
+*.o
+tinyxml/*.o
+output
+test1
+test2
+*.pdf
+trab1

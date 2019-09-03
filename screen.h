@@ -10,11 +10,11 @@ class Screen {
     private:
         int width;
         int height;
-        Color color;
+        Color* color;
         string title;
 
     public:
-        Screen(int width, int height, Color color, string title);
+        Screen(int width, int height, Color& color, string title);
 
         int getWidth();
         void setWidth(int width);
@@ -22,8 +22,8 @@ class Screen {
         int getHeight();
         void setHeight(int height);
 
-        Color getColor();
-        void setColor(Color color);
+        Color& getColor();
+        void setColor(Color& color);
 
         string getTitle();
         void setTitle(string title);

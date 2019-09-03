@@ -11,12 +11,16 @@
 
 void init(void);
 void display(void);
-void mouse(int x, int y);
+void cursorMovement(int x, int y);
+void cursorClick(int button, int state, int x, int y);
+void dragAndDropCircle(int button, int state, int x, int y);
+float d2p(float ax, float ay, float bx, float by);
+bool fitsCircle(float cx, float cy);
 
 Screen* screen = nullptr;
 Cursor* cursor = nullptr;
-
-vector<Circle> circles;
+Circle* baseCircle = nullptr;
+vector<Circle*> circles;
 
 int main(int argc, char** argv) {
     TiXmlDocument doc("test1/config.xml");
@@ -48,7 +52,13 @@ int main(int argc, char** argv) {
     TiXmlElement* circleNode = root->FirstChildElement("circulo");
     TiXmlElement* modelCircleNode = root->FirstChildElement("circuloModelo");
 
-    float radius = 1 / std::stof(circleNode->Attribute("raio"));
+    float radius = std::stof(circleNode->Attribute("raio")) / screen->getWidth();
+
+    Color circleColor (
+        std::stof(circleNode->Attribute("corR")),
+        std::stof(circleNode->Attribute("corG")),
+        std::stof(circleNode->Attribute("corB"))
+    );
 
     Color cursorColor (
         std::stof(modelCircleNode->Attribute("corR")),
@@ -63,6 +73,7 @@ int main(int argc, char** argv) {
     );
 
     cursor = new Cursor(radius, 0, 0, cursorColor, cursorOverlapColor);
+    baseCircle = new Circle(radius, 0, 0, circleColor);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -73,7 +84,8 @@ int main(int argc, char** argv) {
     init();
 
     glutDisplayFunc(display);
-    glutPassiveMotionFunc(mouse);
+    glutPassiveMotionFunc(cursorMovement);
+    glutMouseFunc(cursorClick);
 
     glutMainLoop();
 
@@ -85,7 +97,15 @@ void display(void) {
     /* Limpar todos os pixels */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    cursor->draw();
+    for (auto circle : circles) {
+        circle->drawSolid();
+    }
+
+    if (fitsCircle(cursor->getX(), cursor->getY())) {
+        cursor->draw();   
+    } else {
+        cursor->draw(cursor->getOverlapColor());
+    }
 
     /* Nao esperar! */
     glFlush();
@@ -95,7 +115,7 @@ void init(void) {
     /* Seleciona cor de fundo */
     Color backgroundColor = screen->getColor();
 
-    glClearColor(
+    glClearColor (
         backgroundColor.getRed(),
         backgroundColor.getGreen(),
         backgroundColor.getBlue(),
@@ -108,14 +128,46 @@ void init(void) {
     glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
 }
 
-void mouse(int x, int y) {
-    float newX = (float) x / screen->getWidth();
-    float newY = (float) y / screen->getHeight();
+void cursorMovement(int x, int y) {
+    float cursorPositionX = (float) x / screen->getWidth();
+    float cursorPositionY = 1 - (float) y / screen->getHeight();
 
-    cursor->setX(newX);
-    cursor->setY(1 - newY);
+    cursor->setX(cursorPositionX);
+    cursor->setY(cursorPositionY);
 
     glutPostRedisplay();
+}
 
-    // printf("(%.2f, %.2f)\n", cursor->getX(), cursor->getY());
+void cursorClick(int button, int state, int x, int y) {
+    float cursorClickPositionX = (float) x / screen->getWidth();
+    float cursorClickPositionY = 1 - (float) y / screen->getHeight();
+
+    if (button == GLUT_LEFT_BUTTON && fitsCircle(cursorClickPositionX, cursorClickPositionY)) {
+        Circle* newCircle = new Circle (
+            baseCircle->getRadius(),
+            cursorClickPositionX,
+            cursorClickPositionY,
+            baseCircle->getColor()
+        );
+
+        circles.push_back(newCircle);
+    } else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        printf("Down\n");
+    }
+
+    glutPostRedisplay();
+}
+
+float d2p(float ax, float ay, float bx, float by) {
+    return sqrt(pow(bx - ax, 2) + pow(ay - by, 2));
+}
+
+bool fitsCircle(float cx, float cy) {
+    for (auto circle : circles) {
+        if (d2p(cx, cy, circle->getX(), circle->getY()) <= (2 * circle->getRadius())) {
+            return false;
+        }
+    }
+
+    return true;
 }

@@ -11,7 +11,7 @@ class Circle {
         float x;
         float y;
 
-        Color color;
+        Color* color;
 
     public:
         Circle(float radius, float x, float y, Color& color);
@@ -27,10 +27,13 @@ class Circle {
         float getY();
         void setY(float y);
 
-        Color getColor();
-        void setColor(Color color);
+        Color& getColor();
+        void setColor(Color& color);
 
         void draw();
+        void draw(Color& color);
+        void drawSolid();
+        void drawSolid(Color& color);
 };
 
 #endif
