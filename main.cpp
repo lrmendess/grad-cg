@@ -23,9 +23,12 @@ Circle* getSelectedCircle(int cx, int cy);
 Screen* screen = nullptr;
 Cursor* cursor = nullptr;
 Circle* circle = nullptr;
-vector<Circle*>  circles;
+
+vector<Circle*> circles;
 
 Circle* selectedCircle = nullptr;
+float dsx = 0.0; /* X DISTANCE BETWEEN THE CENTER OF SELECTED CIRCLE AND CURSOR */
+float dsy = 0.0; /* Y DISTANCE BETWEEN THE CENTER OF SELECTED CIRCLE AND CURSOR */
 
 int main(int argc, char** argv) {
     TiXmlDocument doc("test1/config.xml");
@@ -150,7 +153,10 @@ void cursorClick(int button, int state, int x, int y) {
         float cy = 1 - (float) y / screen->getHeight();
 
         if(fitsCircle(cx, cy)) {
-            Circle* newCircle = new Circle(circle->getRadius(), cx, cy, circle->getColor());
+            Circle* newCircle = new Circle (
+                circle->getRadius(), cx, cy, circle->getColor()
+            );
+
             circles.push_back(newCircle);
         }
     }
@@ -179,8 +185,8 @@ void dragAndDropCircle(int x, int y) {
 
     if (cursor->rightButtonIsPressed()) {
         if (selectedCircle != nullptr) {
-            selectedCircle->setX(cx);
-            selectedCircle->setY(cy);
+            selectedCircle->setX(cx - dsx);
+            selectedCircle->setY(cy - dsy);
         }
     }
 
@@ -209,7 +215,10 @@ Circle* getSelectedCircle(int x, int y) {
 
     for (auto c : circles) {
         float distance = d2p(cx, cy, c->getX(), c->getY());
-        
+
+        dsx = cx - c->getX();
+        dsy = cy - c->getY();
+
         if (distance <= c->getRadius()) {
             return c;
         }
