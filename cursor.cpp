@@ -16,3 +16,15 @@ Color& Cursor::getOverlapColor() {
 void Cursor::setOverlapColor(Color& overlapColor) {
     this->overlapColor = &overlapColor;
 }
+
+bool Cursor::rightButtonIsPressed() {
+    return this->rightButton;
+}
+
+void Cursor::pressRightButton() {
+    this->rightButton = true;
+}
+
+void Cursor::unpressRightButton() {
+    this->rightButton = false;
+}

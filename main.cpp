@@ -9,21 +9,28 @@
 #include "screen.h"
 #include "tinyxml/tinyxml.h"
 
+/* FUNCTIONS HEADER */
 void init(void);
 void display(void);
 void cursorMovement(int x, int y);
 void cursorClick(int button, int state, int x, int y);
-void dragAndDropCircle(int button, int state, int x, int y);
+void dragAndDropCircle(int x, int y);
+
 float d2p(float ax, float ay, float bx, float by);
 bool fitsCircle(float cx, float cy);
+Circle* getSelectedCircle(int cx, int cy);
 
 Screen* screen = nullptr;
 Cursor* cursor = nullptr;
-Circle* baseCircle = nullptr;
-vector<Circle*> circles;
+Circle* circle = nullptr;
+vector<Circle*>  circles;
+
+Circle* selectedCircle = nullptr;
+int oldX = 0;
+int oldY = 0;
 
 int main(int argc, char** argv) {
-    TiXmlDocument doc("test1/config.xml");
+    TiXmlDocument doc("test2/config.xml");
     doc.LoadFile();
 
     TiXmlElement* root = doc.RootElement();
@@ -73,7 +80,7 @@ int main(int argc, char** argv) {
     );
 
     cursor = new Cursor(radius, 0, 0, cursorColor, cursorOverlapColor);
-    baseCircle = new Circle(radius, 0, 0, circleColor);
+    circle = new Circle(radius, 0, 0, circleColor);
 
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
@@ -85,6 +92,7 @@ int main(int argc, char** argv) {
 
     glutDisplayFunc(display);
     glutPassiveMotionFunc(cursorMovement);
+    glutMotionFunc(dragAndDropCircle);
     glutMouseFunc(cursorClick);
 
     glutMainLoop();
@@ -139,20 +147,43 @@ void cursorMovement(int x, int y) {
 }
 
 void cursorClick(int button, int state, int x, int y) {
-    float cursorClickPositionX = (float) x / screen->getWidth();
-    float cursorClickPositionY = 1 - (float) y / screen->getHeight();
+    if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+        float cx = (float) x / screen->getWidth();
+        float cy = 1 - (float) y / screen->getHeight();
 
-    if (button == GLUT_LEFT_BUTTON && fitsCircle(cursorClickPositionX, cursorClickPositionY)) {
-        Circle* newCircle = new Circle (
-            baseCircle->getRadius(),
-            cursorClickPositionX,
-            cursorClickPositionY,
-            baseCircle->getColor()
-        );
+        if(fitsCircle(cx, cy)) {
+            Circle* newCircle = new Circle(circle->getRadius(), cx, cy, circle->getColor());
+            circles.push_back(newCircle);
+        }
+    }
+    
+    if (button == GLUT_RIGHT_BUTTON) {
+        if (state == GLUT_DOWN) {
+            selectedCircle = getSelectedCircle(x, y);
+            cursor->pressRightButton();
+        }
+        
+        if (state == GLUT_UP) {
+            selectedCircle = nullptr;
+            cursor->unpressRightButton();
+        }
+    }
 
-        circles.push_back(newCircle);
-    } else if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-        printf("Down\n");
+    glutPostRedisplay();
+}
+
+void dragAndDropCircle(int x, int y) {
+    float cx = (float) x / screen->getWidth();
+    float cy = 1 - (float) y / screen->getHeight();
+
+    cursor->setX(cx);
+    cursor->setY(cy);
+
+    if (cursor->rightButtonIsPressed()) {
+        if (selectedCircle != nullptr) {
+            selectedCircle->setX(cx);
+            selectedCircle->setY(cy);
+        }
     }
 
     glutPostRedisplay();
@@ -163,11 +194,28 @@ float d2p(float ax, float ay, float bx, float by) {
 }
 
 bool fitsCircle(float cx, float cy) {
-    for (auto circle : circles) {
-        if (d2p(cx, cy, circle->getX(), circle->getY()) <= (2 * circle->getRadius())) {
+    for (auto c : circles) {
+        float distance = d2p(cx, cy, c->getX(), c->getY());
+
+        if (distance <= (c->getRadius() * 2)) {
             return false;
         }
     }
 
     return true;
+}
+
+Circle* getSelectedCircle(int x, int y) {
+    float cx = (float) x / screen->getWidth();
+    float cy = 1 - (float) y / screen->getHeight();
+
+    for (auto c : circles) {
+        float distance = d2p(cx, cy, c->getX(), c->getY());
+        
+        if (distance <= c->getRadius()) {
+            return c;
+        }
+    }
+
+    return nullptr;
 }

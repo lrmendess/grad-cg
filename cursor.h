@@ -7,6 +7,7 @@
 class Cursor : public Circle {
     private:
         Color* overlapColor;
+        bool rightButton = false;
 
     public:
         Cursor(float radius, float x, float y, Color& color, Color& overlapColor);
@@ -15,6 +16,10 @@ class Cursor : public Circle {
 
         Color& getOverlapColor();
         void setOverlapColor(Color& overlapColor);
+
+        bool rightButtonIsPressed();
+        void pressRightButton();
+        void unpressRightButton();
 };
 
 #endif
