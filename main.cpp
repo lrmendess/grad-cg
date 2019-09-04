@@ -26,11 +26,9 @@ Circle* circle = nullptr;
 vector<Circle*>  circles;
 
 Circle* selectedCircle = nullptr;
-int oldX = 0;
-int oldY = 0;
 
 int main(int argc, char** argv) {
-    TiXmlDocument doc("test2/config.xml");
+    TiXmlDocument doc("test1/config.xml");
     doc.LoadFile();
 
     TiXmlElement* root = doc.RootElement();
@@ -137,11 +135,11 @@ void init(void) {
 }
 
 void cursorMovement(int x, int y) {
-    float cursorPositionX = (float) x / screen->getWidth();
-    float cursorPositionY = 1 - (float) y / screen->getHeight();
+    float cx = (float) x / screen->getWidth();
+    float cy = 1 - (float) y / screen->getHeight();
 
-    cursor->setX(cursorPositionX);
-    cursor->setY(cursorPositionY);
+    cursor->setX(cx);
+    cursor->setY(cy);
 
     glutPostRedisplay();
 }
