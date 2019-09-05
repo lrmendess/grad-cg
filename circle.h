@@ -8,24 +8,24 @@
 class Circle {
     private:
         float radius;
-        float x;
-        float y;
+        int x;
+        int y;
 
         Color* color;
 
     public:
-        Circle(float radius, float x, float y, Color& color);
+        Circle(float radius, int x, int y, Color& color);
 
         ~Circle();
         
         float getRadius();
         void setRadius(float radius);
 
-        float getX();
-        void setX(float x);
+        int getX();
+        void setX(int x);
 
-        float getY();
-        void setY(float y);
+        int getY();
+        void setY(int y);
 
         Color& getColor();
         void setColor(Color& color);

@@ -27,16 +27,27 @@ Circle* circle = nullptr;
 vector<Circle*> circles;
 
 Circle* selectedCircle = nullptr;
-float dsx = 0.0; /* X DISTANCE BETWEEN THE CENTER OF SELECTED CIRCLE AND CURSOR */
-float dsy = 0.0; /* Y DISTANCE BETWEEN THE CENTER OF SELECTED CIRCLE AND CURSOR */
+int dsx = 0; /* Distancia X entre o centro do circulo selecionado e o cursor */
+int dsy = 0; /* Distancia Y entre o centro do circulo selecionado e o cursor */
 
 int main(int argc, char** argv) {
-    TiXmlDocument doc("test1/config.xml");
-    doc.LoadFile();
+    /* Abertura e tratamento do arquivo de configuracao */
+    if (argc <= 1) {
+        std::cout << "Nao esquece de especificar o arquivo de configuracao, meu guerreiro." << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
+    TiXmlDocument doc(argv[1]);
+
+    if (!doc.LoadFile()) {
+        std::cout << "Erro ao abrir o arquivo." << std::endl;
+        exit(EXIT_FAILURE);
+    }
 
     TiXmlElement* root = doc.RootElement();
 
-    /* Janela */
+
+    /* Leitura da Janela */
     TiXmlElement* windowNode = root->FirstChildElement("janela");
 
     TiXmlElement* dimensionNode = windowNode->FirstChildElement("dimensao");
@@ -56,17 +67,23 @@ int main(int argc, char** argv) {
 
     screen = new Screen(width, height, backgroundColor, title);
     
-    /* Circulos e Cursor */
-    TiXmlElement* circleNode = root->FirstChildElement("circulo");
-    TiXmlElement* modelCircleNode = root->FirstChildElement("circuloModelo");
 
-    float radius = std::stof(circleNode->Attribute("raio")) / screen->getWidth();
+    /* Leitura do Circulo */
+    TiXmlElement* circleNode = root->FirstChildElement("circulo");
+
+    float radius = std::stof(circleNode->Attribute("raio"));
 
     Color circleColor (
         std::stof(circleNode->Attribute("corR")),
         std::stof(circleNode->Attribute("corG")),
         std::stof(circleNode->Attribute("corB"))
     );
+
+    circle = new Circle(radius, 0, 0, circleColor);
+
+
+    /* Leitura do Cursor */
+    TiXmlElement* modelCircleNode = root->FirstChildElement("circuloModelo");
 
     Color cursorColor (
         std::stof(modelCircleNode->Attribute("corR")),
@@ -81,8 +98,9 @@ int main(int argc, char** argv) {
     );
 
     cursor = new Cursor(radius, 0, 0, cursorColor, cursorOverlapColor);
-    circle = new Circle(radius, 0, 0, circleColor);
 
+
+    /* Glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
     glutInitWindowSize(screen->getWidth(), screen->getHeight());
@@ -98,7 +116,14 @@ int main(int argc, char** argv) {
 
     glutMainLoop();
 
-    /* C ANSI requer que main retorne um inteiro */
+    delete(screen);
+    delete(cursor);
+    delete(circle);
+
+    for (Circle* c : circles) {
+        delete(c);
+    }
+
     return 0;
 }
 
@@ -106,14 +131,16 @@ void display(void) {
     /* Limpar todos os pixels */
     glClear(GL_COLOR_BUFFER_BIT);
 
-    for (auto circle : circles) {
-        circle->drawSolid();
+    for (auto c : circles) {
+        c->drawSolid();
     }
 
-    if (fitsCircle(cursor->getX(), cursor->getY())) {
-        cursor->draw();   
-    } else {
-        cursor->draw(cursor->getOverlapColor());
+    if (!cursor->rightButtonIsPressed() || selectedCircle == nullptr) {
+        if (fitsCircle(cursor->getX(), cursor->getY())) {
+            cursor->draw();   
+        } else {
+            cursor->draw(cursor->getOverlapColor());
+        }
     }
 
     /* Nao esperar! */
@@ -122,7 +149,7 @@ void display(void) {
 
 void init(void) {
     /* Seleciona cor de fundo */
-    Color backgroundColor = screen->getColor();
+    Color& backgroundColor = screen->getColor();
 
     glClearColor (
         backgroundColor.getRed(),
@@ -134,27 +161,25 @@ void init(void) {
     /* Inicializar sistema de viz */
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0.0, 1.0, 0.0, 1.0, -1.0, 1.0);
+    glOrtho(0.0, screen->getWidth(), 0.0, screen->getHeight(), -1.0, 1.0);
 }
 
 void cursorMovement(int x, int y) {
-    float cx = (float) x / screen->getWidth();
-    float cy = 1 - (float) y / screen->getHeight();
+    y = screen->getHeight() - y;
 
-    cursor->setX(cx);
-    cursor->setY(cy);
+    cursor->setX(x);
+    cursor->setY(y);
 
     glutPostRedisplay();
 }
 
 void cursorClick(int button, int state, int x, int y) {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        float cx = (float) x / screen->getWidth();
-        float cy = 1 - (float) y / screen->getHeight();
+        y = screen->getHeight() - y;
 
-        if(fitsCircle(cx, cy)) {
+        if (fitsCircle(x, y)) {
             Circle* newCircle = new Circle (
-                circle->getRadius(), cx, cy, circle->getColor()
+                circle->getRadius(), x, y, circle->getColor()
             );
 
             circles.push_back(newCircle);
@@ -177,16 +202,15 @@ void cursorClick(int button, int state, int x, int y) {
 }
 
 void dragAndDropCircle(int x, int y) {
-    float cx = (float) x / screen->getWidth();
-    float cy = 1 - (float) y / screen->getHeight();
+    y = screen->getHeight() - y;
 
-    cursor->setX(cx);
-    cursor->setY(cy);
+    cursor->setX(x);
+    cursor->setY(y);
 
     if (cursor->rightButtonIsPressed()) {
         if (selectedCircle != nullptr) {
-            selectedCircle->setX(cx - dsx);
-            selectedCircle->setY(cy - dsy);
+            selectedCircle->setX(x - dsx);
+            selectedCircle->setY(y - dsy);
         }
     }
 
@@ -210,14 +234,13 @@ bool fitsCircle(float cx, float cy) {
 }
 
 Circle* getSelectedCircle(int x, int y) {
-    float cx = (float) x / screen->getWidth();
-    float cy = 1 - (float) y / screen->getHeight();
+    y = screen->getHeight() - y;
 
     for (auto c : circles) {
-        float distance = d2p(cx, cy, c->getX(), c->getY());
+        float distance = d2p(x, y, c->getX(), c->getY());
 
-        dsx = cx - c->getX();
-        dsy = cy - c->getY();
+        dsx = x - c->getX();
+        dsy = y - c->getY();
 
         if (distance <= c->getRadius()) {
             return c;

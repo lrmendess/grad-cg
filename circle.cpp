@@ -1,6 +1,6 @@
 #include "circle.h"
 
-Circle::Circle(float radius, float x, float y, Color& color)
+Circle::Circle(float radius, int x, int y, Color& color)
     : radius(radius), x(x), y(y), color(&color) {
 
 }
@@ -17,19 +17,19 @@ void Circle::setRadius(float radius) {
     this->radius = radius;
 }
 
-float Circle::getX() {
+int Circle::getX() {
     return this->x;
 }
 
-void Circle::setX(float x) {
+void Circle::setX(int x) {
     this->x = x;
 }
 
-float Circle::getY() {
+int Circle::getY() {
     return this->y;
 }
 
-void Circle::setY(float y) {
+void Circle::setY(int y) {
     this->y = y;
 }
 
