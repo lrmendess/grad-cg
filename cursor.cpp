@@ -28,3 +28,11 @@ void Cursor::pressRightButton() {
 void Cursor::unpressRightButton() {
     this->rightButton = false;
 }
+
+bool Cursor::isVisible() {
+    return this->visible;
+}
+
+bool Cursor::makeVisible() {
+    this->visible = true;
+}

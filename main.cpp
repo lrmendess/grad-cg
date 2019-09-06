@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    TiXmlDocument doc(argv[1]);
+    TiXmlDocument doc(strcat(argv[1], "/config.xml"));
 
     if (!doc.LoadFile()) {
         std::cout << "Erro ao abrir o arquivo." << std::endl;
@@ -135,7 +135,7 @@ void display(void) {
         c->drawSolid();
     }
 
-    if (!cursor->rightButtonIsPressed() || selectedCircle == nullptr) {
+    if (cursor->isVisible()) {
         if (fitsCircle(cursor->getX(), cursor->getY())) {
             cursor->draw();   
         } else {
@@ -165,6 +165,8 @@ void init(void) {
 }
 
 void cursorMovement(int x, int y) {
+    cursor->makeVisible();
+
     y = screen->getHeight() - y;
 
     cursor->setX(x);
