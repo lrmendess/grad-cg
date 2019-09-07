@@ -42,7 +42,7 @@ int main(int argc, char** argv) {
     string configPath = strcat(argv[1], "/config.xml");
 
     if (doc.LoadFile(configPath.c_str()) != tinyxml2::XML_SUCCESS) {
-        std::cout << "Erro ao abrir o arquivo." << std::endl;
+        std::cout << "Erro ao tentar abrir o arquivo config.xml." << std::endl;
         exit(EXIT_FAILURE);
     }
 
