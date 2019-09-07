@@ -1,15 +1,13 @@
 CC = g++ -std=c++11
 DOMAIN_FILES = main.cpp circle.cpp cursor.cpp color.cpp screen.cpp
-TINYXML_FOLDER = tinyxml
-TINYXML_FILES = $(TINYXML_FOLDER)/tinyxml.cpp 			\
-				$(TINYXML_FOLDER)/tinyxmlparser.cpp 	\
-				$(TINYXML_FOLDER)/tinyxmlerror.cpp 		\
-				$(TINYXML_FOLDER)/tinystr.cpp
-OUTPUT_FILE = trab1
+TINYXML_FILES = tinyxml2.cpp
+OUTPUT_FILE = trabalhocg
 FLAGS = -lGL -lGLU -lglut -lm
 
 all: g++
-	@echo "Done."
+	@echo "Para executar a aplicacao, utilize um dos seguintes comandos:"
+	@echo "(1) ./trabalhocg <config_path>"
+	@echo "(2) make run CONFIG=<config_path>\n"
 
 g++:
 	@$(CC) $(DOMAIN_FILES) $(TINYXML_FILES) -o $(OUTPUT_FILE) $(FLAGS)

@@ -1,13 +1,13 @@
 #include <iostream>
 #include <string>
-#include <vector>
+#include <list>
 #include <math.h>
 #include <GL/glut.h>
 #include "cursor.h"
 #include "circle.h"
 #include "color.h"
 #include "screen.h"
-#include "tinyxml/tinyxml.h"
+#include "tinyxml2.h"
 
 /* FUNCTIONS HEADER */
 void init(void);
@@ -24,7 +24,7 @@ Screen* screen = nullptr;
 Cursor* cursor = nullptr;
 Circle* circle = nullptr;
 
-vector<Circle*> circles;
+std::list<Circle*> circles;
 
 Circle* selectedCircle = nullptr;
 int dsx = 0; /* Distancia X entre o centro do circulo selecionado e o cursor */
@@ -37,22 +37,26 @@ int main(int argc, char** argv) {
         exit(EXIT_FAILURE);
     }
 
-    TiXmlDocument doc(strcat(argv[1], "/config.xml"));
+    tinyxml2::XMLDocument doc;
 
-    if (!doc.LoadFile()) {
+    string configPath = strcat(argv[1], "/config.xml");
+
+    if (doc.LoadFile(configPath.c_str()) != tinyxml2::XML_SUCCESS) {
         std::cout << "Erro ao abrir o arquivo." << std::endl;
         exit(EXIT_FAILURE);
     }
 
-    TiXmlElement* root = doc.RootElement();
+
+    /* Leitura da raiz do XML */
+    tinyxml2::XMLElement* root = doc.RootElement();
 
 
     /* Leitura da Janela */
-    TiXmlElement* windowNode = root->FirstChildElement("janela");
+    tinyxml2::XMLElement* windowNode = root->FirstChildElement("janela");
 
-    TiXmlElement* dimensionNode = windowNode->FirstChildElement("dimensao");
-    TiXmlElement* backgroundColorNode = windowNode->FirstChildElement("fundo");
-    TiXmlElement* titleNode = windowNode->FirstChildElement("titulo");
+    tinyxml2::XMLElement* dimensionNode = windowNode->FirstChildElement("dimensao");
+    tinyxml2::XMLElement* backgroundColorNode = windowNode->FirstChildElement("fundo");
+    tinyxml2::XMLElement* titleNode = windowNode->FirstChildElement("titulo");
 
     int width = std::stoi(dimensionNode->Attribute("largura"));
     int height = std::stoi(dimensionNode->Attribute("altura"));
@@ -69,7 +73,7 @@ int main(int argc, char** argv) {
     
 
     /* Leitura do Circulo */
-    TiXmlElement* circleNode = root->FirstChildElement("circulo");
+    tinyxml2::XMLElement* circleNode = root->FirstChildElement("circulo");
 
     float radius = std::stof(circleNode->Attribute("raio"));
 
@@ -83,7 +87,7 @@ int main(int argc, char** argv) {
 
 
     /* Leitura do Cursor */
-    TiXmlElement* modelCircleNode = root->FirstChildElement("circuloModelo");
+    tinyxml2::XMLElement* modelCircleNode = root->FirstChildElement("circuloModelo");
 
     Color cursorColor (
         std::stof(modelCircleNode->Attribute("corR")),
@@ -135,7 +139,7 @@ void display(void) {
         c->drawSolid();
     }
 
-    if (cursor->isVisible()) {
+    if (cursor->isVisible() && (!cursor->rightButtonIsPressed() || selectedCircle == nullptr)) {
         if (fitsCircle(cursor->getX(), cursor->getY())) {
             cursor->draw();   
         } else {
@@ -184,7 +188,7 @@ void cursorClick(int button, int state, int x, int y) {
                 circle->getRadius(), x, y, circle->getColor()
             );
 
-            circles.push_back(newCircle);
+            circles.push_front(newCircle);
         }
     }
     
