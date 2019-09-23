@@ -72,7 +72,7 @@ Arena::Arena(string path) : Circle() {
     int y1 = stoi(l->Attribute("y1"));
     int x2 = stoi(l->Attribute("x2"));
     int y2 = stoi(l->Attribute("y2"));
-    float color[3] = { 0, 0, 0 };
+    GLfloat color[3] = { 0, 0, 0 };
 
     airstrip = new Line(x1, y1, x2, y2, color);
 }
