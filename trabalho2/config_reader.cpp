@@ -36,7 +36,7 @@ string ConfigReader::getCaminhoArquivoArena() {
     return caminhoArquivoArena;
 }
 
-float ConfigReader::getVelocidadeJogador() {
+GLfloat ConfigReader::getVelocidadeJogador() {
     string caminhoArquivoArena = root
         ->FirstChildElement("jogador")
         ->Attribute("vel");

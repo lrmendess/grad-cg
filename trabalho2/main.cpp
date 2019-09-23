@@ -16,9 +16,6 @@ void idle(void);
 void keyPress(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
 
-/* debug */
-void cursorMovement(int x, int y);
-
 bool keyboard[256];
 
 /* Arena Content */
@@ -53,9 +50,6 @@ int main(int argc, char** argv) {
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
-
-    /*debug*/
-    glutPassiveMotionFunc(cursorMovement);
 
     glutMainLoop();
 
@@ -116,8 +110,4 @@ void idle(void) {
     }
 
     glutPostRedisplay();
-}
-
-void cursorMovement(int x, int y) {
-    cout << x << ", " << y << endl;
 }

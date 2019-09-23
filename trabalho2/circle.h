@@ -9,8 +9,8 @@ using namespace std;
 
 class Circle {
     private:
-        int cx;
-        int cy;
+        GLint cx;
+        GLint cy;
         GLfloat radius;
         GLfloat color[3] = { 0, 0, 0 };
 
@@ -18,13 +18,13 @@ class Circle {
         ~Circle();
 
         Circle();
-        Circle(const int cx, const int cy, const GLfloat radius, const GLfloat* color);
+        Circle(const GLint cx, const GLint cy, const GLfloat radius, const GLfloat* color);
 
-        int getCx() { return cx; }
-        void setCx(const int cx) { this->cx = cx; }
+        GLint getCx() { return cx; }
+        void setCx(const GLint cx) { this->cx = cx; }
 
-        int getCy() { return cy; }
-        void setCy(const int cy) { this->cy = cy; }
+        GLint getCy() { return cy; }
+        void setCy(const GLint cy) { this->cy = cy; }
 
         GLfloat getRadius() { return radius; }
         void setRadius(const GLfloat radius) { this->radius = radius; }

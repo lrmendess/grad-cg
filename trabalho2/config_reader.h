@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <GL/glut.h>
 #include "tinyxml2.h"
 
 using namespace std;
@@ -20,7 +21,7 @@ class ConfigReader {
         string getTipoArquivoArena();
         string getCaminhoArquivoArena();
 
-        float getVelocidadeJogador();
+        GLfloat getVelocidadeJogador();
 };
 
 #endif

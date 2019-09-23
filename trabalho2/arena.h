@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <GL/glut.h>
 #include "tinyxml2.h"
 #include "circle.h"
 #include "line.h"

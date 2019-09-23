@@ -23,9 +23,9 @@ Arena::Arena(string path) : Circle() {
         string colorName = findBlueCircle->Attribute("fill");
 
         if (!colorName.compare("blue")) {
-            int cx = stoi(findBlueCircle->Attribute("cx"));
-            int cy = stoi(findBlueCircle->Attribute("cy"));
             GLfloat radius = stof(findBlueCircle->Attribute("r"));
+            GLint cx = stoi(findBlueCircle->Attribute("cx"));
+            GLint cy = 2 * radius - stoi(findBlueCircle->Attribute("cy"));
 
             this->setCx(cx);
             this->setCy(cy);
@@ -46,8 +46,8 @@ Arena::Arena(string path) : Circle() {
     XMLElement* c = root->FirstChildElement("circle");
 
     while (c != NULL) {
-        int cx = stoi(c->Attribute("cx"));
-        int cy = stoi(c->Attribute("cy"));
+        GLint cx = stoi(c->Attribute("cx"));
+        GLint cy = 2 * this->getRadius() - stoi(c->Attribute("cy"));
         GLfloat radius = stof(c->Attribute("r"));
 
         string colorName = c->Attribute("fill");
@@ -68,10 +68,10 @@ Arena::Arena(string path) : Circle() {
     /* Linha */
     XMLElement* l = root->FirstChildElement("line");
 
-    int x1 = stoi(l->Attribute("x1"));
-    int y1 = stoi(l->Attribute("y1"));
-    int x2 = stoi(l->Attribute("x2"));
-    int y2 = stoi(l->Attribute("y2"));
+    GLint x1 = stoi(l->Attribute("x1"));
+    GLint y1 = 2 * this->getRadius() - stoi(l->Attribute("y1"));
+    GLint x2 = stoi(l->Attribute("x2"));
+    GLint y2 = 2 * this->getRadius() - stoi(l->Attribute("y2"));
     GLfloat color[3] = { 0, 0, 0 };
 
     airstrip = new Line(x1, y1, x2, y2, color);

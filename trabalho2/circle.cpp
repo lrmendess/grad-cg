@@ -8,7 +8,7 @@ Circle::Circle() {
 
 }
 
-Circle::Circle(int cx, int cy, GLfloat radius, const GLfloat* color) {
+Circle::Circle(GLint cx, GLint cy, GLfloat radius, const GLfloat* color) {
     this->cx = cx;
     this->cy = cy;
 
