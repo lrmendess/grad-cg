@@ -31,6 +31,8 @@ class Line {
 
         GLfloat* getColor() { return color; }
         void setColor(GLfloat* color) { for (int i = 0; i < 3; i++) this->color[i] = color[i]; }
+
+        void drawSolidLine();
 };
 
 #endif

@@ -24,7 +24,7 @@ class Circle {
         void setCx(const int cx) { this->cx = cx; }
 
         int getCy() { return cy; }
-        void setCy(const int cy) { this->cx = cx; }
+        void setCy(const int cy) { this->cy = cy; }
 
         GLfloat getRadius() { return radius; }
         void setRadius(const GLfloat radius) { this->radius = radius; }

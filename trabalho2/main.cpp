@@ -38,16 +38,10 @@ int main(int argc, char** argv) {
 
     arena = new Arena(svgPath);
 
-    // arena = svgReader.getArena();
-    // player = svgReader.getPlayer();
-    // airstrip = svgReader.getAirstrip();
-    // groundEnemies = svgReader.getGroundEnemies();
-    // airEnemies = svgReader.getAirEnemies();
-
     /* Glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(2 * arena->getRadius(), 2 * arena->getRadius());
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Ace Combat: Poor Edition");
 

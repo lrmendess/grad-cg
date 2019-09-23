@@ -16,6 +16,32 @@ Arena::Arena(string path) : Circle() {
     /* Raiz SVG */
     XMLElement* root = doc.RootElement();
 
+    /* Busca exclusivamente a arena antes de todos os outros objetos do jogo */
+    XMLElement* findBlueCircle = root->FirstChildElement("circle");
+
+    while (findBlueCircle != NULL) {
+        string colorName = findBlueCircle->Attribute("fill");
+
+        if (!colorName.compare("blue")) {
+            int cx = stoi(findBlueCircle->Attribute("cx"));
+            int cy = stoi(findBlueCircle->Attribute("cy"));
+            GLfloat radius = stof(findBlueCircle->Attribute("r"));
+
+            this->setCx(cx);
+            this->setCy(cy);
+            this->setRadius(radius);
+            this->setColor(BLUE);
+
+            break;
+        }
+    }
+
+    /* Caso a arena nao seja encontrada o programa eh finalizado */
+    if (findBlueCircle == NULL) {
+        cout << "Nao foi possivel configurar a Arena" << endl;
+        exit(EXIT_FAILURE);
+    }
+
     /* Circulos */
     XMLElement* c = root->FirstChildElement("circle");
 
@@ -26,21 +52,14 @@ Arena::Arena(string path) : Circle() {
 
         string colorName = c->Attribute("fill");
 
-        if (colorName.compare("red") == 0) {
+        if (!colorName.compare("red"))
             airEnemies.push_back(new Circle(cx, cy, radius, RED));
-            
-        } else if (colorName.compare("green") == 0) {
+        
+        if (!colorName.compare("green"))
             player = new Circle(cx, cy, radius, GREEN);
-
-        } else if (colorName.compare("blue") == 0) {
-            this->setCx(cx);
-            this->setCy(cy);
-            this->setRadius(radius);
-            this->setColor(BLUE);
-
-        } else if (colorName.compare("orange") == 0) {
+        
+        if (!colorName.compare("orange"))
             groundEnemies.push_back(new Circle(cx, cy, radius, ORANGE));
-        }
 
         /* Next */
         c = c->NextSiblingElement("circle");
@@ -64,4 +83,15 @@ Circle* Arena::getPlayer() {
 
 void Arena::draw() {
     this->drawSolidCircle();
+
+    airstrip->drawSolidLine();
+    player->drawSolidCircle();
+    
+    for (auto ge : groundEnemies) {
+        ge->drawSolidCircle();
+    }
+
+    for (auto ae : airEnemies) {
+        ae->drawSolidCircle();
+    }
 }
