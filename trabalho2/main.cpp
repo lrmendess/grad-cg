@@ -18,8 +18,9 @@ void keyUp(unsigned char key, int x, int y);
 
 bool keyboard[256];
 
-/* Arena Content */
 Arena* arena;
+Player* player;
+GLfloat speedMultiplier;
 
 int main(int argc, char** argv) {
     /* Abertura e tratamento do arquivo de configuracao */
@@ -38,6 +39,9 @@ int main(int argc, char** argv) {
 
     arena = new Arena(svgPath);
 
+    player = &arena->getPlayer();
+    speedMultiplier = configReader.getVelocidadeJogador();
+
     /* Glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -50,6 +54,7 @@ int main(int argc, char** argv) {
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
+    glutIdleFunc(idle);
 
     glutMainLoop();
 
@@ -90,19 +95,19 @@ void keyUp(unsigned char key, int x, int y) {
 
 void idle(void) {
     if (keyboard['w']) {
-		// TODO anything
+        player->moveY(speedMultiplier);
     }
     
     if (keyboard['a']) {
-		// TODO anything
+		player->moveX(-speedMultiplier);
     }
     
     if (keyboard['s']) {
-		// TODO anything
+		player->moveY(-speedMultiplier);
     }
     
     if (keyboard['d']) {
-		// TODO anything
+		player->moveX(speedMultiplier);
     }
 
     if (keyboard['u']) {

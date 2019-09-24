@@ -24,8 +24,8 @@ Arena::Arena(const string& path) : Circle() {
 
         if (!colorName.compare("blue")) {
             GLfloat radius = stof(findBlueCircle->Attribute("r"));
-            GLint cx = stoi(findBlueCircle->Attribute("cx"));
-            GLint cy = 2 * radius - stoi(findBlueCircle->Attribute("cy"));
+            GLfloat cx = stoi(findBlueCircle->Attribute("cx"));
+            GLfloat cy = 2 * radius - stoi(findBlueCircle->Attribute("cy"));
 
             this->setCx(cx);
             this->setCy(cy);
@@ -46,9 +46,9 @@ Arena::Arena(const string& path) : Circle() {
     XMLElement* c = root->FirstChildElement("circle");
 
     while (c != NULL) {
-        GLint cx = stoi(c->Attribute("cx"));
-        GLint cy = 2 * this->getRadius() - stoi(c->Attribute("cy"));
         GLfloat radius = stof(c->Attribute("r"));
+        GLfloat cx = stoi(c->Attribute("cx"));
+        GLfloat cy = 2 * this->getRadius() - stoi(c->Attribute("cy"));
 
         string colorName = c->Attribute("fill");
 
@@ -56,7 +56,7 @@ Arena::Arena(const string& path) : Circle() {
             airEnemies.push_back(new Circle(cx, cy, radius, RED));
         
         if (!colorName.compare("green"))
-            player = new Player(cx, cy, radius, GREEN);
+            player = new Player(this, cx, cy, radius, GREEN);
         
         if (!colorName.compare("orange"))
             groundEnemies.push_back(new Circle(cx, cy, radius, ORANGE));
@@ -68,24 +68,19 @@ Arena::Arena(const string& path) : Circle() {
     /* Linha */
     XMLElement* l = root->FirstChildElement("line");
 
-    GLint x1 = stoi(l->Attribute("x1"));
-    GLint y1 = 2 * this->getRadius() - stoi(l->Attribute("y1"));
-    GLint x2 = stoi(l->Attribute("x2"));
-    GLint y2 = 2 * this->getRadius() - stoi(l->Attribute("y2"));
+    GLfloat x1 = stoi(l->Attribute("x1"));
+    GLfloat y1 = 2 * this->getRadius() - stoi(l->Attribute("y1"));
+    GLfloat x2 = stoi(l->Attribute("x2"));
+    GLfloat y2 = 2 * this->getRadius() - stoi(l->Attribute("y2"));
     GLfloat color[3] = { 0, 0, 0 };
 
     airstrip = new Line(x1, y1, x2, y2, color);
-}
-
-Circle* Arena::getPlayer() {
-    return player;
 }
 
 void Arena::draw() {
     this->drawSolidCircle();
 
     airstrip->drawSolidLine();
-    player->drawSolidCircle();
     
     for (auto ge : groundEnemies) {
         ge->drawSolidCircle();
@@ -94,4 +89,6 @@ void Arena::draw() {
     for (auto ae : airEnemies) {
         ae->drawSolidCircle();
     }
+
+    player->drawSolidCircle();
 }

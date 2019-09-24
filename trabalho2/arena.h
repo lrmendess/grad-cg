@@ -18,9 +18,11 @@
 using namespace std;
 using namespace tinyxml2;
 
+class Player;
+
 class Arena : public Circle {
     private:
-        Circle* player;
+        Player* player;
         Line* airstrip;
         list<Circle*> groundEnemies;
         list<Circle*> airEnemies;
@@ -29,7 +31,11 @@ class Arena : public Circle {
         ~Arena();
         Arena(const string& path);
 
-        Circle* getPlayer();
+        Player& getPlayer() { return *player; }
+        Line& getAirstrip() { return *airstrip; }
+        list<Circle*>& getGroundEnemies() { return groundEnemies; }
+        list<Circle*>& getAirEnemies() { return airEnemies; }
+
         void draw();
 };
 
