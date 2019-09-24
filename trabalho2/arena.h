@@ -8,6 +8,7 @@
 #include "tinyxml2.h"
 #include "circle.h"
 #include "line.h"
+#include "player.h"
 
 #define RED     (const GLfloat[3]) { 1, 0, 0 }
 #define GREEN   (const GLfloat[3]) { 0, 1, 0 }
@@ -26,7 +27,7 @@ class Arena : public Circle {
 
     public:
         ~Arena();
-        Arena(string path);
+        Arena(const string& path);
 
         Circle* getPlayer();
         void draw();

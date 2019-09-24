@@ -1,7 +1,4 @@
 .vscode/
 *.o
-output
-test1/
-test2/
 *.pdf
 trabalhocg

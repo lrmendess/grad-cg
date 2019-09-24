@@ -8,7 +8,7 @@ Line::Line() {
 
 }
 
-Line::Line(GLint x1, GLint y1, GLint x2, GLint y2, GLfloat* color) {
+Line::Line(GLint& x1, GLint& y1, GLint& x2, GLint& y2, GLfloat* color) {
     this->x1 = x1;
     this->y1 = y1;
     this->x2 = x2;

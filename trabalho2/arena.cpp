@@ -4,7 +4,7 @@ Arena::~Arena() {
     
 }
 
-Arena::Arena(string path) : Circle() {
+Arena::Arena(const string& path) : Circle() {
     /* Abertura SVG */
     XMLDocument doc;
 
@@ -56,7 +56,7 @@ Arena::Arena(string path) : Circle() {
             airEnemies.push_back(new Circle(cx, cy, radius, RED));
         
         if (!colorName.compare("green"))
-            player = new Circle(cx, cy, radius, GREEN);
+            player = new Player(cx, cy, radius, GREEN);
         
         if (!colorName.compare("orange"))
             groundEnemies.push_back(new Circle(cx, cy, radius, ORANGE));
