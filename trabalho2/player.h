@@ -30,6 +30,10 @@ class Player : public Circle {
         GLfloat ax;
         GLfloat ay;
 
+        /* Ponto onde o aviao deve levantar voo */
+        GLfloat midAirstripX;
+        GLfloat midAirstripY;
+
         /* Velocidade de crescimento do raio */
         GLfloat radiusSpeed = 0.0;
 
@@ -48,8 +52,8 @@ class Player : public Circle {
         GLboolean& isTakeOff() { return takeOff; }
         void setTakeOff(GLboolean value) { this->takeOff = value; }
 
-        void moveX(const GLfloat& mul, const GLfloat& dt);
-        void moveY(const GLfloat& mul, const GLfloat& dt);
+        void moveX(const GLfloat& mul);
+        void moveY(const GLfloat& mul);
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();
