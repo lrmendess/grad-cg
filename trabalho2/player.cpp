@@ -2,24 +2,17 @@
 
 Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat& radius, const GLfloat* color) :
     Circle(cx, cy, radius, color) {
-    
-    // Velocidade de testes
-    this->speed = 1;
-    // Inicialmente o aviao esta no chao
-    this->flying = false;
-    this->takeOff = false;
+
     // Referencia da arena que o aviao esta
     this->arena = arena;
     // Armazenamento do estado inicial antes da decolagem
     this->startX = cx;
     this->startY = cy;
     this->startR = radius;
-
-    this->oldRadiusTime = 0.0;
 }
 
-void Player::moveX(const GLfloat& mul) {
-    GLfloat cx = this->getCx() + (mul * speed);
+void Player::moveX(const GLfloat& mul, const GLfloat& dt) {
+    GLfloat cx = this->getCx() + (mul * speed * dt);
     GLfloat cy = this->getCy();
 
     GLfloat distanceFromBorder = sqrt(pow(cx - arena->getCx(), 2) + pow(cy - arena->getCy(), 2));
@@ -39,8 +32,8 @@ void Player::moveX(const GLfloat& mul) {
     this->setCx(cx);
 }
 
-void Player::moveY(const GLfloat& mul) {
-    GLfloat cy = this->getCy() + (mul * speed);
+void Player::moveY(const GLfloat& mul, const GLfloat& dt) {
+    GLfloat cy = this->getCy() + (mul * speed * dt);
     GLfloat cx = this->getCx();
 
     GLfloat distanceFromBorder = d2p(cx, cy, arena->getCx(), arena->getCy());
@@ -65,7 +58,7 @@ void Player::calculatePhysics() {
     Line* airstrip = &arena->getAirstrip();
 
     /* Tratamento da decolagem do inicio ao fim da pista */
-    // a = 2 * s / t^2
+    // a = 2 * S / t ^ 2
     GLfloat t = 4.0;
 
     GLfloat dy = airstrip->getY2() - airstrip->getY1();
@@ -74,17 +67,20 @@ void Player::calculatePhysics() {
     GLfloat dx = airstrip->getX2() - airstrip->getX1();
     this->ax = 2 * dx / pow(t, 2);
 
+    GLfloat distance = d2p(airstrip->getX1(), airstrip->getY1(), airstrip->getX2(), airstrip->getY2());
+    this->speed = distance / t;
+
     /* Tratamento do inicio do crescimento do raio do player */
-    // t = sqrt(2 * (S - So)/a)
     GLfloat midAirstripX = airstrip->getX1() + (airstrip->getX2() - airstrip->getX1()) / 2;
     GLfloat midAirstripY = airstrip->getY1() + (airstrip->getY2() - airstrip->getY1()) / 2;
 
-    GLfloat dr = d2p(airstrip->getX1(), airstrip->getY1(), airstrip->getX2(), airstrip->getY2());
-    GLfloat dro = d2p(airstrip->getX1(), airstrip->getY1(), midAirstripX, midAirstripY);
-    GLfloat ar = 2 * dr / pow(t, 2);
-    GLfloat increaseRadiusTime = sqrt(2 * (dr - dro) / ar);
+    // t = sqrt(2 * (S - So) / a)
+    GLfloat startDistance = d2p(airstrip->getX1(), airstrip->getY1(), midAirstripX, midAirstripY);
+    GLfloat acc = 2 * distance / pow(t, 2);
+    GLfloat midAirstripTime = sqrt(2 * (distance - startDistance) / acc);
 
-    this->ar = 2 * this->getRadius() / pow(t - increaseRadiusTime, 2);
+    // V = S / t
+    this->radiusSpeed = this->getRadius() / (t - midAirstripTime);
 }
 
 void Player::takeOffAirplane(GLint& currentTime) {
@@ -96,8 +92,11 @@ void Player::takeOffAirplane(GLint& currentTime) {
     GLfloat midAirstripX = airstrip->getX1() + (airstrip->getX2() - airstrip->getX1()) / 2;
     GLfloat midAirstripY = airstrip->getY1() + (airstrip->getY2() - airstrip->getY1()) / 2;
 
+    // S = So + V * t
     if ((this->getCx() >= midAirstripX) && (this->getCy() >= midAirstripY)) {
-        this->setRadius(this->startR + (ar * pow((currentTime - oldRadiusTime) / 1000.0, 2)) / 2);
+        GLfloat t = ((currentTime - oldRadiusTime) / 1000.0);
+        GLfloat s = (this->radiusSpeed * t);
+        this->setRadius(this->startR + s);
     } else {
         this->oldRadiusTime = currentTime;
     }

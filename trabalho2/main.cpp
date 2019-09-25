@@ -21,7 +21,8 @@ bool keyboard[256];
 Arena* arena;
 Player* player;
 GLfloat speedMultiplier;
-GLint oldTime;
+GLfloat oldTime;
+GLfloat oldTime2 = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 
 int main(int argc, char** argv) {
     /* Abertura e tratamento do arquivo de configuracao */
@@ -98,20 +99,23 @@ void keyUp(unsigned char key, int x, int y) {
 
 void idle(void) {
     if (player->isFlying()) {
+        GLfloat currentTime = glutGet(GLUT_ELAPSED_TIME) / 1000.0 - oldTime2;
+        oldTime2 = currentTime;
+
         if (keyboard['w']) {
-            player->moveY(speedMultiplier);
+            player->moveY(speedMultiplier, currentTime);
         }
 
         if (keyboard['a']) {
-            player->moveX(-speedMultiplier);
+            player->moveX(-speedMultiplier, currentTime);
         }
 
         if (keyboard['s']) {
-            player->moveY(-speedMultiplier);
+            player->moveY(-speedMultiplier, currentTime);
         }
 
         if (keyboard['d']) {
-            player->moveX(speedMultiplier);
+            player->moveX(speedMultiplier, currentTime);
         }
     } else {
         if (keyboard['u'] && !player->isTakeOff()) {

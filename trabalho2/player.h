@@ -13,11 +13,13 @@ class Arena;
 
 class Player : public Circle {
     private:
+        /* Referencia circular para a arena */
         Arena* arena;
 
-        GLfloat speed;
-        GLboolean flying;
-        GLboolean takeOff;
+        /* Inicialmente o aviao esta no chao */
+        GLfloat speed = 0;
+        GLboolean flying = false;
+        GLboolean takeOff = false;
 
         /* Posicoes iniciais do player e raio inicial*/
         GLfloat startX;
@@ -27,10 +29,12 @@ class Player : public Circle {
         /* Aceleracoes decompostas do player */
         GLfloat ax;
         GLfloat ay;
-        GLfloat ar;
+
+        /* Velocidade de crescimento do raio */
+        GLfloat radiusSpeed = 0.0;
 
         /* Momento no tempo em que o raio deve comecar a crescer */
-        GLfloat oldRadiusTime;
+        GLfloat oldRadiusTime = 0.0;
         
     public:
         Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat& radius, const GLfloat* color);
@@ -44,8 +48,8 @@ class Player : public Circle {
         GLboolean& isTakeOff() { return takeOff; }
         void setTakeOff(GLboolean value) { this->takeOff = value; }
 
-        void moveX(const GLfloat& mul);
-        void moveY(const GLfloat& mul);
+        void moveX(const GLfloat& mul, const GLfloat& dt);
+        void moveY(const GLfloat& mul, const GLfloat& dt);
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();
