@@ -21,6 +21,7 @@ bool keyboard[256];
 Arena* arena;
 Player* player;
 GLfloat speedMultiplier;
+GLint oldTime;
 
 int main(int argc, char** argv) {
     /* Abertura e tratamento do arquivo de configuracao */
@@ -40,6 +41,8 @@ int main(int argc, char** argv) {
     arena = new Arena(svgPath);
 
     player = &arena->getPlayer();
+    player->calculatePhysics();
+    
     speedMultiplier = configReader.getVelocidadeJogador();
 
     /* Glut */
@@ -94,24 +97,38 @@ void keyUp(unsigned char key, int x, int y) {
 }
 
 void idle(void) {
-    if (keyboard['w']) {
-        player->moveY(speedMultiplier);
-    }
-    
-    if (keyboard['a']) {
-		player->moveX(-speedMultiplier);
-    }
-    
-    if (keyboard['s']) {
-		player->moveY(-speedMultiplier);
-    }
-    
-    if (keyboard['d']) {
-		player->moveX(speedMultiplier);
-    }
+    if (player->isFlying()) {
+        if (keyboard['w']) {
+            player->moveY(speedMultiplier);
+        }
 
-    if (keyboard['u']) {
-		// TODO anything
+        if (keyboard['a']) {
+            player->moveX(-speedMultiplier);
+        }
+
+        if (keyboard['s']) {
+            player->moveY(-speedMultiplier);
+        }
+
+        if (keyboard['d']) {
+            player->moveX(speedMultiplier);
+        }
+    } else {
+        if (keyboard['u'] && !player->isTakeOff()) {
+            player->setTakeOff(true);
+            oldTime = glutGet(GLUT_ELAPSED_TIME);
+        }
+
+        if (player->isTakeOff()) {
+            int currentTime = glutGet(GLUT_ELAPSED_TIME) - oldTime;
+
+            player->takeOffAirplane(currentTime);
+
+            if (currentTime > 4000) {
+                player->setTakeOff(false);
+                player->setFlying(true);
+            }
+        }
     }
 
     glutPostRedisplay();
