@@ -54,6 +54,29 @@ void Player::moveY(const GLfloat& mul) {
     this->setCy(cy);
 }
 
+void Player::moveXY(const GLfloat& mulX, const GLfloat& mulY) {
+    GLfloat cy = getCy() + (mulY * sin(45) * speed);
+    GLfloat cx = getCx() + (mulX * cos(45) * speed);
+
+    GLfloat distanceFromBorder = d2p(cx, cy, arena->getCx(), arena->getCy());
+
+    if ((distanceFromBorder + getRadius()) > arena->getRadius()) {
+        return;
+    }
+
+    for (auto enemy : arena->getAirEnemies()) {
+        GLfloat distanceFromEnemy = d2p(cx, cy, enemy->getCx(), enemy->getCy());
+
+        GLfloat safetyDistance = enemy->getRadius() + getRadius();
+        if ((distanceFromEnemy <= safetyDistance) && flying) {
+            return;
+        }
+    }
+
+    setCy(cy);
+    setCx(cx);
+}
+
 // S = So + Vo * t + (a * t^2)/2
 void Player::calculatePhysics() {
     Line* strip = &arena->getAirstrip();

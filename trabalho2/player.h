@@ -54,6 +54,7 @@ class Player : public Circle {
 
         void moveX(const GLfloat& mul);
         void moveY(const GLfloat& mul);
+        void moveXY(const GLfloat& mulX, const GLfloat& mulY);
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();

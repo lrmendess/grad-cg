@@ -105,20 +105,46 @@ void idle(void) {
         GLfloat diffTime = currentTime - oldTimeFlying;
         oldTimeFlying = currentTime;
 
-        if (keyboard['w']) {
-            player->moveY(speedMultiplier * diffTime);
+        GLfloat step = speedMultiplier * diffTime;
+
+        bool isDiagonal = false;
+
+        if (keyboard['w'] && keyboard['a']) {
+            isDiagonal = true;
+            player->moveXY(-step, step);
         }
 
-        if (keyboard['a']) {
-            player->moveX(-speedMultiplier * diffTime);
+        if (keyboard['w'] && keyboard['d']) {
+            isDiagonal = true;
+            player->moveXY(step, step);
         }
 
-        if (keyboard['s']) {
-            player->moveY(-speedMultiplier * diffTime);
+        if (keyboard['a'] && keyboard['s']) {
+            isDiagonal = true;
+            player->moveXY(-step, -step);
         }
 
-        if (keyboard['d']) {
-            player->moveX(speedMultiplier * diffTime);
+        if (keyboard['s'] && keyboard['d']) {
+            isDiagonal = true;
+            player->moveXY(step, -step);
+        }
+
+        if (!isDiagonal) {
+            if (keyboard['w']) {
+                player->moveY(step);
+            }
+
+            if (keyboard['a']) {
+                player->moveX(-step);
+            }
+
+            if (keyboard['s']) {
+                player->moveY(-step);
+            }
+
+            if (keyboard['d']) {
+                player->moveX(step);
+            }
         }
     } else {
         if (keyboard['u'] && !player->isTakeOff()) {
