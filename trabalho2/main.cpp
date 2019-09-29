@@ -107,45 +107,85 @@ void idle(void) {
 
         GLfloat step = speedMultiplier * diffTime;
 
-        bool isDiagonal = false;
+        // A + D + S
+        if (!keyboard['w'] && keyboard['a'] && keyboard['s'] && keyboard['d']) {
+            player->moveY(-step);
+        } else
 
-        if (keyboard['w'] && keyboard['a']) {
-            isDiagonal = true;
+        // W + S + D
+        if (keyboard['w'] && !keyboard['a'] && keyboard['s'] && keyboard['d']) {
+            player->moveX(step);
+        } else
+
+        // W + A + D
+        if (keyboard['w'] && keyboard['a'] && !keyboard['s'] && keyboard['d']) {
+            player->moveY(step);
+        } else
+
+        // W + A + S
+        if (keyboard['w'] && keyboard['a'] && keyboard['s'] && !keyboard['d']) {
+            player->moveX(-step);
+        } else
+
+        // W + A
+        if (keyboard['w'] && keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
             player->moveXY(-step, step);
-        }
+        } else
 
-        if (keyboard['w'] && keyboard['d']) {
-            isDiagonal = true;
-            player->moveXY(step, step);
-        }
-
-        if (keyboard['a'] && keyboard['s']) {
-            isDiagonal = true;
+        // A + S
+        if (!keyboard['w'] && keyboard['a'] && keyboard['s'] && !keyboard['d']) {
             player->moveXY(-step, -step);
-        }
+        } else
 
-        if (keyboard['s'] && keyboard['d']) {
-            isDiagonal = true;
+        if (keyboard['w'] && keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
+            player->moveXY(-step, step);
+        } else
+
+        // A + S
+        if (!keyboard['w'] && keyboard['a'] && keyboard['s'] && !keyboard['d']) {
+            player->moveXY(-step, -step);
+        } else
+
+        // S + D
+        if (!keyboard['w'] && !keyboard['a'] && keyboard['s'] && keyboard['d']) {
             player->moveXY(step, -step);
+        } else
+
+        // D + W
+        if (keyboard['w'] && !keyboard['a'] && !keyboard['s'] && keyboard['d']) {
+            player->moveXY(step, step);
+        } else
+
+        // S + D
+        if (!keyboard['w'] && !keyboard['a'] && keyboard['s'] && keyboard['d']) {
+            player->moveXY(step, -step);
+        } else
+
+        // W + D
+        if (keyboard['w'] && !keyboard['a'] && !keyboard['s'] && keyboard['d']) {
+            player->moveXY(step, step);
+        } else
+
+        // W
+        if (keyboard['w'] && !keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
+            player->moveY(step);
+        } else
+
+        // A
+        if (!keyboard['w'] && keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
+            player->moveX(-step);
+        } else
+
+        // S
+        if (!keyboard['w'] && !keyboard['a'] && keyboard['s'] && !keyboard['d']) {
+            player->moveY(-step);
+        } else
+
+        // D
+        if (!keyboard['w'] && !keyboard['a'] && !keyboard['s'] && keyboard['d']) {
+            player->moveX(step);
         }
 
-        if (!isDiagonal) {
-            if (keyboard['w']) {
-                player->moveY(step);
-            }
-
-            if (keyboard['a']) {
-                player->moveX(-step);
-            }
-
-            if (keyboard['s']) {
-                player->moveY(-step);
-            }
-
-            if (keyboard['d']) {
-                player->moveX(step);
-            }
-        }
     } else {
         if (keyboard['u'] && !player->isTakeOff()) {
             player->setTakeOff(true);

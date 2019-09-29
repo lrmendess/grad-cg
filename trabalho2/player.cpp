@@ -51,12 +51,12 @@ void Player::moveY(const GLfloat& mul) {
         }
     }
 
-    this->setCy(cy);
+    setCy(cy);
 }
 
 void Player::moveXY(const GLfloat& mulX, const GLfloat& mulY) {
-    GLfloat cy = getCy() + (mulY * sin(45) * speed);
-    GLfloat cx = getCx() + (mulX * cos(45) * speed);
+    GLfloat cy = getCy() + (mulY * sin(M_PI / 4) * speed);
+    GLfloat cx = getCx() + (mulX * cos(M_PI / 4) * speed);
 
     GLfloat distanceFromBorder = d2p(cx, cy, arena->getCx(), arena->getCy());
 
