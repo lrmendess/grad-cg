@@ -101,10 +101,10 @@ void Player::calculatePhysics() {
     // t = sqrt(2 * (S - So) / a)
     GLfloat startDistance = d2p(strip->getX1(), strip->getY1(), midAirstripX, midAirstripY);
     GLfloat acc = 2 * distance / pow(t, 2);
-    GLfloat midAirstripTime = sqrt(2 * (distance - startDistance) / acc);
+    this->midAirstripTime = sqrt(2 * (distance - startDistance) / acc);
 
     // V = S / t
-    radiusSpeed = getRadius() / (t - midAirstripTime);
+    radiusSpeed = getRadius() / (t - this->midAirstripTime);
 }
 
 void Player::takeOffAirplane(GLint& currentTime) {
@@ -115,7 +115,7 @@ void Player::takeOffAirplane(GLint& currentTime) {
     setCx(startX + stepX);
 
     // S = So + V * t
-    if (getCx() >= midAirstripX && getCy() >= midAirstripY) {
+    if ((currentTime / 1000.0) >= midAirstripTime) {
         GLfloat timeR = (currentTime - oldRadiusTime) / 1000.0;
         GLfloat stepR = radiusSpeed * timeR;
         setRadius(startR + stepR);

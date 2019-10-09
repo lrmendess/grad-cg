@@ -34,6 +34,8 @@ class Player : public Circle {
         GLfloat midAirstripX;
         GLfloat midAirstripY;
 
+        GLfloat midAirstripTime;
+
         /* Velocidade de crescimento do raio */
         GLfloat radiusSpeed = 0.0;
 

@@ -37,15 +37,15 @@
      fill="orange"
      id="5" />
   <line
-     x1="403"
-     y1="601"
-     x2="603"
-     y2="551"
+     x1="700"
+     y1="500"
+     x2="600"
+     y2="700"
 	 style="stroke:rgb(0,0,0)"
      id="7" />
   <circle
-     cx="403"
-     cy="601"
+     cx="700"
+     cy="500"
      r="10"
      fill="green"
      id="6" />
