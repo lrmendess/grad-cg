@@ -50,6 +50,17 @@ Arena::Arena(const string& path) : Circle() {
         exit(EXIT_FAILURE);
     }
 
+    /* Linha */
+    XMLElement* l = root->FirstChildElement("line");
+
+    GLfloat x1 = stoi(l->Attribute("x1"));
+    GLfloat y1 = 2 * getRadius() - stoi(l->Attribute("y1"));
+    GLfloat x2 = stoi(l->Attribute("x2"));
+    GLfloat y2 = 2 * getRadius() - stoi(l->Attribute("y2"));
+    GLfloat color[3] = { 0, 0, 0 };
+
+    airstrip = new Line(x1, y1, x2, y2, color);
+
     /* Circulos */
     XMLElement* c = root->FirstChildElement("circle");
 
@@ -72,17 +83,6 @@ Arena::Arena(const string& path) : Circle() {
         /* Next */
         c = c->NextSiblingElement("circle");
     }
-
-    /* Linha */
-    XMLElement* l = root->FirstChildElement("line");
-
-    GLfloat x1 = stoi(l->Attribute("x1"));
-    GLfloat y1 = 2 * getRadius() - stoi(l->Attribute("y1"));
-    GLfloat x2 = stoi(l->Attribute("x2"));
-    GLfloat y2 = 2 * getRadius() - stoi(l->Attribute("y2"));
-    GLfloat color[3] = { 0, 0, 0 };
-
-    airstrip = new Line(x1, y1, x2, y2, color);
 }
 
 void Arena::draw() {

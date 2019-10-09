@@ -19,6 +19,8 @@ class Player {
         GLfloat radius;
         GLfloat color[3] = { 0, 0, 0 };
 
+        GLfloat angle;
+
         /* Referencia circular para a arena */
         Arena* arena;
 
@@ -70,9 +72,8 @@ class Player {
         GLboolean& isTakeOff() { return takeOff; }
         void setTakeOff(GLboolean value) { this->takeOff = value; }
 
-        void moveX(const GLfloat& mul);
-        void moveY(const GLfloat& mul);
-        void moveXY(const GLfloat& mulX, const GLfloat& mulY);
+        void moveX(const GLfloat& angle, const GLfloat& dt);
+        void move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt);
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();

@@ -105,86 +105,17 @@ void idle(void) {
         GLfloat diffTime = currentTime - oldTimeFlying;
         oldTimeFlying = currentTime;
 
-        GLfloat step = speedMultiplier * diffTime;
-
-        // A + D + S
-        if (!keyboard['w'] && keyboard['a'] && keyboard['s'] && keyboard['d']) {
-            player->moveY(-step);
-        } else
-
-        // W + S + D
-        if (keyboard['w'] && !keyboard['a'] && keyboard['s'] && keyboard['d']) {
-            player->moveX(step);
-        } else
-
-        // W + A + D
-        if (keyboard['w'] && keyboard['a'] && !keyboard['s'] && keyboard['d']) {
-            player->moveY(step);
-        } else
-
-        // W + A + S
-        if (keyboard['w'] && keyboard['a'] && keyboard['s'] && !keyboard['d']) {
-            player->moveX(-step);
-        } else
-
-        // W + A
-        if (keyboard['w'] && keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
-            player->moveXY(-step, step);
-        } else
-
-        // A + S
-        if (!keyboard['w'] && keyboard['a'] && keyboard['s'] && !keyboard['d']) {
-            player->moveXY(-step, -step);
-        } else
-
-        if (keyboard['w'] && keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
-            player->moveXY(-step, step);
-        } else
-
-        // A + S
-        if (!keyboard['w'] && keyboard['a'] && keyboard['s'] && !keyboard['d']) {
-            player->moveXY(-step, -step);
-        } else
-
-        // S + D
-        if (!keyboard['w'] && !keyboard['a'] && keyboard['s'] && keyboard['d']) {
-            player->moveXY(step, -step);
-        } else
-
-        // D + W
-        if (keyboard['w'] && !keyboard['a'] && !keyboard['s'] && keyboard['d']) {
-            player->moveXY(step, step);
-        } else
-
-        // S + D
-        if (!keyboard['w'] && !keyboard['a'] && keyboard['s'] && keyboard['d']) {
-            player->moveXY(step, -step);
-        } else
-
-        // W + D
-        if (keyboard['w'] && !keyboard['a'] && !keyboard['s'] && keyboard['d']) {
-            player->moveXY(step, step);
-        } else
-
-        // W
-        if (keyboard['w'] && !keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
-            player->moveY(step);
-        } else
-
         // A
-        if (!keyboard['w'] && keyboard['a'] && !keyboard['s'] && !keyboard['d']) {
-            player->moveX(-step);
-        } else
-
-        // S
-        if (!keyboard['w'] && !keyboard['a'] && keyboard['s'] && !keyboard['d']) {
-            player->moveY(-step);
-        } else
+        if (keyboard['a']) {
+            player->moveX(90, diffTime);
+        }
 
         // D
-        if (!keyboard['w'] && !keyboard['a'] && !keyboard['s'] && keyboard['d']) {
-            player->moveX(step);
+        if (keyboard['d']) {
+            player->moveX(-90, diffTime);
         }
+
+        player->move(speedMultiplier, speedMultiplier, diffTime);
 
     } else {
         if (keyboard['u'] && !player->isTakeOff()) {

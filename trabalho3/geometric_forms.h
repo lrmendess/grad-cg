@@ -4,6 +4,6 @@
 #include <GL/glut.h>
 #include <cmath>
 
-void drawSolidCircle(GLfloat& radius, GLfloat* color);
+void drawEllipse(GLfloat& radius, GLfloat* color);
 
 #endif

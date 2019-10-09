@@ -16,54 +16,21 @@ Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat
     this->startX = this->cx;
     this->startY = this->cy;
     this->startR = radius;
+
+    // Angulo inicial
+    this->angle = 1 / M_PI * 180 * atan2(
+        arena->getAirstrip().getY2() - arena->getAirstrip().getY1(),
+        arena->getAirstrip().getX2() - arena->getAirstrip().getX1()
+    );
 }
 
-void Player::moveX(const GLfloat& mul) {
-    GLfloat mx = this->cx + (mul * this->speed);
-    GLfloat my = this->cy;
-
-    GLfloat distanceFromBorder = sqrt(pow(mx - arena->getCx(), 2) + pow(my - arena->getCy(), 2));
-
-    if ((distanceFromBorder + this->radius) > arena->getRadius()) {
-        return;
-    }
-
-    for (auto enemy : arena->getAirEnemies()) {
-        GLfloat distanceFromEnemy = sqrt(pow(mx - enemy->getCx(), 2) + pow(my - enemy->getCy(), 2));
-
-        if ((distanceFromEnemy <= (enemy->getRadius() + this->radius)) && this->flying) {
-            return;
-        }
-    }
-
-    this->cx = mx;
+void Player::moveX(const GLfloat& angle, const GLfloat& dt) {
+    this->angle += angle * dt;
 }
 
-void Player::moveY(const GLfloat& mul) {
-    GLfloat my = this->cy + (mul * this->speed);
-    GLfloat mx = this->cx;
-
-    GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
-
-    if ((distanceFromBorder + this->radius) > arena->getRadius()) {
-        return;
-    }
-
-    for (auto enemy : arena->getAirEnemies()) {
-        GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
-
-        GLfloat safetyDistance = enemy->getRadius() + this->radius;
-        if ((distanceFromEnemy <= safetyDistance) && this->flying) {
-            return;
-        }
-    }
-
-    this->cy = my;
-}
-
-void Player::moveXY(const GLfloat& mulX, const GLfloat& mulY) {
-    GLfloat my = this->cy + (mulY * sin(M_PI / 4) * this->speed);
-    GLfloat mx = this->cx + (mulX * cos(M_PI / 4) * this->speed);
+void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
+    GLfloat my = this->cy + sin(this->angle * M_PI / 180) * (mulY * sin(M_PI / 4) * this->speed * dt);
+    GLfloat mx = this->cx + cos(this->angle * M_PI / 180) * (mulX * cos(M_PI / 4) * this->speed * dt);
 
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
@@ -131,11 +98,10 @@ void Player::takeOffAirplane(GLint& currentTime) {
     }
 }
 
-void Player::drawAirplane() {
+void Player::drawAirplane() {    
     glPushMatrix();
-    glTranslatef(this->cx, this->cy, 0);
-    /* Rotacionar em theta para o aviao ficar reto na pista de decolagem */
-    glRotatef(0, 0, 0, 1);
-    drawSolidCircle(this->radius, this->color);
+        glTranslatef(this->cx, this->cy, 0);
+        glRotatef(this->angle, 0, 0, 1);
+        drawEllipse(this->radius, this->color);
     glPopMatrix();
 }
