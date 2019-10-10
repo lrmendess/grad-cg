@@ -12,6 +12,8 @@ Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat
 
     // Referencia da arena que o aviao esta
     this->arena = arena;
+    this->dead = false;
+
     // Armazenamento do estado inicial antes da decolagem
     this->startX = this->cx;
     this->startY = this->cy;
@@ -25,6 +27,10 @@ Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat
 }
 
 void Player::moveX(const GLfloat& angle, const GLfloat& dt) {
+    if (this->dead) {
+        return;
+    }
+    
     this->angle += angle * dt;
 }
 
@@ -43,6 +49,7 @@ void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
 
         GLfloat safetyDistance = enemy->getRadius() + this->radius;
         if ((distanceFromEnemy <= safetyDistance) && this->flying) {
+            this->dead = true;
             return;
         }
     }

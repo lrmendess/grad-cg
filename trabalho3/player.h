@@ -24,6 +24,9 @@ class Player {
         /* Referencia circular para a arena */
         Arena* arena;
 
+        /* Diz se o aviao bateu ou nao */
+        bool dead;
+
         /* Inicialmente o aviao esta no chao */
         GLfloat speed = 0;
         GLboolean flying = false;
@@ -42,6 +45,7 @@ class Player {
         GLfloat midAirstripX;
         GLfloat midAirstripY;
 
+        /* Tempo que o aviao chega na metade da pista */
         GLfloat midAirstripTime;
 
         /* Velocidade de crescimento do raio */
