@@ -40,7 +40,17 @@ void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
 
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
-    if ((distanceFromBorder + this->radius) > arena->getRadius()) {
+    if (distanceFromBorder > arena->getRadius()) {
+        GLfloat xa = this->cx;
+        GLfloat ya = this->cy;
+        GLfloat m = tan(this->angle);
+        GLfloat r = arena->getRadius();
+
+        // GLfloat x1 = -(2 * m * (ya - m * xa)) + sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
+        // GLfloat x2 = -(2 * m * (ya - m * xa)) - sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
+
+        cout << xa << ", " << ya << ", " << m << ", " << r << endl;
+
         return;
     }
 
