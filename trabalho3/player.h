@@ -63,6 +63,9 @@ class Player {
         GLfloat& getCy() { return cy; }
         void setCy(const GLfloat& cy) { this->cy = cy; }
 
+        GLfloat& getAngle() { return angle; }
+        void setAngle(const GLfloat& angle) { this->angle = angle; }
+
         GLfloat& getRadius() { return radius; }
         void setRadius(const GLfloat& radius) { this->radius = radius; }
 

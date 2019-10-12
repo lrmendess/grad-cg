@@ -15,6 +15,7 @@ void idle(void);
 
 void keyPress(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
+void mouse(int button, int state, int x, int y);
 
 bool keyboard[256];
 
@@ -59,8 +60,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
     glutIdleFunc(idle);
-
-    oldTimeFlying = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+    // glutMouseFunc(mouse);
 
     glutMainLoop();
 
@@ -77,8 +77,8 @@ void init(void) {
     glOrtho(
         arena->getCx() - arena->getRadius(),
         arena->getCx() + arena->getRadius(),
-        arena->getCy() - arena->getRadius(),
-        arena->getCy() + arena->getRadius(), -1.0, 1.0);
+        arena->getCy() + arena->getRadius(),
+        arena->getCy() - arena->getRadius(), -1.0, 1.0);
 }
 
 void display(void) {
@@ -107,12 +107,12 @@ void idle(void) {
 
         // A
         if (keyboard['a']) {
-            player->moveX(90, diffTime);
+            player->moveX(-90, diffTime);
         }
 
         // D
         if (keyboard['d']) {
-            player->moveX(-90, diffTime);
+            player->moveX(90, diffTime);
         }
 
         player->move(speedMultiplier, speedMultiplier, diffTime);
@@ -128,12 +128,20 @@ void idle(void) {
 
             player->takeOffAirplane(currentTime);
 
-            if (currentTime > 4000) {
+            if (currentTime >= 4000) {
                 player->setTakeOff(false);
                 player->setFlying(true);
+                oldTimeFlying = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
             }
         }
     }
 
+    cout << player->getAngle() << endl;
+
     glutPostRedisplay();
+}
+
+void mouse(int button, int state, int x, int y) {
+    cout << "Mouse: " << x << ", " << y << endl;
+    cout << "Player: " << player->getCx() << ", " << player->getCy() << endl;
 }

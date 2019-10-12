@@ -49,7 +49,8 @@ void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
         // GLfloat x1 = -(2 * m * (ya - m * xa)) + sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
         // GLfloat x2 = -(2 * m * (ya - m * xa)) - sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
 
-        cout << xa << ", " << ya << ", " << m << ", " << r << endl;
+        // cout << "Parametros: " << xa << ", " << ya << ", " << m << ", " << r << endl;
+        // cout << "Resultados: " << x1 << ", " << x2 << endl;
 
         return;
     }
@@ -119,6 +120,55 @@ void Player::drawAirplane() {
     glPushMatrix();
         glTranslatef(this->cx, this->cy, 0);
         glRotatef(this->angle, 0, 0, 1);
+
+        /* [INICIO] Asas */
+        glColor3f(0.0, 0.0, 0.0);
+        glPushMatrix();
+			glBegin(GL_POLYGON);
+                glVertex3f(-this->radius / 4, 0.0, 0.0);
+                glVertex3f(-this->radius / 4, this->radius, 0.0);
+                glVertex3f( this->radius / 16, this->radius, 0.0);
+                glVertex3f( this->radius / 4, 0, 0.0);
+			glEnd();
+		glPopMatrix();
+
+        glPushMatrix();
+			glBegin(GL_POLYGON);
+                glVertex3f(-this->radius / 4, 0.0, 0.0);
+                glVertex3f(-this->radius / 4, -this->radius, 0.0);
+                glVertex3f( this->radius / 16, -this->radius, 0.0);
+                glVertex3f( this->radius / 4, 0, 0.0);
+			glEnd();
+        glPopMatrix();
+        /* [FIM] Asas */
+
         drawEllipse(this->radius, this->color);
+
+        /* [INICIO] Canhao */
+        glColor3f(0.0, 0.0, 0.0);
+        glPushMatrix();
+			glBegin(GL_POLYGON);
+                glVertex3f(this->radius,        -this->radius / 12, 0.0);
+                glVertex3f(this->radius * 1.5,  -this->radius / 12, 0.0);
+                glVertex3f(this->radius * 1.5,   this->radius / 12, 0.0);
+                glVertex3f(this->radius,         this->radius / 12, 0.0);
+			glEnd();
+		glPopMatrix();
+        /* [FIM] Canhao */
+
+        /* [INICIO] Circulo de Colisao (TEMP) */
+        glColor3f(1.0, 0.0, 0.0);
+        glBegin(GL_LINE_LOOP);
+            GLfloat angle, px, py;
+
+            for (int i = 0; i < 360; i++) {
+                angle = (i * M_PI) / 180.0;
+                px = cos(angle) * this->radius;
+                py = sin(angle) * this->radius;
+                glVertex2f(px, py);
+            }
+        glEnd();
+        /* [FIM] Circulo de Colisao (TEMP) */
+
     glPopMatrix();
 }
