@@ -19,6 +19,8 @@ void mouse(int button, int state, int x, int y);
 
 bool keyboard[256];
 
+ConfigReader* configReader;
+
 Arena* arena;
 Player* player;
 GLfloat speedMultiplier;
@@ -34,7 +36,7 @@ int main(int argc, char** argv) {
 
     string configPath = strcat(argv[1], "/config.xml");
 
-    ConfigReader configReader(configPath);
+    ConfigReader& configReader = *(new ConfigReader(configPath));
 
     string svgPath = configReader.getCaminhoArquivoArena() + "/"
                     + configReader.getNomeArquivoArena() + "."
@@ -100,6 +102,11 @@ void keyUp(unsigned char key, int x, int y) {
 }
 
 void idle(void) {
+    // R
+    if (keyboard['r']) {
+        player->reset();
+    }
+
     if (player->isFlying()) {
         GLfloat currentTime = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
         GLfloat diffTime = currentTime - oldTimeFlying;

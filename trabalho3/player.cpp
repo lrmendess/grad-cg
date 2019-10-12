@@ -41,16 +41,16 @@ void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
     if (distanceFromBorder > arena->getRadius()) {
-        GLfloat xa = this->cx;
-        GLfloat ya = this->cy;
-        GLfloat m = tan(this->angle);
-        GLfloat r = arena->getRadius();
+        //GLfloat xa = this->cx;
+        //GLfloat ya = this->cy;
+        //GLfloat m = tan(this->angle);
+        //GLfloat r = arena->getRadius();
 
-        // GLfloat x1 = -(2 * m * (ya - m * xa)) + sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
-        // GLfloat x2 = -(2 * m * (ya - m * xa)) - sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
+        //GLfloat x1 = -(2 * m * (ya - m * xa)) + sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
+        //GLfloat x2 = -(2 * m * (ya - m * xa)) - sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
 
-        // cout << "Parametros: " << xa << ", " << ya << ", " << m << ", " << r << endl;
-        // cout << "Resultados: " << x1 << ", " << x2 << endl;
+        //cout << "Parametros: " << xa << ", " << ya << ", " << m << ", " << r << endl;
+        //cout << "Resultados: " << x1 << ", " << x2 << endl;
 
         return;
     }
@@ -65,12 +65,14 @@ void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
         }
     }
 
+    this->propellerAngle += 5;
     this->cy = my;
     this->cx = mx;
 }
 
-// S = So + Vo * t + (a * t^2)/2
+/* Calcula a fisica a ser utilizada no aviao */
 void Player::calculatePhysics() {
+    // S = So + Vo * t + (a * t^2)/2
     Line* strip = &arena->getAirstrip();
 
     /* Tratamento da decolagem do inicio ao fim da pista */
@@ -99,6 +101,7 @@ void Player::calculatePhysics() {
     radiusSpeed = this->radius / (t - midAirstripTime);
 }
 
+/* Decolagem do aviao */
 void Player::takeOffAirplane(GLint& currentTime) {
     GLfloat stepY = (ay * pow(currentTime / 1000.0, 2)) / 2;
     this->cy = startY + stepY;
@@ -116,45 +119,101 @@ void Player::takeOffAirplane(GLint& currentTime) {
     }
 }
 
+void Player::drawWings() {
+    glColor3f(0.0, 0.0, 0.0);
+
+    // Direita
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            glVertex3f(-this->radius / 4, 0.0, 0.0);
+            glVertex3f(-this->radius / 4, this->radius, 0.0);
+            glVertex3f( this->radius / 16, this->radius, 0.0);
+            glVertex3f( this->radius / 4, 0, 0.0);
+        glEnd();
+    glPopMatrix();
+
+    //Esquerda
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            glVertex3f(-this->radius / 4, 0.0, 0.0);
+            glVertex3f(-this->radius / 4, -this->radius, 0.0);
+            glVertex3f( this->radius / 16, -this->radius, 0.0);
+            glVertex3f( this->radius / 4, 0, 0.0);
+        glEnd();
+    glPopMatrix();
+}
+
+void Player::drawCannon() {
+    glColor3f(0.0, 0.0, 0.0);
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            glVertex3f(this->radius,        -this->radius / 12, 0.0);
+            glVertex3f(this->radius * 1.5,  -this->radius / 12, 0.0);
+            glVertex3f(this->radius * 1.5,   this->radius / 12, 0.0);
+            glVertex3f(this->radius,         this->radius / 12, 0.0);
+        glEnd();
+    glPopMatrix();
+}
+
+void Player::drawFuselage() {
+    drawEllipse(this->radius, this->color);
+}
+
+void Player::drawTriangles(GLfloat length) {
+	glColor3f(1.0, 1.0, 0.0);
+	glBegin(GL_TRIANGLES);
+        glVertex3f(-length, 0.0, 0.0);
+		glVertex3f(0.0, 10, 0.0);
+		glVertex3f(length, -length, 0.0);
+	glEnd();
+
+	glColor3f(1.0, 1.0, 0.0);
+	glBegin(GL_TRIANGLES);
+        glVertex3f(0.0, 0.0, 0.0);
+		glVertex3f(-length, length, 0.0);
+		glVertex3f( length, length, 0.0);
+	glEnd();
+}
+
+void Player::drawLeftPropeller() {
+    GLfloat propAngle = this->propellerAngle;
+
+    glPushMatrix();
+        glTranslatef(this->radius / 2, -this->radius / 2, 0);
+		glPushMatrix();
+			glRotatef(propAngle, 0.0, 1.0, 0.0);
+			drawTriangles(this->radius / 4);
+		glPopMatrix();
+            glPushMatrix();
+			glRotatef(propAngle + 90, 0.0, 1.0, 0.0);
+			drawTriangles(this->radius / 4);
+		glPopMatrix();
+		glPushMatrix();
+			glRotatef(propAngle + 180, 0.0, 1.0, 0.0);
+			drawTriangles(this->radius / 4);
+		glPopMatrix();
+		glPushMatrix();
+			glRotatef(propAngle + 270, 0.0, 1.0, 0.0);
+            drawTriangles(this->radius / 4);
+		glPopMatrix();
+    glPopMatrix();
+}
+
+void Player::drawRightPropeller() {
+
+}
+
+/* Desenha todo o corpo do aviao */
 void Player::drawAirplane() {    
     glPushMatrix();
         glTranslatef(this->cx, this->cy, 0);
         glRotatef(this->angle, 0, 0, 1);
 
-        /* [INICIO] Asas */
-        glColor3f(0.0, 0.0, 0.0);
-        glPushMatrix();
-			glBegin(GL_POLYGON);
-                glVertex3f(-this->radius / 4, 0.0, 0.0);
-                glVertex3f(-this->radius / 4, this->radius, 0.0);
-                glVertex3f( this->radius / 16, this->radius, 0.0);
-                glVertex3f( this->radius / 4, 0, 0.0);
-			glEnd();
-		glPopMatrix();
-
-        glPushMatrix();
-			glBegin(GL_POLYGON);
-                glVertex3f(-this->radius / 4, 0.0, 0.0);
-                glVertex3f(-this->radius / 4, -this->radius, 0.0);
-                glVertex3f( this->radius / 16, -this->radius, 0.0);
-                glVertex3f( this->radius / 4, 0, 0.0);
-			glEnd();
-        glPopMatrix();
-        /* [FIM] Asas */
-
-        drawEllipse(this->radius, this->color);
-
-        /* [INICIO] Canhao */
-        glColor3f(0.0, 0.0, 0.0);
-        glPushMatrix();
-			glBegin(GL_POLYGON);
-                glVertex3f(this->radius,        -this->radius / 12, 0.0);
-                glVertex3f(this->radius * 1.5,  -this->radius / 12, 0.0);
-                glVertex3f(this->radius * 1.5,   this->radius / 12, 0.0);
-                glVertex3f(this->radius,         this->radius / 12, 0.0);
-			glEnd();
-		glPopMatrix();
-        /* [FIM] Canhao */
+        drawWings();
+        drawLeftPropeller();
+        // drawRightPropeller();
+        drawFuselage();
+        drawCannon();
 
         /* [INICIO] Circulo de Colisao (TEMP) */
         glColor3f(1.0, 0.0, 0.0);
@@ -171,4 +230,23 @@ void Player::drawAirplane() {
         /* [FIM] Circulo de Colisao (TEMP) */
 
     glPopMatrix();
+}
+
+/* Reseta o player para as condicoes iniciais */
+void Player::reset() {
+    this->cx = this->startX;
+    this->cy = this->startY;
+    this->radius = this->startR;
+
+    this->angle = 1 / M_PI * 180 * atan2(
+        arena->getAirstrip().getY2() - arena->getAirstrip().getY1(),
+        arena->getAirstrip().getX2() - arena->getAirstrip().getX1()
+    );
+
+    this->dead = false;
+    this->speed = 0;
+    this->flying = false;
+    this->takeOff = false;
+
+    this->calculatePhysics();
 }

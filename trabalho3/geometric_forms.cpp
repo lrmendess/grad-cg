@@ -1,6 +1,6 @@
 #include "geometric_forms.h"
 
-void drawEllipse(GLfloat& radius, GLfloat* color) {
+void drawEllipse(GLfloat radius, GLfloat* color) {
     glColor3f(color[0], color[1], color[2]);
 
     glBegin(GL_POLYGON);

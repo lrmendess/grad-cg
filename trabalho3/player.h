@@ -53,6 +53,9 @@ class Player {
 
         /* Momento no tempo em que o raio deve comecar a crescer */
         GLfloat oldRadiusTime = 0.0;
+
+        /* Angulo das helices do aviao */
+        GLfloat propellerAngle = 0.0;
         
     public:
         Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat& radius, const GLfloat* color);
@@ -88,7 +91,15 @@ class Player {
         void calculatePhysics();
         void takeOffAirplane(GLint& currentTime);
 
+        void drawWings();
+        void drawCannon();
+        void drawFuselage();
+        void drawTriangles(GLfloat length);
+        void drawLeftPropeller();
+        void drawRightPropeller();
         void drawAirplane();
+
+        void reset();
 };
 
 #endif
