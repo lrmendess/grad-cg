@@ -12,7 +12,7 @@ Arena::~Arena() {
         free(c);
 }
 
-Arena::Arena(const string& path) : Circle() {
+Arena::Arena(string path) : Circle() {
     /* Abertura SVG */
     XMLDocument doc;
 

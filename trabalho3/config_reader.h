@@ -15,7 +15,7 @@ class ConfigReader {
         XMLElement* root;
 
     public:
-        ConfigReader(const string& path);
+        ConfigReader(string path);
 
         string getNomeArquivoArena();
         string getTipoArquivoArena();

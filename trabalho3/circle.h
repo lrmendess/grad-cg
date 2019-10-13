@@ -18,16 +18,16 @@ class Circle {
         ~Circle();
 
         Circle();
-        Circle(const GLfloat& cx, const GLfloat& cy, const GLfloat& radius, const GLfloat* color);
+        Circle(const GLfloat cx, const GLfloat cy, const GLfloat radius, const GLfloat* color);
 
-        GLfloat& getCx() { return cx; }
-        void setCx(const GLfloat& cx) { this->cx = cx; }
+        GLfloat getCx() { return cx; }
+        void setCx(const GLfloat cx) { this->cx = cx; }
 
-        GLfloat& getCy() { return cy; }
-        void setCy(const GLfloat& cy) { this->cy = cy; }
+        GLfloat getCy() { return cy; }
+        void setCy(const GLfloat cy) { this->cy = cy; }
 
-        GLfloat& getRadius() { return radius; }
-        void setRadius(const GLfloat& radius) { this->radius = radius; }
+        GLfloat getRadius() { return radius; }
+        void setRadius(const GLfloat radius) { this->radius = radius; }
 
         GLfloat* getColor() { return color; }
         void setColor(const GLfloat* color) { for (int i = 0; i < 3; i++) this->color[i] = color[i]; }

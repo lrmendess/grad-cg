@@ -29,10 +29,10 @@ class Arena : public Circle {
 
     public:
         ~Arena();
-        Arena(const string& path);
+        Arena(string path);
 
-        Player& getPlayer() { return *player; }
-        Line& getAirstrip() { return *airstrip; }
+        Player* getPlayer() { return player; }
+        Line* getAirstrip() { return airstrip; }
         list<Circle*>& getGroundEnemies() { return groundEnemies; }
         list<Circle*>& getAirEnemies() { return airEnemies; }
 

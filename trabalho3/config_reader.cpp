@@ -1,6 +1,6 @@
 #include "config_reader.h"
 
-ConfigReader::ConfigReader(const string& path) {
+ConfigReader::ConfigReader(string path) {
     if (doc.LoadFile(path.c_str()) != XML_SUCCESS) {
         cout << "Erro ao tentar abrir o arquivo '" << path << "'" << endl;
         exit(EXIT_FAILURE);

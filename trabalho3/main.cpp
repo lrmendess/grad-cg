@@ -15,7 +15,8 @@ void idle(void);
 
 void keyPress(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
-void mouse(int button, int state, int x, int y);
+void mouseMovement(int x, int y);
+void mouseAction(int button, int state, int x, int y);
 
 bool keyboard[256];
 
@@ -44,7 +45,7 @@ int main(int argc, char** argv) {
 
     arena = new Arena(svgPath);
 
-    player = &arena->getPlayer();
+    player = arena->getPlayer();
     player->calculatePhysics();
     
     speedMultiplier = configReader.getVelocidadeJogador();
@@ -62,7 +63,8 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
     glutIdleFunc(idle);
-    // glutMouseFunc(mouse);
+    glutPassiveMotionFunc(mouseMovement);
+    glutMouseFunc(mouseAction);
 
     glutMainLoop();
 
@@ -143,12 +145,13 @@ void idle(void) {
         }
     }
 
-    cout << player->getAngle() << endl;
-
     glutPostRedisplay();
 }
 
-void mouse(int button, int state, int x, int y) {
-    cout << "Mouse: " << x << ", " << y << endl;
-    cout << "Player: " << player->getCx() << ", " << player->getCy() << endl;
+void mouseMovement(int x, int y) {
+    
+}
+
+void mouseAction(int button, int state, int x, int y) {
+    
 }

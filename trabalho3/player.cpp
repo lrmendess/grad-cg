@@ -1,6 +1,6 @@
 #include "player.h"
 
-Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat& radius, const GLfloat* color) {
+Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius, const GLfloat* color) {
     this->cx = cx;
     this->cy = cy;
 
@@ -12,7 +12,6 @@ Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat
 
     // Referencia da arena que o aviao esta
     this->arena = arena;
-    this->dead = false;
 
     // Armazenamento do estado inicial antes da decolagem
     this->startX = this->cx;
@@ -21,12 +20,12 @@ Player::Player(Arena* arena, const GLfloat& cx, const GLfloat& cy, const GLfloat
 
     // Angulo inicial
     this->angle = 1 / M_PI * 180 * atan2(
-        arena->getAirstrip().getY2() - arena->getAirstrip().getY1(),
-        arena->getAirstrip().getX2() - arena->getAirstrip().getX1()
+        arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
+        arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
 }
 
-void Player::moveX(const GLfloat& angle, const GLfloat& dt) {
+void Player::moveX(GLfloat angle, GLfloat dt) {
     if (this->dead) {
         return;
     }
@@ -34,7 +33,7 @@ void Player::moveX(const GLfloat& angle, const GLfloat& dt) {
     this->angle += angle * dt;
 }
 
-void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
+void Player::move(GLfloat mulX, GLfloat mulY, GLfloat dt) {
     GLfloat my = this->cy + sin(this->angle * M_PI / 180) * (mulY * sin(M_PI / 4) * this->speed * dt);
     GLfloat mx = this->cx + cos(this->angle * M_PI / 180) * (mulX * cos(M_PI / 4) * this->speed * dt);
 
@@ -73,7 +72,7 @@ void Player::move(const GLfloat& mulX, const GLfloat& mulY, const GLfloat& dt) {
 /* Calcula a fisica a ser utilizada no aviao */
 void Player::calculatePhysics() {
     // S = So + Vo * t + (a * t^2)/2
-    Line* strip = &arena->getAirstrip();
+    Line* strip = arena->getAirstrip();
 
     /* Tratamento da decolagem do inicio ao fim da pista */
     // a = 2 * S / t ^ 2
@@ -102,7 +101,7 @@ void Player::calculatePhysics() {
 }
 
 /* Decolagem do aviao */
-void Player::takeOffAirplane(GLint& currentTime) {
+void Player::takeOffAirplane(GLint currentTime) {
     GLfloat stepY = (ay * pow(currentTime / 1000.0, 2)) / 2;
     this->cy = startY + stepY;
 
@@ -147,11 +146,15 @@ void Player::drawCannon() {
     glColor3f(0.0, 0.0, 0.0);
 
     glPushMatrix();
+		glTranslatef(this->radius, 0.0, 0);
+        this->cannonAngle = 45;
+		glRotatef(this->cannonAngle, 0.0, 0.0, 1.0);
+
         glBegin(GL_POLYGON);
-            glVertex3f(this->radius,        -this->radius / 12, 0.0);
-            glVertex3f(this->radius * 1.5,  -this->radius / 12, 0.0);
-            glVertex3f(this->radius * 1.5,   this->radius / 12, 0.0);
-            glVertex3f(this->radius,         this->radius / 12, 0.0);
+            glVertex3f(0.0,             -this->radius / 12, 0.0);
+            glVertex3f(this->radius / 2,-this->radius / 12, 0.0);
+            glVertex3f(this->radius / 2, this->radius / 12, 0.0);
+            glVertex3f(0.0,              this->radius / 12, 0.0);
         glEnd();
     glPopMatrix();
 }
@@ -182,10 +185,10 @@ void Player::drawLeftPropeller() {
         glColor3f(0.0, 0.0, 0.0);
 
         glBegin(GL_POLYGON);
-		    glVertex3f( this->radius / 2, -this->radius / 2.5, 0.0);
-		    glVertex3f( this->radius / 2, -this->radius / 1.75, 0.0);
-		    glVertex3f( 0.0, -this->radius / 1.75, 0.0);
-		    glVertex3f( 0.0, -this->radius / 2.5, 0.0);
+		    glVertex3f(this->radius / 2, -this->radius / 2.5, 0.0);
+		    glVertex3f(this->radius / 2, -this->radius / 1.75, 0.0);
+		    glVertex3f(0.0, -this->radius / 1.75, 0.0);
+		    glVertex3f(0.0, -this->radius / 2.5, 0.0);
 	    glEnd();
 
         /* [FIM] Haste das helices */
@@ -304,8 +307,8 @@ void Player::reset() {
     this->radius = this->startR;
 
     this->angle = 1 / M_PI * 180 * atan2(
-        arena->getAirstrip().getY2() - arena->getAirstrip().getY1(),
-        arena->getAirstrip().getX2() - arena->getAirstrip().getX1()
+        arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
+        arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
 
     this->dead = false;
