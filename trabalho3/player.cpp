@@ -145,6 +145,7 @@ void Player::drawWings() {
 
 void Player::drawCannon() {
     glColor3f(0.0, 0.0, 0.0);
+
     glPushMatrix();
         glBegin(GL_POLYGON);
             glVertex3f(this->radius,        -this->radius / 12, 0.0);
@@ -160,14 +161,12 @@ void Player::drawFuselage() {
 }
 
 void Player::drawTriangles(GLfloat length) {
-	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
         glVertex3f(0.0, 0.0, 0.0);
         glVertex3f(length, length, 0.0);
 		glVertex3f(-length, length, 0.0);
 	glEnd();
 
-	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
         glVertex3f(0.0, 0.0, 0.0);
 		glVertex3f(length, -length, 0.0);
@@ -176,24 +175,37 @@ void Player::drawTriangles(GLfloat length) {
 }
 
 void Player::drawLeftPropeller() {
-    GLfloat propAngle = this->propellerAngle;
+    glColor3f(1.0, 1.0, 0.0);
 
     glPushMatrix();
+        /* [INICIO] Haste das helices */
+        glColor3f(0.0, 0.0, 0.0);
+
+        glBegin(GL_POLYGON);
+		    glVertex3f( this->radius / 2, -this->radius / 2.5, 0.0);
+		    glVertex3f( this->radius / 2, -this->radius / 1.75, 0.0);
+		    glVertex3f( 0.0, -this->radius / 1.75, 0.0);
+		    glVertex3f( 0.0, -this->radius / 2.5, 0.0);
+	    glEnd();
+
+        /* [FIM] Haste das helices */
+        glColor3f(1.0, 1.0, 0.0);
+
         glTranslatef(this->radius / 2, -this->radius / 2, 0);
 		glPushMatrix();
-			glRotatef(propAngle, 1.0, 0.0, 0.0);
+			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
 			drawTriangles(this->radius / 4);
 		glPopMatrix();
             glPushMatrix();
-			glRotatef(propAngle + 90, 1.0, 0.0, 0.0);
+			glRotatef(this->propellerAngle + 90, 1.0, 0.0, 0.0);
 			drawTriangles(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(propAngle + 180, 1.0, 0.0, 0.0);
+			glRotatef(this->propellerAngle + 180, 1.0, 0.0, 0.0);
 			drawTriangles(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(propAngle + 270, 1.0, 0.0, 0.0);
+			glRotatef(this->propellerAngle + 270, 1.0, 0.0, 0.0);
             drawTriangles(this->radius / 4);
 		glPopMatrix();
     glPopMatrix();
@@ -201,6 +213,19 @@ void Player::drawLeftPropeller() {
 
 void Player::drawRightPropeller() {
     glPushMatrix();
+        /* [INICIO] Haste das helices */
+        glColor3f(0.0, 0.0, 0.0);
+
+        glBegin(GL_POLYGON);
+		    glVertex3f( this->radius / 2, this->radius / 2.5, 0.0);
+		    glVertex3f( this->radius / 2, this->radius / 1.75, 0.0);
+		    glVertex3f( 0.0, this->radius / 1.75, 0.0);
+		    glVertex3f( 0.0, this->radius / 2.5, 0.0);
+	    glEnd();
+
+        /* [FIM] Haste das helices */
+        glColor3f(1.0, 1.0, 0.0);
+
         glTranslatef(this->radius / 2, this->radius / 2, 0);
 		glPushMatrix();
 			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
@@ -225,10 +250,10 @@ void Player::drawFin() {
     glColor3f(0.0, 0.0, 0.0);
     glPushMatrix();
         glBegin(GL_POLYGON);
-            glVertex3f(-this->radius * 0.9,       -this->radius / 12, 0.0);
+            glVertex3f(-this->radius * 0.9, -this->radius / 12, 0.0);
             glVertex3f(-this->radius / 3,   -this->radius / 12, 0.0);
             glVertex3f(-this->radius / 3,    this->radius / 12, 0.0);
-            glVertex3f(-this->radius * 0.9,        this->radius / 12, 0.0);
+            glVertex3f(-this->radius * 0.9,  this->radius / 12, 0.0);
         glEnd();
     glPopMatrix();
 }
