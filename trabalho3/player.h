@@ -97,6 +97,8 @@ class Player {
         void drawTriangles(GLfloat length);
         void drawLeftPropeller();
         void drawRightPropeller();
+        void drawFin();
+        void drawCockpit();
         void drawAirplane();
 
         void reset();

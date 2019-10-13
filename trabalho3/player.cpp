@@ -126,8 +126,8 @@ void Player::drawWings() {
     glPushMatrix();
         glBegin(GL_POLYGON);
             glVertex3f(-this->radius / 4, 0.0, 0.0);
-            glVertex3f(-this->radius / 4, this->radius, 0.0);
-            glVertex3f( this->radius / 16, this->radius, 0.0);
+            glVertex3f(-this->radius / 24, this->radius, 0.0);
+            glVertex3f( this->radius / 4, this->radius, 0.0);
             glVertex3f( this->radius / 4, 0, 0.0);
         glEnd();
     glPopMatrix();
@@ -135,10 +135,10 @@ void Player::drawWings() {
     //Esquerda
     glPushMatrix();
         glBegin(GL_POLYGON);
-            glVertex3f(-this->radius / 4, 0.0, 0.0);
-            glVertex3f(-this->radius / 4, -this->radius, 0.0);
-            glVertex3f( this->radius / 16, -this->radius, 0.0);
-            glVertex3f( this->radius / 4, 0, 0.0);
+            glVertex3f(-this->radius / 4,   0.0, 0.0);
+            glVertex3f(-this->radius / 24, -this->radius, 0.0);
+            glVertex3f( this->radius / 4,  -this->radius, 0.0);
+            glVertex3f( this->radius / 4,   0, 0.0);
         glEnd();
     glPopMatrix();
 }
@@ -162,16 +162,16 @@ void Player::drawFuselage() {
 void Player::drawTriangles(GLfloat length) {
 	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
-        glVertex3f(-length, 0.0, 0.0);
-		glVertex3f(0.0, 10, 0.0);
-		glVertex3f(length, -length, 0.0);
+        glVertex3f(0.0, 0.0, 0.0);
+        glVertex3f(length, length, 0.0);
+		glVertex3f(-length, length, 0.0);
 	glEnd();
 
 	glColor3f(1.0, 1.0, 0.0);
 	glBegin(GL_TRIANGLES);
         glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(-length, length, 0.0);
-		glVertex3f( length, length, 0.0);
+		glVertex3f(length, -length, 0.0);
+		glVertex3f(-length,  -length, 0.0);
 	glEnd();
 }
 
@@ -181,26 +181,64 @@ void Player::drawLeftPropeller() {
     glPushMatrix();
         glTranslatef(this->radius / 2, -this->radius / 2, 0);
 		glPushMatrix();
-			glRotatef(propAngle, 0.0, 1.0, 0.0);
+			glRotatef(propAngle, 1.0, 0.0, 0.0);
 			drawTriangles(this->radius / 4);
 		glPopMatrix();
             glPushMatrix();
-			glRotatef(propAngle + 90, 0.0, 1.0, 0.0);
+			glRotatef(propAngle + 90, 1.0, 0.0, 0.0);
 			drawTriangles(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(propAngle + 180, 0.0, 1.0, 0.0);
+			glRotatef(propAngle + 180, 1.0, 0.0, 0.0);
 			drawTriangles(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(propAngle + 270, 0.0, 1.0, 0.0);
+			glRotatef(propAngle + 270, 1.0, 0.0, 0.0);
             drawTriangles(this->radius / 4);
 		glPopMatrix();
     glPopMatrix();
 }
 
 void Player::drawRightPropeller() {
+    glPushMatrix();
+        glTranslatef(this->radius / 2, this->radius / 2, 0);
+		glPushMatrix();
+			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
+			drawTriangles(this->radius / 4);
+		glPopMatrix();
+            glPushMatrix();
+			glRotatef(this->propellerAngle + 90, 1.0, 0.0, 0.0);
+			drawTriangles(this->radius / 4);
+		glPopMatrix();
+		glPushMatrix();
+			glRotatef(this->propellerAngle + 180, 1.0, 0.0, 0.0);
+			drawTriangles(this->radius / 4);
+		glPopMatrix();
+		glPushMatrix();
+			glRotatef(this->propellerAngle + 270, 1.0, 0.0, 0.0);
+            drawTriangles(this->radius / 4);
+		glPopMatrix();
+    glPopMatrix();
+}
 
+void Player::drawFin() {
+    glColor3f(0.0, 0.0, 0.0);
+    glPushMatrix();
+        glBegin(GL_POLYGON);
+            glVertex3f(-this->radius * 0.9,       -this->radius / 12, 0.0);
+            glVertex3f(-this->radius / 3,   -this->radius / 12, 0.0);
+            glVertex3f(-this->radius / 3,    this->radius / 12, 0.0);
+            glVertex3f(-this->radius * 0.9,        this->radius / 12, 0.0);
+        glEnd();
+    glPopMatrix();
+}
+
+void Player::drawCockpit() {
+    glPushMatrix();
+        glTranslatef(this->radius / 2, 0.0, 0.0);
+        GLfloat black[3] = { 0.0, 0.0, 0.0 };
+        drawEllipse(this->radius / 3, black);
+    glPopMatrix();
 }
 
 /* Desenha todo o corpo do aviao */
@@ -211,8 +249,10 @@ void Player::drawAirplane() {
 
         drawWings();
         drawLeftPropeller();
-        // drawRightPropeller();
+        drawRightPropeller();
         drawFuselage();
+        drawFin();
+        drawCockpit();
         drawCannon();
 
         /* [INICIO] Circulo de Colisao (TEMP) */
