@@ -1,5 +1,8 @@
 CC = g++ -std=c++11
-DOMAIN_FILES = main.cpp config_reader.cpp arena.cpp circle.cpp line.cpp player.cpp geometric_forms.cpp
+
+DOMAIN_FILES = main.cpp config_reader.cpp arena.cpp circle.cpp \
+			   line.cpp player.cpp geometric_forms.cpp projectile.cpp
+
 TINYXML_FILES = tinyxml2.cpp
 OUTPUT_FILE = trabalhocg
 FLAGS = -lGL -lGLU -lglut -lm

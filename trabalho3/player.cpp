@@ -1,5 +1,11 @@
 #include "player.h"
 
+Player::~Player() {
+    for (Projectile* projectile : this->projectiles) {
+        delete(projectile);
+    }
+}
+
 Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
@@ -257,11 +263,17 @@ void Player::drawCockpit() {
             for (int i = 0; i < 360; i++) {
                 a = (i * M_PI) / 180.0;
                 px = cos(a) * r / 1.5;
-                py = sin(a) * r / 3.8;
+                py = sin(a) * r / 4;
                 glVertex2f(px, py);
             }
         glEnd();
     glPopMatrix();
+}
+
+void Player::drawProjectiles() {
+    for (auto p : this->projectiles) {
+        p->draw();
+    }
 }
 
 /* Desenha todo o corpo do aviao */
@@ -277,23 +289,27 @@ void Player::drawAirplane() {
         drawFin();
         drawCockpit();
         drawCannon();
-
-        /* [INICIO] Circulo de Colisao (TEMP) */
-        glColor3f(1.0, 0.0, 0.0);
-
-        glBegin(GL_LINE_LOOP);
-            GLfloat angle, px, py;
-
-            for (int i = 0; i < 360; i++) {
-                angle = (i * M_PI) / 180.0;
-                px = cos(angle) * this->radius;
-                py = sin(angle) * this->radius;
-                glVertex2f(px, py);
-            }
-        glEnd();
-        /* [FIM] Circulo de Colisao (TEMP) */
-
     glPopMatrix();
+
+    drawProjectiles();
+}
+
+void Player::fire() {
+    Projectile* projectile = new Projectile();
+
+    projectile->setPlayer(this);
+    projectile->setSpeed(this->speed + 128);
+    projectile->setLength(this->radius / 8);
+    projectile->setAngle(45);
+
+    GLfloat px = this->cx + this->radius * cos(this->angle * M_PI / 180);
+    GLfloat py = this->cy + this->radius * sin(this->angle * M_PI / 180);
+
+    projectile->setCx(px);
+    projectile->setCy(py);
+    projectile->setAngle(45);
+
+    projectiles.push_back(projectile);
 }
 
 /* Reseta o player para as condicoes iniciais */
@@ -307,10 +323,14 @@ void Player::reset() {
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
 
-    this->dead = false;
-    this->speed = 0;
-    this->flying = false;
-    this->takeOff = false;
+    this->dead          = false;
+    this->flying        = false;
+    this->takeOff       = false;
+
+    this->speed         = 0.0;
+    this->cannonAngle   = 0.0;
+    this->cannonX       = 0.0;
+    this->cannonY       = 0.0;
 
     this->calculatePhysics();
 }

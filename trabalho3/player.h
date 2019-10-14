@@ -3,14 +3,17 @@
 
 #include <GL/glut.h>
 #include <cmath>
+#include <list>
 #include "geometric_forms.h"
 #include "line.h"
 #include "circle.h"
 #include "arena.h"
+#include "projectile.h"
 
 #define d2p(x1, y1, x2, y2) sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
 
 class Arena;
+class Projectile;
 
 class Player {
     private:
@@ -43,14 +46,20 @@ class Player {
         /* Angulo das helices do aviao */
         GLfloat propellerAngle  = 0.0;
 
-        /* Angulo do canhao */
+        /* Canhao */
         GLfloat cannonAngle     = 0.0;
+        GLfloat cannonX         = 0.0;
+        GLfloat cannonY         = 0.0;
 
         /* Ultima posicao registrada do mouse */
         GLfloat mouseX          = 0.0;
         GLfloat mouseY          = 0.0;
+
+        /* Projeteis */
+        list<Projectile*> projectiles;
         
     public:
+        ~Player();
         Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
 
         GLfloat getCx() { return cx; }
@@ -86,6 +95,10 @@ class Player {
         GLboolean isDead() { return dead; }
         void setDead(GLboolean value) { this->dead = value; }
 
+        void addProjectile(Projectile* projectile) { this->projectiles.push_back(projectile); }
+
+        void fire();
+
         void moveX(GLfloat angle, GLfloat dt);
         void move(GLfloat mulX, GLfloat mulY, GLfloat dt);
 
@@ -95,6 +108,7 @@ class Player {
 
         void drawWings();
         void drawCannon();
+        void drawProjectiles();
         void drawFuselage();
         void drawTriangles(GLfloat length);
         void drawLeftPropeller();

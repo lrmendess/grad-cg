@@ -22,8 +22,8 @@ class Player;
 
 class Arena : public Circle {
     private:
-        Player* player;
-        Line* airstrip;
+        Player* player  = nullptr;
+        Line* airstrip  = nullptr;
         list<Circle*> groundEnemies;
         list<Circle*> airEnemies;
 

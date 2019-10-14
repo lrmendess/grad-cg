@@ -1,15 +1,15 @@
 #include "arena.h"
 
 Arena::~Arena() {
-    free(player);
+    delete(player);
     
-    free(airstrip);
+    delete(airstrip);
 
     for (Circle* c : groundEnemies)
-        free(c);
+        delete(c);
 
     for (Circle* c : airEnemies)
-        free(c);
+        delete(c);
 }
 
 Arena::Arena(string path) : Circle() {
