@@ -14,23 +14,22 @@ class Arena;
 
 class Player {
     private:
-        Arena* arena        = nullptr;
-        GLfloat cx          = 0.0;
-        GLfloat cy          = 0.0;
-        GLfloat radius      = 0.0;
-        GLfloat color[3]    = { 0.0, 1.0, 0.0 };
+        Arena* arena            = nullptr;
+        GLfloat cx              = 0.0;
+        GLfloat cy              = 0.0;
+        GLfloat radius          = 0.0;
 
         /* Inicialmente o aviao esta no chao */
-        GLfloat speed       = 0.0;
-        GLfloat angle       = 0.0;
-        GLboolean flying    = false;
-        GLboolean takeOff   = false;
-        GLboolean dead      = false;
-        GLfloat startX      = 0.0;
-        GLfloat startY      = 0.0;
-        GLfloat startR      = 0.0;
-        GLfloat ax          = 0.0;
-        GLfloat ay          = 0.0;
+        GLfloat speed           = 0.0;
+        GLfloat angle           = 0.0;
+        GLboolean flying        = false;
+        GLboolean takeOff       = false;
+        GLboolean dead          = false;
+        GLfloat startX          = 0.0;
+        GLfloat startY          = 0.0;
+        GLfloat startR          = 0.0;
+        GLfloat ax              = 0.0;
+        GLfloat ay              = 0.0;
 
         /* Ponto onde o aviao deve levantar voo */
         GLfloat midAirstripX    = 0.0;
@@ -44,10 +43,15 @@ class Player {
         /* Angulo das helices do aviao */
         GLfloat propellerAngle  = 0.0;
 
+        /* Angulo do canhao */
         GLfloat cannonAngle     = 0.0;
+
+        /* Ultima posicao registrada do mouse */
+        GLfloat mouseX          = 0.0;
+        GLfloat mouseY          = 0.0;
         
     public:
-        Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius, const GLfloat* color);
+        Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
 
         GLfloat getCx() { return cx; }
         void setCx(GLfloat cx) { this->cx = cx; }
@@ -60,12 +64,18 @@ class Player {
 
         GLfloat getRadius() { return radius; }
         void setRadius(GLfloat radius) { this->radius = radius; }
-
-        GLfloat* getColor() { return color; }
-        void setColor(const GLfloat* color) { for (int i = 0; i < 3; i++) this->color[i] = color[i]; }
-
+        
         GLfloat getSpeed() { return speed; }
         void setSpeed(GLfloat speed) { this->speed = speed; }
+
+        GLfloat getCannonAngle() { return cannonAngle; }
+        void setCannonAngle(GLfloat cannonAngle) { this->cannonAngle = cannonAngle; }
+
+        GLfloat getMouseX() { return mouseX; }
+        void setMouseX(GLfloat mouseX) { this->mouseX = mouseX; }
+
+        GLfloat getMouseY() { return mouseY; }
+        void setMouseY(GLfloat mouseY) { this->mouseY = mouseY; }
 
         GLboolean isFlying() { return flying; }
         void setFlying(GLboolean value) { this->flying = value; }

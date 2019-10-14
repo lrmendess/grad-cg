@@ -109,6 +109,10 @@ void idle(void) {
         player->reset();
     }
 
+    if (player->isDead()) {
+        return;
+    }
+
     if (player->isFlying()) {
         GLfloat currentTime = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
         GLfloat diffTime = currentTime - oldTimeFlying;
@@ -137,7 +141,7 @@ void idle(void) {
 
             player->takeOffAirplane(currentTime);
 
-            if (currentTime >= 4000) {
+            if (currentTime > 4000) {
                 player->setTakeOff(false);
                 player->setFlying(true);
                 oldTimeFlying = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
@@ -149,7 +153,22 @@ void idle(void) {
 }
 
 void mouseMovement(int x, int y) {
-    
+    x += 200;
+    y = arena->getCy() + arena->getRadius() - y;
+
+    if (!player->isTakeOff() && player->isFlying() && !player->isDead()) {
+        if (player->getMouseX() == 0.0) {
+            player->setMouseX(x);
+        } else {
+            GLfloat distance = player->getMouseX() - x;
+
+            if (player->getCannonAngle() + distance >= -45 && player->getCannonAngle() + distance <= 45) {
+                player->setCannonAngle(player->getCannonAngle() + distance / 2);
+            }
+        }
+    }
+
+    player->setMouseX(x);
 }
 
 void mouseAction(int button, int state, int x, int y) {

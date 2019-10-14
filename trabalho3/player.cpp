@@ -1,35 +1,22 @@
 #include "player.h"
 
-Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius, const GLfloat* color) {
+Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
-
     this->radius = radius;
-
-    for (int i = 0; i < 3; i++) {
-        this->color[i] = color[i];
-    }
-
-    // Referencia da arena que o aviao esta
     this->arena = arena;
-
-    // Armazenamento do estado inicial antes da decolagem
     this->startX = this->cx;
     this->startY = this->cy;
     this->startR = radius;
 
     // Angulo inicial
-    this->angle = 1 / M_PI * 180 * atan2(
+    this->angle = (180 / M_PI) * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
 }
 
 void Player::moveX(GLfloat angle, GLfloat dt) {
-    if (this->dead) {
-        return;
-    }
-    
     this->angle += angle * dt;
 }
 
@@ -40,17 +27,7 @@ void Player::move(GLfloat mulX, GLfloat mulY, GLfloat dt) {
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
     if (distanceFromBorder > arena->getRadius()) {
-        //GLfloat xa = this->cx;
-        //GLfloat ya = this->cy;
-        //GLfloat m = tan(this->angle);
-        //GLfloat r = arena->getRadius();
-
-        //GLfloat x1 = -(2 * m * (ya - m * xa)) + sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
-        //GLfloat x2 = -(2 * m * (ya - m * xa)) - sqrt(pow((2 * m * (ya - m * xa)), 2) - 4 * (pow(m, 2) + 1) * (pow((ya - m * xa), 2) - pow(r, 2))) / (2 * (pow(m, 2) + 1));
-
-        //cout << "Parametros: " << xa << ", " << ya << ", " << m << ", " << r << endl;
-        //cout << "Resultados: " << x1 << ", " << x2 << endl;
-
+        // TODO Teletransporte
         return;
     }
 
@@ -147,8 +124,7 @@ void Player::drawCannon() {
 
     glPushMatrix();
 		glTranslatef(this->radius, 0.0, 0);
-        this->cannonAngle = 45;
-		glRotatef(this->cannonAngle, 0.0, 0.0, 1.0);
+		glRotatef(-this->cannonAngle, 0.0, 0.0, 1.0);
 
         glBegin(GL_POLYGON);
             glVertex3f(0.0,             -this->radius / 12, 0.0);
@@ -160,10 +136,23 @@ void Player::drawCannon() {
 }
 
 void Player::drawFuselage() {
-    drawEllipse(this->radius, this->color);
+    glColor3f(0.0, 1.0, 0.0);
+
+    glBegin(GL_POLYGON);
+        GLfloat a, px, py;
+
+        for (int i = 0; i < 360; i++) {
+            a = (i * M_PI) / 180.0;
+            px = cos(a) * this->radius;
+            py = sin(a) * this->radius / 4;
+            glVertex2f(px, py);
+        }
+    glEnd();
 }
 
 void Player::drawTriangles(GLfloat length) {
+    glColor3f(1.0, 1.0, 0.0);
+
 	glBegin(GL_TRIANGLES);
         glVertex3f(0.0, 0.0, 0.0);
         glVertex3f(length, length, 0.0);
@@ -178,8 +167,6 @@ void Player::drawTriangles(GLfloat length) {
 }
 
 void Player::drawLeftPropeller() {
-    glColor3f(1.0, 1.0, 0.0);
-
     glPushMatrix();
         /* [INICIO] Haste das helices */
         glColor3f(0.0, 0.0, 0.0);
@@ -192,8 +179,6 @@ void Player::drawLeftPropeller() {
 	    glEnd();
 
         /* [FIM] Haste das helices */
-        glColor3f(1.0, 1.0, 0.0);
-
         glTranslatef(this->radius / 2, -this->radius / 2, 0);
 		glPushMatrix();
 			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
@@ -227,8 +212,6 @@ void Player::drawRightPropeller() {
 	    glEnd();
 
         /* [FIM] Haste das helices */
-        glColor3f(1.0, 1.0, 0.0);
-
         glTranslatef(this->radius / 2, this->radius / 2, 0);
 		glPushMatrix();
 			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
@@ -251,6 +234,7 @@ void Player::drawRightPropeller() {
 
 void Player::drawFin() {
     glColor3f(0.0, 0.0, 0.0);
+
     glPushMatrix();
         glBegin(GL_POLYGON);
             glVertex3f(-this->radius * 0.9, -this->radius / 12, 0.0);
@@ -262,10 +246,21 @@ void Player::drawFin() {
 }
 
 void Player::drawCockpit() {
+    glColor3f(0.0, 0.0, 0.0);
+
     glPushMatrix();
         glTranslatef(this->radius / 2, 0.0, 0.0);
-        GLfloat black[3] = { 0.0, 0.0, 0.0 };
-        drawEllipse(this->radius / 3, black);
+        glBegin(GL_POLYGON);
+            GLfloat a, px, py;
+            GLfloat r = this->radius / 2;
+
+            for (int i = 0; i < 360; i++) {
+                a = (i * M_PI) / 180.0;
+                px = cos(a) * r / 1.5;
+                py = sin(a) * r / 3.8;
+                glVertex2f(px, py);
+            }
+        glEnd();
     glPopMatrix();
 }
 
@@ -273,7 +268,7 @@ void Player::drawCockpit() {
 void Player::drawAirplane() {    
     glPushMatrix();
         glTranslatef(this->cx, this->cy, 0);
-        glRotatef(this->angle, 0, 0, 1);
+        glRotatef(this->angle, 0, 0, 1.0);
 
         drawWings();
         drawLeftPropeller();
@@ -285,6 +280,7 @@ void Player::drawAirplane() {
 
         /* [INICIO] Circulo de Colisao (TEMP) */
         glColor3f(1.0, 0.0, 0.0);
+
         glBegin(GL_LINE_LOOP);
             GLfloat angle, px, py;
 

@@ -75,7 +75,7 @@ Arena::Arena(string path) : Circle() {
             airEnemies.push_back(new Circle(cx, cy, radius, RED));
         
         if (!colorName.compare("green"))
-            player = new Player(this, cx, cy, radius, GREEN);
+            player = new Player(this, cx, cy, radius);
         
         if (!colorName.compare("orange"))
             groundEnemies.push_back(new Circle(cx, cy, radius, ORANGE));
