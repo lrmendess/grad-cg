@@ -26,9 +26,9 @@ void Player::moveX(GLfloat angle, GLfloat dt) {
     this->angle += angle * dt;
 }
 
-void Player::move(GLfloat mulX, GLfloat mulY, GLfloat dt) {
-    GLfloat my = this->cy + sin(this->angle * M_PI / 180) * (mulY * sin(M_PI / 4) * this->speed * dt);
-    GLfloat mx = this->cx + cos(this->angle * M_PI / 180) * (mulX * cos(M_PI / 4) * this->speed * dt);
+void Player::move(GLfloat mul, GLfloat dt) {
+    GLfloat my = this->cy + sin(this->angle * M_PI / 180) * (mul * sin(M_PI / 4) * this->speed * dt);
+    GLfloat mx = this->cx + cos(this->angle * M_PI / 180) * (mul * cos(M_PI / 4) * this->speed * dt);
 
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
@@ -47,9 +47,37 @@ void Player::move(GLfloat mulX, GLfloat mulY, GLfloat dt) {
         }
     }
 
-    this->propellerAngle += 5;
+    this->propellerAngle += 6;
     this->cy = my;
     this->cx = mx;
+}
+
+void Player::updateProjectiles(GLfloat mul, GLfloat dt) {
+    list<Projectile*> forRemove;
+
+    for (auto p : this->projectiles) {
+        GLfloat projectileAngle = p->getAngle() * M_PI / 180;
+
+        GLfloat my = p->getCy() + sin(projectileAngle) * (mul * sin(M_PI / 4) * p->getSpeed() * dt);
+        GLfloat mx = p->getCx() + cos(projectileAngle) * (mul * cos(M_PI / 4) * p->getSpeed() * dt);
+
+        // Se o projetil encostar na borda, ele sera removido da lista de projeteis
+        // disparados pelo player em questao
+        GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
+
+        if (distanceFromBorder > arena->getRadius()) {
+            forRemove.push_back(p);
+        } else {
+            p->setCy(my);
+            p->setCx(mx);
+        }
+    }
+
+    // Sendo removido da lista e tendo sua memoria liberada, ele nao sera mais desenhado
+    for (auto p : forRemove) {
+        this->projectiles.remove(p);
+        delete(p);
+    }
 }
 
 /* Calcula a fisica a ser utilizada no aviao */
@@ -130,7 +158,7 @@ void Player::drawCannon() {
 
     glPushMatrix();
 		glTranslatef(this->radius, 0.0, 0);
-		glRotatef(-this->cannonAngle, 0.0, 0.0, 1.0);
+		glRotatef(this->cannonAngle, 0.0, 0.0, 1.0);
 
         glBegin(GL_POLYGON);
             glVertex3f(0.0,             -this->radius / 12, 0.0);
@@ -211,10 +239,10 @@ void Player::drawRightPropeller() {
         glColor3f(0.0, 0.0, 0.0);
 
         glBegin(GL_POLYGON);
-		    glVertex3f( this->radius / 2, this->radius / 2.5, 0.0);
-		    glVertex3f( this->radius / 2, this->radius / 1.75, 0.0);
-		    glVertex3f( 0.0, this->radius / 1.75, 0.0);
-		    glVertex3f( 0.0, this->radius / 2.5, 0.0);
+		    glVertex3f(this->radius / 2, this->radius / 2.50, 0.0);
+		    glVertex3f(this->radius / 2, this->radius / 1.75, 0.0);
+		    glVertex3f(0.0, this->radius / 1.75, 0.0);
+		    glVertex3f(0.0, this->radius / 2.50, 0.0);
 	    glEnd();
 
         /* [FIM] Haste das helices */
@@ -294,20 +322,27 @@ void Player::drawAirplane() {
     drawProjectiles();
 }
 
-void Player::fire() {
+void Player::fire(GLfloat mul) {
     Projectile* projectile = new Projectile();
 
     projectile->setPlayer(this);
-    projectile->setSpeed(this->speed + 128);
+    projectile->setSpeed(this->speed * mul);
     projectile->setLength(this->radius / 8);
-    projectile->setAngle(45);
 
-    GLfloat px = this->cx + this->radius * cos(this->angle * M_PI / 180);
-    GLfloat py = this->cy + this->radius * sin(this->angle * M_PI / 180);
+    GLfloat airplaneAngleInRadians = this->angle * M_PI / 180;
+    GLfloat cannonAngleInRadians = this->cannonAngle * M_PI / 180;
+
+    GLfloat px = this->cx;
+    px += this->radius * cos(airplaneAngleInRadians);
+    px += this->radius / 2 * cos(cannonAngleInRadians + airplaneAngleInRadians);
+    
+    GLfloat py = this->cy;
+    py += this->radius * sin(airplaneAngleInRadians);
+    py += this->radius / 2 * sin(cannonAngleInRadians + airplaneAngleInRadians);
 
     projectile->setCx(px);
     projectile->setCy(py);
-    projectile->setAngle(45);
+    projectile->setAngle(this->angle + this->cannonAngle);
 
     projectiles.push_back(projectile);
 }
@@ -329,8 +364,8 @@ void Player::reset() {
 
     this->speed         = 0.0;
     this->cannonAngle   = 0.0;
-    this->cannonX       = 0.0;
-    this->cannonY       = 0.0;
+
+    this->projectiles.clear();    
 
     this->calculatePhysics();
 }

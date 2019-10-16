@@ -81,8 +81,8 @@ void init(void) {
     glOrtho(
         arena->getCx() - arena->getRadius(),
         arena->getCx() + arena->getRadius(),
-        arena->getCy() + arena->getRadius(),
-        arena->getCy() - arena->getRadius(), -1.0, 1.0);
+        arena->getCy() - arena->getRadius(),
+        arena->getCy() + arena->getRadius(), -1.0, 1.0);
 }
 
 void display(void) {
@@ -120,15 +120,16 @@ void idle(void) {
 
         // A
         if (keyboard['a']) {
-            player->moveX(-90, diffTime);
+            player->moveX(90, diffTime);
         }
 
         // D
         if (keyboard['d']) {
-            player->moveX(90, diffTime);
+            player->moveX(-90, diffTime);
         }
 
-        player->move(speedMultiplier, speedMultiplier, diffTime);
+        player->updateProjectiles(speedMultiplier, diffTime);
+        player->move(speedMultiplier, diffTime);
 
     } else {
         if (keyboard['u'] && !player->isTakeOff()) {
@@ -159,7 +160,7 @@ void mouseMovement(int x, int y) {
         GLfloat distance = player->getMouseX() - x;
 
         if (player->getCannonAngle() + distance >= -45 && player->getCannonAngle() + distance <= 45) {
-            player->setCannonAngle(player->getCannonAngle() + distance / 3);
+            player->setCannonAngle(player->getCannonAngle() + distance);
         }
     }
 
@@ -169,7 +170,7 @@ void mouseMovement(int x, int y) {
 void mouseAction(int button, int state, int x, int y) {
     if (player->isFlying() && !player->isTakeOff() && !player->isDead()) {
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-            player->fire();
+            player->fire(2.0);
         }
 
         if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {

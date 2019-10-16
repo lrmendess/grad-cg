@@ -48,8 +48,6 @@ class Player {
 
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
-        GLfloat cannonX         = 0.0;
-        GLfloat cannonY         = 0.0;
 
         /* Ultima posicao registrada do mouse */
         GLfloat mouseX          = 0.0;
@@ -97,10 +95,11 @@ class Player {
 
         void addProjectile(Projectile* projectile) { this->projectiles.push_back(projectile); }
 
-        void fire();
+        void fire(GLfloat mul);
 
         void moveX(GLfloat angle, GLfloat dt);
-        void move(GLfloat mulX, GLfloat mulY, GLfloat dt);
+        void move(GLfloat mul, GLfloat dt);
+        void updateProjectiles(GLfloat mul, GLfloat dt);
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();

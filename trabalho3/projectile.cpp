@@ -14,7 +14,7 @@ void Projectile::draw() {
     glBegin(GL_POLYGON);
         GLfloat a, px, py;
 
-        for (int i = 0; i < 360; i += 36) {
+        for (int i = 0; i < 360; i += 18) {
             a = (i * M_PI) / 180.0;
             px = this->cx + cos(a) * this->length;
             py = this->cy + sin(a) * this->length;
