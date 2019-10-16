@@ -27,16 +27,19 @@ Arena::Arena(string path) : Circle() {
     /* Busca exclusivamente a arena antes de todos os outros objetos do jogo */
     XMLElement* findBlueCircle = root->FirstChildElement("circle");
 
+    GLfloat arenaX;
+    GLfloat arenaY;
+
     while (findBlueCircle != NULL) {
         string colorName = findBlueCircle->Attribute("fill");
 
         if (!colorName.compare("blue")) {
             GLfloat radius = stof(findBlueCircle->Attribute("r"));
-            GLfloat cx = stoi(findBlueCircle->Attribute("cx"));
-            GLfloat cy = 2 * radius - stoi(findBlueCircle->Attribute("cy"));
+            arenaX = stoi(findBlueCircle->Attribute("cx"));
+            arenaY = 2 * radius - stoi(findBlueCircle->Attribute("cy"));
 
-            this->setCx(cx);
-            this->setCy(cy);
+            this->setCx(0.0);
+            this->setCy(0.0);
             this->setRadius(radius);
             this->setColor(BLUE);
 
@@ -53,10 +56,10 @@ Arena::Arena(string path) : Circle() {
     /* Linha */
     XMLElement* l = root->FirstChildElement("line");
 
-    GLfloat x1 = stoi(l->Attribute("x1"));
-    GLfloat y1 = 2 * this->getRadius() - stoi(l->Attribute("y1"));
-    GLfloat x2 = stoi(l->Attribute("x2"));
-    GLfloat y2 = 2 * this->getRadius() - stoi(l->Attribute("y2"));
+    GLfloat x1 = stoi(l->Attribute("x1")) - arenaX;
+    GLfloat y1 = 2 * this->getRadius() - stoi(l->Attribute("y1")) - arenaY;
+    GLfloat x2 = stoi(l->Attribute("x2")) - arenaX;
+    GLfloat y2 = 2 * this->getRadius() - stoi(l->Attribute("y2")) - arenaY;
     GLfloat color[3] = { 0, 0, 0 };
 
     airstrip = new Line(x1, y1, x2, y2, color);
@@ -66,8 +69,8 @@ Arena::Arena(string path) : Circle() {
 
     while (c != NULL) {
         GLfloat radius = stof(c->Attribute("r"));
-        GLfloat cx = stoi(c->Attribute("cx"));
-        GLfloat cy = 2 * this->getRadius() - stoi(c->Attribute("cy"));
+        GLfloat cx = stoi(c->Attribute("cx")) - arenaX;
+        GLfloat cy = 2 * this->getRadius() - stoi(c->Attribute("cy")) - arenaY;
 
         string colorName = c->Attribute("fill");
 

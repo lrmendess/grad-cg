@@ -33,8 +33,11 @@ void Player::move(GLfloat mul, GLfloat dt) {
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
     if (distanceFromBorder > arena->getRadius()) {
-        // TODO Teletransporte
-        return;
+        GLfloat alpha = atan2(this->cy, this->cx) * 180 / M_PI;
+        GLfloat theta = (-2) * (alpha - this->angle - 90) * M_PI / 180;
+        
+        mx = cx * cos(theta) - cy * sin(theta);
+        my = cx * sin(theta) + cy * cos(theta);
     }
 
     for (auto enemy : arena->getAirEnemies()) {
