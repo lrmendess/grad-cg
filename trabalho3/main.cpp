@@ -107,6 +107,10 @@ void idle(void) {
     // R
     if (keyboard['r']) {
         player->reset();
+
+        for (int i = 0; i < 256; i++) {
+            keyboard[i] = false;
+        }
     }
 
     if (player->isDead()) {
@@ -126,6 +130,20 @@ void idle(void) {
         // D
         if (keyboard['d']) {
             player->moveX(-90, diffTime);
+        }
+
+        if (keyboard['='] || keyboard['+']) {
+            player->setSpeed(player->getSpeed() + 2.0);
+        }
+
+        if (keyboard['-'] || keyboard['_']) {
+            GLfloat speed = player->getSpeed() - 2.0;
+
+            if (speed <= 0) {
+                speed = 0;
+            }
+
+            player->setSpeed(speed);
         }
 
         player->updateProjectiles(speedMultiplier, diffTime);
@@ -160,7 +178,7 @@ void mouseMovement(int x, int y) {
         GLfloat distance = player->getMouseX() - x;
 
         if (player->getCannonAngle() + distance >= -45 && player->getCannonAngle() + distance <= 45) {
-            player->setCannonAngle(player->getCannonAngle() + distance);
+            player->setCannonAngle(player->getCannonAngle() + distance / 3);
         }
     }
 

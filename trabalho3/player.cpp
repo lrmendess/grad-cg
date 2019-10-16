@@ -50,7 +50,7 @@ void Player::move(GLfloat mul, GLfloat dt) {
         }
     }
 
-    this->propellerAngle += 6;
+    this->propellerAngle += this->speed / 8;
     this->cy = my;
     this->cx = mx;
 }
@@ -130,6 +130,8 @@ void Player::takeOffAirplane(GLint currentTime) {
     } else {
         oldRadiusTime = currentTime;
     }
+
+    this->propellerAngle += this->speed / 8;
 }
 
 void Player::drawWings() {
