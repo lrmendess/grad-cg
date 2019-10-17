@@ -28,7 +28,6 @@ class Projectile {
         void setCy(GLfloat cy) { this->cy = cy; }
 
         GLfloat getAngle() { return angle; }
-
         GLfloat getSpeed() { return speed; }
 
         void draw();

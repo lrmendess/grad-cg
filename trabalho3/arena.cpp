@@ -5,11 +5,13 @@ Arena::~Arena() {
     
     delete(airstrip);
 
-    for (Circle* c : groundEnemies)
+    for (Circle* c : groundEnemies) {
         delete(c);
+    }
 
-    for (Circle* c : airEnemies)
+    for (Circle* c : airEnemies) {
         delete(c);
+    }
 }
 
 Arena::Arena(string path) : Circle() {
@@ -27,6 +29,10 @@ Arena::Arena(string path) : Circle() {
     /* Busca exclusivamente a arena antes de todos os outros objetos do jogo */
     XMLElement* findBlueCircle = root->FirstChildElement("circle");
 
+    /* 
+     * Iremos compensar em X e Y os elementos da arena para que a mesma fique
+     * na origem (0, 0)
+     */
     GLfloat arenaX;
     GLfloat arenaY;
 
@@ -60,9 +66,8 @@ Arena::Arena(string path) : Circle() {
     GLfloat y1 = 2 * this->getRadius() - stoi(l->Attribute("y1")) - arenaY;
     GLfloat x2 = stoi(l->Attribute("x2")) - arenaX;
     GLfloat y2 = 2 * this->getRadius() - stoi(l->Attribute("y2")) - arenaY;
-    GLfloat color[3] = { 0, 0, 0 };
 
-    airstrip = new Line(x1, y1, x2, y2, color);
+    airstrip = new Line(x1, y1, x2, y2);
 
     /* Circulos */
     XMLElement* c = root->FirstChildElement("circle");

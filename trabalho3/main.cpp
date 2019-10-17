@@ -174,8 +174,6 @@ void idle(void) {
 }
 
 void mouseMovement(int x, int y) {
-    x += 200;
-
     if (!player->isTakeOff() && player->isFlying() && !player->isDead()) {
         GLfloat distance = player->getMouseX() - x;
 

@@ -33,6 +33,7 @@ class Arena : public Circle {
 
         Player* getPlayer() { return player; }
         Line* getAirstrip() { return airstrip; }
+        
         list<Circle*>& getGroundEnemies() { return groundEnemies; }
         list<Circle*>& getAirEnemies() { return airEnemies; }
 

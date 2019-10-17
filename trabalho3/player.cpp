@@ -59,7 +59,10 @@ void Player::move(GLfloat mul, GLfloat dt) {
 
 void Player::drawProjectiles() {
     for (auto p : this->projectiles) {
-        p->draw();
+        glPushMatrix();
+            glTranslatef(p->getCx(), p->getCy(), 0.0);
+            p->draw();
+        glPopMatrix();
     }
 }
 
@@ -98,7 +101,10 @@ void Player::updateProjectiles(GLfloat dt) {
 
 void Player::drawBombs() {
     for (auto b : this->bombs) {
-        b->draw();
+        glPushMatrix();
+            glTranslatef(b->getCx(), b->getCy(), 0.0);
+            b->draw();
+        glPopMatrix();
     }
 }
 
@@ -192,24 +198,20 @@ void Player::drawWings() {
     glColor3f(0.0, 0.0, 0.0);
 
     // Direita
-    glPushMatrix();
-        glBegin(GL_POLYGON);
-            glVertex3f(-this->radius / 4, 0.0, 0.0);
-            glVertex3f(-this->radius / 24, this->radius, 0.0);
-            glVertex3f( this->radius / 4, this->radius, 0.0);
-            glVertex3f( this->radius / 4, 0, 0.0);
-        glEnd();
-    glPopMatrix();
+    glBegin(GL_POLYGON);
+        glVertex3f(-this->radius / 4, 0.0, 0.0);
+        glVertex3f(-this->radius / 24, this->radius, 0.0);
+        glVertex3f( this->radius / 4, this->radius, 0.0);
+        glVertex3f( this->radius / 4, 0, 0.0);
+    glEnd();
 
     //Esquerda
-    glPushMatrix();
-        glBegin(GL_POLYGON);
-            glVertex3f(-this->radius / 4,   0.0, 0.0);
-            glVertex3f(-this->radius / 24, -this->radius, 0.0);
-            glVertex3f( this->radius / 4,  -this->radius, 0.0);
-            glVertex3f( this->radius / 4,   0, 0.0);
-        glEnd();
-    glPopMatrix();
+    glBegin(GL_POLYGON);
+        glVertex3f(-this->radius / 4,   0.0, 0.0);
+        glVertex3f(-this->radius / 24, -this->radius, 0.0);
+        glVertex3f( this->radius / 4,  -this->radius, 0.0);
+        glVertex3f( this->radius / 4,   0, 0.0);
+    glEnd();
 }
 
 void Player::drawCannon() {

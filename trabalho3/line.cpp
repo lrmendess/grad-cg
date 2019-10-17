@@ -8,19 +8,15 @@ Line::Line() {
 
 }
 
-Line::Line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2, GLfloat* color) {
+Line::Line(GLfloat x1, GLfloat y1, GLfloat x2, GLfloat y2) {
     this->x1 = x1;
     this->y1 = y1;
     this->x2 = x2;
     this->y2 = y2;
-
-    for (int i = 0; i < 3; i++) {
-        this->color[i] = color[i];
-    }
 }
 
 void Line::drawSolidLine() {
-    glColor3f(color[0], color[1], color[2]);
+    glColor3f(0.0, 0.0, 0.0);
 
     glBegin(GL_LINES);
         glVertex2f(x1, y1);

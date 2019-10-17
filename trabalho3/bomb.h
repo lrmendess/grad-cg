@@ -26,18 +26,14 @@ class Bomb {
 
         GLfloat getCy() { return cy; }
         void setCy(GLfloat cy) { this->cy = cy; }
-
-        GLfloat getAngle() { return angle; }
-
-        GLfloat getSpeed() { return speed; }
-
+        
         GLfloat getRadius() { return radius; }
         void setRadius(GLfloat radius) { this->radius = radius; }
 
+        GLfloat getAngle() { return angle; }
+        GLfloat getSpeed() { return speed; }
         GLfloat getStartRadius() { return startRadius; }
-
         GLfloat getRadiusSpeed() { return radiusSpeed; }
-
         GLfloat getTimeReleased() { return timeReleased; }
 
         void draw();

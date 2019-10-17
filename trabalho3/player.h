@@ -95,21 +95,18 @@ class Player {
         void setTakeOff(GLboolean value) { this->takeOff = value; }
 
         GLboolean isDead() { return dead; }
-        void setDead(GLboolean value) { this->dead = value; }
 
-        void addProjectile(Projectile* projectile) { this->projectiles.push_back(projectile); }
+        void moveX(GLfloat angle, GLfloat dt);
+        void move(GLfloat mul, GLfloat dt);
 
         void fire(GLfloat mul);
         void bomb();
 
-        void moveX(GLfloat angle, GLfloat dt);
-        void move(GLfloat mul, GLfloat dt);
-        void updateProjectiles(GLfloat dt);
-        void updateBombs(GLfloat currentTime, GLfloat dt);
-
         /* Funcoes referentes a decolagem */
         void calculatePhysics();
         void takeOffAirplane(GLint currentTime);
+        void updateProjectiles(GLfloat dt);
+        void updateBombs(GLfloat currentTime, GLfloat dt);
 
         void drawWings();
         void drawCannon();
