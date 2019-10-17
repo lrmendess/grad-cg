@@ -352,6 +352,10 @@ void Player::fire(GLfloat mul) {
     projectiles.push_back(projectile);
 }
 
+void Player::bomb() {
+    
+}
+
 /* Reseta o player para as condicoes iniciais */
 void Player::reset() {
     this->cx = this->startX;

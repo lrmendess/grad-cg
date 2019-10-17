@@ -89,7 +89,7 @@ Arena::Arena(string path) : Circle() {
 }
 
 void Arena::draw() {
-    drawSolidCircle();
+    this->drawSolidCircle();
 
     airstrip->drawSolidLine();
     

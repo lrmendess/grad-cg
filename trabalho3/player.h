@@ -55,6 +55,8 @@ class Player {
 
         /* Projeteis */
         list<Projectile*> projectiles;
+
+        /* Bombas */
         
     public:
         ~Player();
@@ -96,6 +98,7 @@ class Player {
         void addProjectile(Projectile* projectile) { this->projectiles.push_back(projectile); }
 
         void fire(GLfloat mul);
+        void bomb();
 
         void moveX(GLfloat angle, GLfloat dt);
         void move(GLfloat mul, GLfloat dt);

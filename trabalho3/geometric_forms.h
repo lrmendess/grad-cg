@@ -4,6 +4,7 @@
 #include <GL/glut.h>
 #include <cmath>
 
-void drawEllipse(GLfloat radius, GLfloat* color);
+void drawEllipse(GLfloat lx, GLfloat ly, GLfloat R, GLfloat G, GLfloat B);
+void drawCircle(GLfloat l, GLfloat R, GLfloat G, GLfloat B);
 
 #endif

@@ -6,6 +6,7 @@
 #include <GL/glut.h>
 #include "player.h"
 #include "arena.h"
+#include "geometric_forms.h"
 
 class Player;
 
