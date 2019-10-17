@@ -43,3 +43,11 @@ GLfloat ConfigReader::getVelocidadeJogador() {
 
     return stof(caminhoArquivoArena);
 }
+
+GLfloat ConfigReader::getVelocidadeTiro() {
+    string caminhoArquivoArena = root
+        ->FirstChildElement("jogador")
+        ->Attribute("velTiro");
+    
+    return stof(caminhoArquivoArena);
+}

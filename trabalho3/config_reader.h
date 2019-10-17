@@ -22,6 +22,7 @@ class ConfigReader {
         string getCaminhoArquivoArena();
 
         GLfloat getVelocidadeJogador();
+        GLfloat getVelocidadeTiro();
 };
 
 #endif

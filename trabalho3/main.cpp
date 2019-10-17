@@ -25,6 +25,7 @@ ConfigReader* configReader;
 Arena* arena;
 Player* player;
 GLfloat speedMultiplier;
+GLfloat fireSpeedMultiplier;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
 
@@ -46,9 +47,9 @@ int main(int argc, char** argv) {
     arena = new Arena(svgPath);
 
     player = arena->getPlayer();
-    player->calculatePhysics();
     
     speedMultiplier = configReader.getVelocidadeJogador();
+    fireSpeedMultiplier = configReader.getVelocidadeTiro();
 
     /* Glut */
     glutInit(&argc, argv);
@@ -146,7 +147,8 @@ void idle(void) {
             player->setSpeed(speed);
         }
 
-        player->updateProjectiles(speedMultiplier, diffTime);
+        player->updateProjectiles(diffTime);
+        player->updateBombs(currentTime, diffTime);
         player->move(speedMultiplier, diffTime);
 
     } else {
@@ -156,7 +158,7 @@ void idle(void) {
         }
 
         if (player->isTakeOff()) {
-            int currentTime = glutGet(GLUT_ELAPSED_TIME) - oldTimeTakeOff;
+            GLint currentTime = glutGet(GLUT_ELAPSED_TIME) - oldTimeTakeOff;
 
             player->takeOffAirplane(currentTime);
 
@@ -188,7 +190,7 @@ void mouseMovement(int x, int y) {
 void mouseAction(int button, int state, int x, int y) {
     if (player->isFlying() && !player->isTakeOff() && !player->isDead()) {
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-            player->fire(2.0);
+            player->fire(fireSpeedMultiplier);
         }
 
         if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {

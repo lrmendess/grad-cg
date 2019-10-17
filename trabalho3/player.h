@@ -4,16 +4,17 @@
 #include <GL/glut.h>
 #include <cmath>
 #include <list>
-#include "geometric_forms.h"
 #include "line.h"
 #include "circle.h"
 #include "arena.h"
 #include "projectile.h"
+#include "bomb.h"
 
 #define d2p(x1, y1, x2, y2) sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
 
 class Arena;
 class Projectile;
+class Bomb;
 
 class Player {
     private:
@@ -57,6 +58,7 @@ class Player {
         list<Projectile*> projectiles;
 
         /* Bombas */
+        list<Bomb*> bombs;
         
     public:
         ~Player();
@@ -102,7 +104,8 @@ class Player {
 
         void moveX(GLfloat angle, GLfloat dt);
         void move(GLfloat mul, GLfloat dt);
-        void updateProjectiles(GLfloat mul, GLfloat dt);
+        void updateProjectiles(GLfloat dt);
+        void updateBombs(GLfloat currentTime, GLfloat dt);
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();
@@ -111,8 +114,9 @@ class Player {
         void drawWings();
         void drawCannon();
         void drawProjectiles();
+        void drawBombs();
         void drawFuselage();
-        void drawTriangles(GLfloat length);
+        void drawHourglass(GLfloat length);
         void drawLeftPropeller();
         void drawRightPropeller();
         void drawFin();

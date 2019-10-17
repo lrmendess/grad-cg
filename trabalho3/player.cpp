@@ -20,6 +20,8 @@ Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
+
+    calculatePhysics();
 }
 
 void Player::moveX(GLfloat angle, GLfloat dt) {
@@ -34,10 +36,10 @@ void Player::move(GLfloat mul, GLfloat dt) {
 
     if (distanceFromBorder > arena->getRadius()) {
         GLfloat alpha = atan2(this->cy, this->cx) * 180 / M_PI;
-        GLfloat theta = (-2) * (alpha - this->angle - 90) * M_PI / 180;
+        GLfloat beta = (-2) * (alpha - this->angle - 90) * M_PI / 180;
         
-        mx = cx * cos(theta) - cy * sin(theta);
-        my = cx * sin(theta) + cy * cos(theta);
+        mx = cx * cos(beta) - cy * sin(beta);
+        my = cx * sin(beta) + cy * cos(beta);
     }
 
     for (auto enemy : arena->getAirEnemies()) {
@@ -55,14 +57,25 @@ void Player::move(GLfloat mul, GLfloat dt) {
     this->cx = mx;
 }
 
-void Player::updateProjectiles(GLfloat mul, GLfloat dt) {
+void Player::drawProjectiles() {
+    for (auto p : this->projectiles) {
+        p->draw();
+    }
+}
+
+void Player::fire(GLfloat mul) {
+    Projectile* projectile = new Projectile(this, mul);
+    projectiles.push_back(projectile);
+}
+
+void Player::updateProjectiles(GLfloat dt) {
     list<Projectile*> forRemove;
 
     for (auto p : this->projectiles) {
         GLfloat projectileAngle = p->getAngle() * M_PI / 180;
 
-        GLfloat my = p->getCy() + sin(projectileAngle) * (mul * sin(M_PI / 4) * p->getSpeed() * dt);
-        GLfloat mx = p->getCx() + cos(projectileAngle) * (mul * cos(M_PI / 4) * p->getSpeed() * dt);
+        GLfloat my = p->getCy() + sin(projectileAngle) * (sin(M_PI / 4) * p->getSpeed() * dt);
+        GLfloat mx = p->getCx() + cos(projectileAngle) * (cos(M_PI / 4) * p->getSpeed() * dt);
 
         // Se o projetil encostar na borda, ele sera removido da lista de projeteis
         // disparados pelo player em questao
@@ -80,6 +93,47 @@ void Player::updateProjectiles(GLfloat mul, GLfloat dt) {
     for (auto p : forRemove) {
         this->projectiles.remove(p);
         delete(p);
+    }
+}
+
+void Player::drawBombs() {
+    for (auto b : this->bombs) {
+        b->draw();
+    }
+}
+
+void Player::bomb() {
+    Bomb* bomb = new Bomb(this);
+    bombs.push_back(bomb);
+}
+
+void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
+    list<Bomb*> forRemove;
+
+    for (auto b : this->bombs) {
+        GLfloat bombAngle = b->getAngle() * M_PI / 180;
+
+        GLfloat my = b->getCy() + sin(bombAngle) * (sin(M_PI / 4) * b->getSpeed() * dt);
+        GLfloat mx = b->getCx() + cos(bombAngle) * (cos(M_PI / 4) * b->getSpeed() * dt);
+
+        // Se a bomba encostar na borda, ela sera removido da lista de bombas
+        // lancadas pelo player em questao
+        GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
+
+        GLfloat t = currentTime - b->getTimeReleased();
+
+        if (distanceFromBorder > arena->getRadius() || t >= 4.0) {
+            forRemove.push_back(b);
+        } else {
+            b->setCy(my);
+            b->setCx(mx);
+            b->setRadius(b->getStartRadius() + b->getRadiusSpeed() * t);
+        }
+    }
+
+    for (auto b : forRemove) {
+        this->bombs.remove(b);
+        delete(b);
     }
 }
 
@@ -178,18 +232,18 @@ void Player::drawFuselage() {
     glColor3f(0.0, 1.0, 0.0);
 
     glBegin(GL_POLYGON);
-        GLfloat a, px, py;
+        GLfloat angle, px, py;
 
         for (int i = 0; i < 360; i++) {
-            a = (i * M_PI) / 180.0;
-            px = cos(a) * this->radius;
-            py = sin(a) * this->radius / 4;
+            angle = (i * M_PI) / 180.0;
+            px = cos(angle) * this->radius;
+            py = sin(angle) * this->radius / 4;
             glVertex2f(px, py);
         }
     glEnd();
 }
 
-void Player::drawTriangles(GLfloat length) {
+void Player::drawHourglass(GLfloat length) {
     glColor3f(1.0, 1.0, 0.0);
 
 	glBegin(GL_TRIANGLES);
@@ -211,29 +265,29 @@ void Player::drawLeftPropeller() {
         glColor3f(0.0, 0.0, 0.0);
 
         glBegin(GL_POLYGON);
-		    glVertex3f(this->radius / 2, -this->radius / 2.5, 0.0);
+		    glVertex3f(this->radius / 2, -this->radius / 2.50, 0.0);
 		    glVertex3f(this->radius / 2, -this->radius / 1.75, 0.0);
 		    glVertex3f(0.0, -this->radius / 1.75, 0.0);
-		    glVertex3f(0.0, -this->radius / 2.5, 0.0);
+		    glVertex3f(0.0, -this->radius / 2.50, 0.0);
 	    glEnd();
 
         /* [FIM] Haste das helices */
         glTranslatef(this->radius / 2, -this->radius / 2, 0);
 		glPushMatrix();
 			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
-			drawTriangles(this->radius / 4);
+			drawHourglass(this->radius / 4);
 		glPopMatrix();
             glPushMatrix();
 			glRotatef(this->propellerAngle + 90, 1.0, 0.0, 0.0);
-			drawTriangles(this->radius / 4);
+			drawHourglass(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
 			glRotatef(this->propellerAngle + 180, 1.0, 0.0, 0.0);
-			drawTriangles(this->radius / 4);
+			drawHourglass(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
 			glRotatef(this->propellerAngle + 270, 1.0, 0.0, 0.0);
-            drawTriangles(this->radius / 4);
+            drawHourglass(this->radius / 4);
 		glPopMatrix();
     glPopMatrix();
 }
@@ -254,19 +308,19 @@ void Player::drawRightPropeller() {
         glTranslatef(this->radius / 2, this->radius / 2, 0);
 		glPushMatrix();
 			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
-			drawTriangles(this->radius / 4);
+			drawHourglass(this->radius / 4);
 		glPopMatrix();
             glPushMatrix();
 			glRotatef(this->propellerAngle + 90, 1.0, 0.0, 0.0);
-			drawTriangles(this->radius / 4);
+			drawHourglass(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
 			glRotatef(this->propellerAngle + 180, 1.0, 0.0, 0.0);
-			drawTriangles(this->radius / 4);
+			drawHourglass(this->radius / 4);
 		glPopMatrix();
 		glPushMatrix();
 			glRotatef(this->propellerAngle + 270, 1.0, 0.0, 0.0);
-            drawTriangles(this->radius / 4);
+            drawHourglass(this->radius / 4);
 		glPopMatrix();
     glPopMatrix();
 }
@@ -275,11 +329,13 @@ void Player::drawFin() {
     glColor3f(0.0, 0.0, 0.0);
 
     glPushMatrix();
+        glTranslatef(-this->radius * 0.9, 0.0, 0.0);
+
         glBegin(GL_POLYGON);
-            glVertex3f(-this->radius * 0.9, -this->radius / 12, 0.0);
-            glVertex3f(-this->radius / 3,   -this->radius / 12, 0.0);
-            glVertex3f(-this->radius / 3,    this->radius / 12, 0.0);
-            glVertex3f(-this->radius * 0.9,  this->radius / 12, 0.0);
+            glVertex3f(0.0,-this->radius / 12, 0.0);
+            glVertex3f(this->radius / 2,-this->radius / 12, 0.0);
+            glVertex3f(this->radius / 2, this->radius / 12, 0.0);
+            glVertex3f(0.0, this->radius / 12, 0.0);
         glEnd();
     glPopMatrix();
 }
@@ -287,30 +343,29 @@ void Player::drawFin() {
 void Player::drawCockpit() {
     glColor3f(0.0, 0.0, 0.0);
 
+    GLfloat length = this->radius / 2;
+    
     glPushMatrix();
         glTranslatef(this->radius / 2, 0.0, 0.0);
+        
         glBegin(GL_POLYGON);
-            GLfloat a, px, py;
-            GLfloat r = this->radius / 2;
+            GLfloat angle, px, py;
 
             for (int i = 0; i < 360; i++) {
-                a = (i * M_PI) / 180.0;
-                px = cos(a) * r / 1.5;
-                py = sin(a) * r / 4;
+                angle = (i * M_PI) / 180.0;
+                px = cos(angle) * length / 1.5;
+                py = sin(angle) * length / 4;
                 glVertex2f(px, py);
             }
         glEnd();
     glPopMatrix();
 }
 
-void Player::drawProjectiles() {
-    for (auto p : this->projectiles) {
-        p->draw();
-    }
-}
-
 /* Desenha todo o corpo do aviao */
-void Player::drawAirplane() {    
+void Player::drawAirplane() {
+    drawProjectiles();
+    drawBombs();
+
     glPushMatrix();
         glTranslatef(this->cx, this->cy, 0);
         glRotatef(this->angle, 0, 0, 1.0);
@@ -323,58 +378,28 @@ void Player::drawAirplane() {
         drawCockpit();
         drawCannon();
     glPopMatrix();
-
-    drawProjectiles();
-}
-
-void Player::fire(GLfloat mul) {
-    Projectile* projectile = new Projectile();
-
-    projectile->setPlayer(this);
-    projectile->setSpeed(this->speed * mul);
-    projectile->setLength(this->radius / 8);
-
-    GLfloat airplaneAngleInRadians = this->angle * M_PI / 180;
-    GLfloat cannonAngleInRadians = this->cannonAngle * M_PI / 180;
-
-    GLfloat px = this->cx;
-    px += this->radius * cos(airplaneAngleInRadians);
-    px += this->radius / 2 * cos(cannonAngleInRadians + airplaneAngleInRadians);
-    
-    GLfloat py = this->cy;
-    py += this->radius * sin(airplaneAngleInRadians);
-    py += this->radius / 2 * sin(cannonAngleInRadians + airplaneAngleInRadians);
-
-    projectile->setCx(px);
-    projectile->setCy(py);
-    projectile->setAngle(this->angle + this->cannonAngle);
-
-    projectiles.push_back(projectile);
-}
-
-void Player::bomb() {
-    
 }
 
 /* Reseta o player para as condicoes iniciais */
 void Player::reset() {
-    this->cx = this->startX;
-    this->cy = this->startY;
-    this->radius = this->startR;
+    cx = startX;
+    cy = startY;
+    radius = startR;
 
-    this->angle = 1 / M_PI * 180 * atan2(
+    angle = 1 / M_PI * 180 * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
 
-    this->dead          = false;
-    this->flying        = false;
-    this->takeOff       = false;
+    dead = false;
+    flying = false;
+    takeOff = false;
 
-    this->speed         = 0.0;
-    this->cannonAngle   = 0.0;
+    speed = 0.0;
+    cannonAngle = 0.0;
 
-    this->projectiles.clear();    
+    projectiles.clear();
+    bombs.clear();
 
-    this->calculatePhysics();
+    calculatePhysics();
 }
