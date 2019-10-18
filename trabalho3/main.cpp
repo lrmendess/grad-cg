@@ -134,11 +134,11 @@ void idle(void) {
         }
 
         if (keyboard['='] || keyboard['+']) {
-            player->setSpeed(player->getSpeed() + 2.0);
+            player->setSpeed(player->getSpeed() + 100.0 * diffTime);
         }
 
         if (keyboard['-'] || keyboard['_']) {
-            GLfloat speed = player->getSpeed() - 2.0;
+            GLfloat speed = player->getSpeed() - 100.0 * diffTime;
 
             if (speed <= 0) {
                 speed = 0;
