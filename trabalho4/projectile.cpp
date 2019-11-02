@@ -21,6 +21,27 @@ Projectile::Projectile(Player* player, GLfloat mul) {
 
 }
 
+Projectile::Projectile(Enemy* enemy, GLfloat mul) {
+    this->speed = enemy->getSpeed() * mul;
+    this->radius = enemy->getRadius() / 8;
+
+    GLfloat airplaneAngleInRadians = enemy->getAngle() * M_PI / 180;
+    GLfloat cannonAngleInRadians = enemy->getCannonAngle() * M_PI / 180;
+
+    GLfloat px = enemy->getCx();
+    px += enemy->getRadius() * cos(airplaneAngleInRadians);
+    px += enemy->getRadius() / 2 * cos(cannonAngleInRadians + airplaneAngleInRadians);
+    
+    GLfloat py = enemy->getCy();
+    py += enemy->getRadius() * sin(airplaneAngleInRadians);
+    py += enemy->getRadius() / 2 * sin(cannonAngleInRadians + airplaneAngleInRadians);
+
+    this->cx = px;
+    this->cy = py;
+    this->angle = enemy->getAngle() + enemy->getCannonAngle();
+
+}
+
 Projectile::~Projectile() {
 
 }

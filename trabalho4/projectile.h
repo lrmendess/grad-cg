@@ -6,8 +6,10 @@
 #include <GL/glut.h>
 #include "player.h"
 #include "arena.h"
+#include "enemy.h"
 
 class Player;
+class Enemy;
 
 class Projectile {
     private:
@@ -19,6 +21,7 @@ class Projectile {
 
     public:
         Projectile(Player* player, GLfloat mul);
+        Projectile(Enemy* enemy, GLfloat mul);
         ~Projectile();
 
         GLfloat getCx() { return cx; }
