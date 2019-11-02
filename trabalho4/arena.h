@@ -9,6 +9,7 @@
 #include "circle.h"
 #include "line.h"
 #include "player.h"
+#include "enemy.h"
 
 #define RED     (const GLfloat[3]) { 1, 0, 0 }
 #define GREEN   (const GLfloat[3]) { 0, 1, 0 }
@@ -19,13 +20,14 @@ using namespace std;
 using namespace tinyxml2;
 
 class Player;
+class Enemy;
 
 class Arena : public Circle {
     private:
         Player* player  = nullptr;
         Line* airstrip  = nullptr;
         list<Circle*> groundEnemies;
-        list<Circle*> airEnemies;
+        list<Enemy*> airEnemies;
 
     public:
         ~Arena();
@@ -35,7 +37,7 @@ class Arena : public Circle {
         Line* getAirstrip() { return airstrip; }
         
         list<Circle*>& getGroundEnemies() { return groundEnemies; }
-        list<Circle*>& getAirEnemies() { return airEnemies; }
+        list<Enemy*>& getAirEnemies() { return airEnemies; }
 
         void draw();
 };

@@ -27,33 +27,13 @@ class Enemy {
         /* Inicialmente o aviao esta no chao */
         GLfloat speed           = 0.0;
         GLfloat angle           = 0.0;
-        GLboolean flying        = false;
-        GLboolean takeOff       = false;
         GLboolean dead          = false;
-        GLfloat startX          = 0.0;
-        GLfloat startY          = 0.0;
-        GLfloat startR          = 0.0;
-        GLfloat ax              = 0.0;
-        GLfloat ay              = 0.0;
-
-        /* Ponto onde o aviao deve levantar voo */
-        GLfloat midAirstripX    = 0.0;
-        GLfloat midAirstripY    = 0.0;
-        GLfloat midAirstripTime = 0.0;
-
-        /* Dados do raio */
-        GLfloat radiusSpeed     = 0.0;
-        GLfloat oldRadiusTime   = 0.0;
 
         /* Angulo das helices do aviao */
         GLfloat propellerAngle  = 0.0;
 
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
-
-        /* Ultima posicao registrada do mouse */
-        GLfloat mouseX          = 0.0;
-        GLfloat mouseY          = 0.0;
 
         /* Projeteis */
         list<Projectile*> projectiles;
@@ -80,18 +60,6 @@ class Enemy {
         GLfloat getCannonAngle() { return cannonAngle; }
         void setCannonAngle(GLfloat cannonAngle) { this->cannonAngle = cannonAngle; }
 
-        GLfloat getMouseX() { return mouseX; }
-        void setMouseX(GLfloat mouseX) { this->mouseX = mouseX; }
-
-        GLfloat getMouseY() { return mouseY; }
-        void setMouseY(GLfloat mouseY) { this->mouseY = mouseY; }
-
-        GLboolean isFlying() { return flying; }
-        void setFlying(GLboolean value) { this->flying = value; }
-
-        GLboolean isTakeOff() { return takeOff; }
-        void setTakeOff(GLboolean value) { this->takeOff = value; }
-
         GLboolean isDead() { return dead; }
 
         void moveX(GLfloat angle, GLfloat dt);
@@ -100,10 +68,7 @@ class Enemy {
         void fire(GLfloat mul);
 
         /* Funcoes referentes a decolagem */
-        void calculatePhysics();
-        void takeOffAirplane(GLint currentTime);
         void updateProjectiles(GLfloat dt);
-        void updateBombs(GLfloat currentTime, GLfloat dt);
 
         void drawWings();
         void drawCannon();

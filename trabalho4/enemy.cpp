@@ -11,17 +11,12 @@ Enemy::Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cy = cy;
     this->radius = radius;
     this->arena = arena;
-    this->startX = this->cx;
-    this->startY = this->cy;
-    this->startR = radius;
 
     // Angulo inicial
     this->angle = (180 / M_PI) * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
-
-    calculatePhysics();
 }
 
 void Enemy::moveX(GLfloat angle, GLfloat dt) {
@@ -46,7 +41,7 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
         GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
 
         GLfloat safetyDistance = enemy->getRadius() + this->radius;
-        if ((distanceFromEnemy <= safetyDistance) && this->flying) {
+        if (distanceFromEnemy <= safetyDistance) {
             this->dead = true;
             return;
         }
@@ -99,57 +94,6 @@ void Enemy::updateProjectiles(GLfloat dt) {
     }
 }
 
-/* Calcula a fisica a ser utilizada no aviao */
-void Enemy::calculatePhysics() {
-    // S = So + Vo * t + (a * t^2)/2
-    Line* strip = arena->getAirstrip();
-
-    /* Tratamento da decolagem do inicio ao fim da pista */
-    // a = 2 * S / t ^ 2
-    GLfloat t = 4.0;
-
-    GLfloat dy = strip->getY2() - strip->getY1();
-    ay = 2 * dy / pow(t, 2);
-
-    GLfloat dx = strip->getX2() - strip->getX1();
-    ax = 2 * dx / pow(t, 2);
-
-    GLfloat distance = sqrt(pow(dy, 2) + pow(dx, 2));
-    this->speed = sqrt(pow(ay, 2) + pow(ax, 2)) * t;
-
-    /* Tratamento do inicio do crescimento do raio do player */
-    midAirstripX = strip->getX1() + (strip->getX2() - strip->getX1()) / 2;
-    midAirstripY = strip->getY1() + (strip->getY2() - strip->getY1()) / 2;
-
-    // t = sqrt(2 * (S - So) / a)
-    GLfloat startDistance = d2p(strip->getX1(), strip->getY1(), midAirstripX, midAirstripY);
-    GLfloat acc = 2 * distance / pow(t, 2);
-    this->midAirstripTime = sqrt(2 * (distance - startDistance) / acc);
-
-    // V = S / t
-    radiusSpeed = this->radius / (t - midAirstripTime);
-}
-
-/* Decolagem do aviao */
-void Enemy::takeOffAirplane(GLint currentTime) {
-    GLfloat stepY = (ay * pow(currentTime / 1000.0, 2)) / 2;
-    this->cy = startY + stepY;
-
-    GLfloat stepX = (ax * pow(currentTime / 1000.0, 2)) / 2;
-    this->cx = startX + stepX;
-
-    // S = So + V * t
-    if ((currentTime / 1000.0) >= midAirstripTime) {
-        GLfloat timeR = (currentTime - oldRadiusTime) / 1000.0;
-        GLfloat stepR = radiusSpeed * timeR;
-        this->radius = startR + stepR;
-    } else {
-        oldRadiusTime = currentTime;
-    }
-
-    this->propellerAngle += this->speed / 8;
-}
-
 void Enemy::drawWings() {
     glColor3f(0.0, 0.0, 0.0);
 
@@ -187,7 +131,7 @@ void Enemy::drawCannon() {
 }
 
 void Enemy::drawFuselage() {
-    glColor3f(0.0, 1.0, 0.0);
+    glColor3f(1.0, 0.0, 0.0);
 
     glBegin(GL_POLYGON);
         GLfloat angle, px, py;
@@ -339,23 +283,15 @@ void Enemy::drawAirplane() {
 
 /* Reseta o player para as condicoes iniciais */
 void Enemy::reset() {
-    cx = startX;
-    cy = startY;
-    radius = startR;
-
     angle = 1 / M_PI * 180 * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
 
     dead = false;
-    flying = false;
-    takeOff = false;
 
     speed = 0.0;
     cannonAngle = 0.0;
 
     projectiles.clear();
-
-    calculatePhysics();
 }

@@ -9,7 +9,7 @@ Arena::~Arena() {
         delete(c);
     }
 
-    for (Circle* c : airEnemies) {
+    for (Enemy* c : airEnemies) {
         delete(c);
     }
 }
@@ -80,7 +80,7 @@ Arena::Arena(string path) : Circle() {
         string colorName = c->Attribute("fill");
 
         if (!colorName.compare("red"))
-            airEnemies.push_back(new Circle(cx, cy, radius, RED));
+            airEnemies.push_back(new Enemy(this, cx, cy, radius));
         
         if (!colorName.compare("green"))
             player = new Player(this, cx, cy, radius);
@@ -103,7 +103,7 @@ void Arena::draw() {
     }
 
     for (auto ae : airEnemies) {
-        ae->drawSolidCircle();
+        ae->drawAirplane();
     }
 
     player->drawAirplane();
