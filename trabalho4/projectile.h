@@ -20,8 +20,8 @@ class Projectile {
         GLfloat radius      = 0.0;
 
     public:
-        Projectile(Player* player, GLfloat mul);
-        Projectile(Enemy* enemy, GLfloat mul);
+        Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane);
+        Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane);
         ~Projectile();
 
         GLfloat getCx() { return cx; }

@@ -69,6 +69,29 @@ Arena::Arena(string path) : Circle() {
 
     airstrip = new Line(x1, y1, x2, y2);
 
+    /* Player */
+    XMLElement* findGreenCircle = root->FirstChildElement("circle");
+
+    while (findGreenCircle != NULL) {
+        string colorName = findGreenCircle->Attribute("fill");
+        GLfloat radius = stof(findGreenCircle->Attribute("r"));
+        GLfloat cx = stoi(findGreenCircle->Attribute("cx")) - arenaX;
+        GLfloat cy = 2 * this->getRadius() - stoi(findGreenCircle->Attribute("cy")) - arenaY;
+
+        if (!colorName.compare("green")) {
+            player = new Player(this, cx, cy, radius);
+            break;
+        }
+
+        findGreenCircle = findGreenCircle->NextSiblingElement("circle");
+    }
+
+    /* Caso o player nao seja encontrada o programa eh finalizado */
+    if (findGreenCircle == NULL) {
+        cout << "Nao foi possivel configurar a Arena" << endl;
+        exit(EXIT_FAILURE);
+    }
+
     /* Circulos */
     XMLElement* c = root->FirstChildElement("circle");
 
@@ -79,14 +102,18 @@ Arena::Arena(string path) : Circle() {
 
         string colorName = c->Attribute("fill");
 
-        if (!colorName.compare("red"))
-            airEnemies.push_back(new Enemy(this, cx, cy, radius));
-        
-        if (!colorName.compare("green"))
-            player = new Player(this, cx, cy, radius);
-        
-        if (!colorName.compare("orange"))
-            groundEnemies.push_back(new Circle(cx, cy, radius, ORANGE));
+        if (!colorName.compare("red")) {
+            Enemy* enemy = new Enemy(this, cx, cy, radius);
+            enemy->setSpeed(player->getSpeed());
+
+            airEnemies.push_back(enemy);
+        }
+
+        if (!colorName.compare("orange")) {
+            Circle* circle = new Circle(cx, cy, radius, ORANGE);
+
+            groundEnemies.push_back(circle);
+        }
 
         /* Next */
         c = c->NextSiblingElement("circle");
@@ -99,11 +126,15 @@ void Arena::draw() {
     airstrip->drawSolidLine();
     
     for (auto ge : groundEnemies) {
-        ge->drawSolidCircle();
+        if (!ge->isDead()) {
+            ge->drawSolidCircle();
+        }
     }
 
     for (auto ae : airEnemies) {
-        ae->drawAirplane();
+        if (!ae->isDead()) {
+            ae->drawAirplane();
+        }
     }
 
     player->drawAirplane();

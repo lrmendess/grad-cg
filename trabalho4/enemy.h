@@ -28,12 +28,18 @@ class Enemy {
         GLfloat speed           = 0.0;
         GLfloat angle           = 0.0;
         GLboolean dead          = false;
+        GLfloat startX          = 0.0;
+        GLfloat startY          = 0.0;
 
         /* Angulo das helices do aviao */
         GLfloat propellerAngle  = 0.0;
 
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
+
+        /* Tempo para disparo */
+        GLfloat maxTimeFire = 0.0;
+        GLfloat currentTimeFire = 0.0;
 
         /* Projeteis */
         list<Projectile*> projectiles;
@@ -65,7 +71,10 @@ class Enemy {
         void moveX(GLfloat angle, GLfloat dt);
         void move(GLfloat mul, GLfloat dt);
 
-        void fire(GLfloat mul);
+        void fire(GLfloat mul, GLfloat mulVelAirplane, GLfloat dt);
+        void setFireFreq(GLfloat fireFreq) { this->maxTimeFire = 1.0 / fireFreq; }
+
+        void kill();
 
         /* Funcoes referentes a decolagem */
         void updateProjectiles(GLfloat dt);

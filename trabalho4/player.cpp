@@ -43,12 +43,14 @@ void Player::move(GLfloat mul, GLfloat dt) {
     }
 
     for (auto enemy : arena->getAirEnemies()) {
-        GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
+        if (!enemy->isDead()) {
+            GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
 
-        GLfloat safetyDistance = enemy->getRadius() + this->radius;
-        if ((distanceFromEnemy <= safetyDistance) && this->flying) {
-            this->dead = true;
-            return;
+            GLfloat safetyDistance = enemy->getRadius() + this->radius;
+            if ((distanceFromEnemy <= safetyDistance) && this->flying) {
+                this->dead = true;
+                return;
+            }
         }
     }
 
@@ -66,8 +68,8 @@ void Player::drawProjectiles() {
     }
 }
 
-void Player::fire(GLfloat mul) {
-    Projectile* projectile = new Projectile(this, mul);
+void Player::fire(GLfloat mul, GLfloat mulVelAirplane) {
+    Projectile* projectile = new Projectile(this, mul, mulVelAirplane);
     projectiles.push_back(projectile);
 }
 
@@ -75,6 +77,7 @@ void Player::updateProjectiles(GLfloat dt) {
     list<Projectile*> forRemove;
 
     for (auto p : this->projectiles) {
+        bool canUpdate = true;
         GLfloat projectileAngle = p->getAngle() * M_PI / 180;
 
         GLfloat my = p->getCy() + sin(projectileAngle) * (sin(M_PI / 4) * p->getSpeed() * dt);
@@ -87,8 +90,23 @@ void Player::updateProjectiles(GLfloat dt) {
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(p);
         } else {
-            p->setCy(my);
-            p->setCx(mx);
+            for (auto enemy : arena->getAirEnemies()) {
+                if (!enemy->isDead()) {
+                    GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
+
+                    if (distanceFromEnemy <= enemy->getRadius()) {
+                        enemy->kill();
+                        forRemove.push_back(p);
+                        canUpdate = false;
+                        break;
+                    }
+                }
+            }
+
+            if (canUpdate) {
+                p->setCy(my);
+                p->setCx(mx);
+            }
         }
     }
 
@@ -117,6 +135,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
     list<Bomb*> forRemove;
 
     for (auto b : this->bombs) {
+        bool canUpdate = true;
         GLfloat bombAngle = b->getAngle() * M_PI / 180;
 
         GLfloat my = b->getCy() + sin(bombAngle) * (sin(M_PI / 4) * b->getSpeed() * dt);
@@ -128,12 +147,28 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
         GLfloat t = currentTime - b->getTimeReleased();
 
-        if (distanceFromBorder > arena->getRadius() || t >= 4.0) {
+        if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(b);
+        } if(t >= 4.0) {
+            forRemove.push_back(b);
+            
+            for (auto enemy : arena->getGroundEnemies()) {
+                if (!enemy->isDead()) {
+                    GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
+
+                    if (distanceFromEnemy <= enemy->getRadius()) {
+                        enemy->kill();
+                        canUpdate = false;
+                        break;
+                    }
+                }
+            }
         } else {
-            b->setCy(my);
-            b->setCx(mx);
-            b->setRadius(b->getStartRadius() + b->getRadiusSpeed() * t);
+            if (canUpdate) {
+                b->setCy(my);
+                b->setCx(mx);
+                b->setRadius(b->getStartRadius() + b->getRadiusSpeed() * t);
+            }
         }
     }
 
@@ -404,4 +439,8 @@ void Player::reset() {
     bombs.clear();
 
     calculatePhysics();
+}
+
+void Player::kill() {
+    this->dead = true;
 }

@@ -14,6 +14,11 @@ class Circle {
         GLfloat radius;
         GLfloat color[3] = { 0, 0, 0 };
 
+        GLfloat startX;
+        GLfloat startY;
+
+        bool dead = false;
+
     public:
         ~Circle();
 
@@ -31,6 +36,11 @@ class Circle {
 
         GLfloat* getColor() { return color; }
         void setColor(const GLfloat* color) { for (int i = 0; i < 3; i++) this->color[i] = color[i]; }
+
+        bool isDead() { return dead; }
+        void kill() { this->dead = true; }
+
+        void reset();
 
         void drawSolidCircle();
 };

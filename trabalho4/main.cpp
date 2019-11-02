@@ -24,8 +24,13 @@ ConfigReader* configReader;
 
 Arena* arena;
 Player* player;
+list<Enemy*> airEnemies;
+list<Circle*> groundEnemies;
 GLfloat speedMultiplier;
 GLfloat fireSpeedMultiplier;
+GLfloat enemyFireSpeedMultiplier;
+GLfloat enemySpeedMultiplier;
+GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
 
@@ -43,14 +48,28 @@ int main(int argc, char** argv) {
     string svgPath = configReader.getCaminhoArquivoArena() + "/"
                     + configReader.getNomeArquivoArena() + "."
                     + configReader.getTipoArquivoArena();
-
-    arena = new Arena(svgPath);
-
-    player = arena->getPlayer();
     
     speedMultiplier = configReader.getVelocidadeJogador();
     fireSpeedMultiplier = configReader.getVelocidadeTiro();
 
+    enemySpeedMultiplier = configReader.getInimigoVel();
+    enemyFireSpeedMultiplier = configReader.getInimigoVelTiro();
+    enemyFireFreq = configReader.getInimigoFreqTiro();
+
+    arena = new Arena(svgPath);
+
+    player = arena->getPlayer();
+
+    /* Copia dos inimigos aereos para interacao */
+    for (auto a : arena->getAirEnemies()) {
+        airEnemies.push_back(a);
+        a->setFireFreq(enemyFireFreq);
+    }
+
+    for (auto g : arena->getGroundEnemies()) {
+        groundEnemies.push_back(g);
+    }
+    
     /* Glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
@@ -109,6 +128,14 @@ void idle(void) {
     if (keyboard['r']) {
         player->reset();
 
+        for (auto a : airEnemies) {
+            a->reset();
+        }
+
+        for (auto g : groundEnemies) {
+            g->reset();
+        }
+
         for (int i = 0; i < 256; i++) {
             keyboard[i] = false;
         }
@@ -118,11 +145,20 @@ void idle(void) {
         return;
     }
 
-    if (player->isFlying()) {
-        GLfloat currentTime = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-        GLfloat diffTime = currentTime - oldTimeFlying;
-        oldTimeFlying = currentTime;
+    GLfloat currentTime = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
+    GLfloat diffTime = currentTime - oldTimeFlying;
+    oldTimeFlying = currentTime;
 
+    for (auto a : airEnemies) {
+        if (!a->isDead()) {
+            a->move(enemySpeedMultiplier, diffTime);
+            // atira só depois de x tempos
+            a->fire(enemyFireSpeedMultiplier, enemySpeedMultiplier, diffTime);
+            a->updateProjectiles(diffTime);
+        }
+    }
+
+    if (player->isFlying()) {
         // A
         if (keyboard['a']) {
             player->moveX(90, diffTime);
@@ -188,7 +224,7 @@ void mouseMovement(int x, int y) {
 void mouseAction(int button, int state, int x, int y) {
     if (player->isFlying() && !player->isTakeOff() && !player->isDead()) {
         if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-            player->fire(fireSpeedMultiplier);
+            player->fire(fireSpeedMultiplier, speedMultiplier);
         }
 
         if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {

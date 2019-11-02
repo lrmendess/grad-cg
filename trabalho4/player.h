@@ -99,8 +99,10 @@ class Player {
         void moveX(GLfloat angle, GLfloat dt);
         void move(GLfloat mul, GLfloat dt);
 
-        void fire(GLfloat mul);
+        void fire(GLfloat mul, GLfloat mulVelAirplane);
         void bomb();
+
+        void kill();
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();

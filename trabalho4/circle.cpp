@@ -12,6 +12,9 @@ Circle::Circle(const GLfloat cx, const GLfloat cy, const GLfloat radius, const G
     this->cx = cx;
     this->cy = cy;
 
+    this->startX = cx;
+    this->startY = cy;
+
     this->radius = radius;
 
     for (int i = 0; i < 3; i++) {
@@ -32,4 +35,8 @@ void Circle::drawSolidCircle() {
             glVertex2f(px, py);
         }
     glEnd();
+}
+
+void Circle::reset() {
+    this->dead = false;
 }

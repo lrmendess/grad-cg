@@ -1,7 +1,7 @@
 #include "projectile.h"
 
-Projectile::Projectile(Player* player, GLfloat mul) {
-    this->speed = player->getSpeed() * mul;
+Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane) {
+    this->speed = player->getSpeed() * mul * mulVelAirplane;
     this->radius = player->getRadius() / 8;
 
     GLfloat airplaneAngleInRadians = player->getAngle() * M_PI / 180;
@@ -21,8 +21,8 @@ Projectile::Projectile(Player* player, GLfloat mul) {
 
 }
 
-Projectile::Projectile(Enemy* enemy, GLfloat mul) {
-    this->speed = enemy->getSpeed() * mul;
+Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane) {
+    this->speed = enemy->getSpeed() * mul * mulVelAirplane;
     this->radius = enemy->getRadius() / 8;
 
     GLfloat airplaneAngleInRadians = enemy->getAngle() * M_PI / 180;

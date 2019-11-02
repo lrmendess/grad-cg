@@ -12,6 +12,9 @@ Enemy::Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->radius = radius;
     this->arena = arena;
 
+    this->startX = cx;
+    this->startY = cy;
+
     // Angulo inicial
     this->angle = (180 / M_PI) * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
@@ -37,15 +40,15 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
         my = cx * sin(beta) + cy * cos(beta);
     }
 
-    for (auto enemy : arena->getAirEnemies()) {
-        GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
-
-        GLfloat safetyDistance = enemy->getRadius() + this->radius;
-        if (distanceFromEnemy <= safetyDistance) {
-            this->dead = true;
-            return;
-        }
-    }
+    // for (auto enemy : arena->getAirEnemies()) {
+    //     GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
+    // 
+    //     GLfloat safetyDistance = enemy->getRadius() + this->radius;
+    //     if (distanceFromEnemy <= safetyDistance) {
+    //         this->dead = true;
+    //         return;
+    //     }
+    // }
 
     this->propellerAngle += this->speed / 8;
     this->cy = my;
@@ -61,9 +64,15 @@ void Enemy::drawProjectiles() {
     }
 }
 
-void Enemy::fire(GLfloat mul) {
-    Projectile* projectile = new Projectile(this, mul);
-    projectiles.push_back(projectile);
+void Enemy::fire(GLfloat mul, GLfloat mulVelAirplane, GLfloat dt) {
+    currentTimeFire += dt;
+
+    if (currentTimeFire >= maxTimeFire) {
+        Projectile* projectile = new Projectile(this, mul, mulVelAirplane);
+        projectiles.push_back(projectile);
+
+        currentTimeFire = currentTimeFire - maxTimeFire;
+    }
 }
 
 void Enemy::updateProjectiles(GLfloat dt) {
@@ -79,8 +88,14 @@ void Enemy::updateProjectiles(GLfloat dt) {
         // disparados pelo player em questao
         GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
+        Player* player = arena->getPlayer();
+
+        GLfloat distanceFromPlayer = d2p(mx, my, player->getCx(), player->getCy());
+
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(p);
+        } else if(distanceFromPlayer <= player->getRadius()) {
+            player->kill();
         } else {
             p->setCy(my);
             p->setCx(mx);
@@ -290,8 +305,17 @@ void Enemy::reset() {
 
     dead = false;
 
-    speed = 0.0;
+    // speed = 0.0;
     cannonAngle = 0.0;
+
+    this->cx = this->startX;
+    this->cy = this->startY;
+
+    projectiles.clear();
+}
+
+void Enemy::kill() {
+    this->dead = true;
 
     projectiles.clear();
 }
