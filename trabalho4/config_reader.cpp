@@ -51,3 +51,27 @@ GLfloat ConfigReader::getVelocidadeTiro() {
     
     return stof(caminhoArquivoArena);
 }
+
+GLfloat ConfigReader::getInimigoFreqTiro() {
+    string caminhoArquivoArena = root
+        ->FirstChildElement("inimigo")
+        ->Attribute("freqTiro");
+
+        return stof(caminhoArquivoArena);
+}
+
+GLfloat ConfigReader::getInimigoVel() {
+    string caminhoArquivoArena = root
+        ->FirstChildElement("inimigo")
+        ->Attribute("vel");
+
+        return stof(caminhoArquivoArena);
+}
+
+GLfloat ConfigReader::getInimigoVelTiro() {
+    string caminhoArquivoArena = root
+        ->FirstChildElement("inimigo")
+        ->Attribute("velTiro");
+
+        return stof(caminhoArquivoArena);
+}

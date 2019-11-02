@@ -23,6 +23,10 @@ class ConfigReader {
 
         GLfloat getVelocidadeJogador();
         GLfloat getVelocidadeTiro();
+
+        GLfloat getInimigoFreqTiro();
+        GLfloat getInimigoVel();
+        GLfloat getInimigoVelTiro();
 };
 
 #endif
