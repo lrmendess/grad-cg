@@ -2,12 +2,15 @@
 #include <string>
 #include <cmath>
 #include <GL/glut.h>
+#include <ctime>
 #include "tinyxml2.h"
 #include "config_reader.h"
 #include "arena.h"
 
 using namespace std;
 using namespace tinyxml2;
+
+void renderBitmapString(float x, float y, void *font, string str);
 
 void init(void);
 void display(void);
@@ -35,6 +38,8 @@ GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
 
 int main(int argc, char** argv) {
+    srand(time(NULL));
+
     /* Abertura e tratamento do arquivo de configuracao */
     if (argc <= 1) {
         cout << "Nao esqueça de especificar o arquivo de configuracao." << endl;
@@ -111,6 +116,25 @@ void display(void) {
 
     arena->draw();
 
+    if (player->getPoints() == arena->getGroundEnemies().size()) {
+        string result("WIN");
+        renderBitmapString(-20.0, -5.0, GLUT_BITMAP_TIMES_ROMAN_24, result);
+    } else if (player->isDead()) {
+        string result("LOSE");
+        renderBitmapString(-20.0, -5.0, GLUT_BITMAP_TIMES_ROMAN_24, result);
+    } else {
+        string totalGroundEnemies(to_string(arena->getGroundEnemies().size() - player->getPoints()));
+
+        string score("Destroyed: " 
+                + to_string(player->getPoints()) 
+                + " | Remaining: " 
+                + totalGroundEnemies);
+
+        renderBitmapString(
+            0.0, arena->getRadius() - 30, 
+            GLUT_BITMAP_TIMES_ROMAN_24, score);
+    }
+
     /* Nao esperar! */
     glutSwapBuffers();
 }
@@ -141,6 +165,10 @@ void idle(void) {
         }
     }
 
+    if (player->getPoints() == arena->getGroundEnemies().size()) {
+        return;
+    }
+
     if (player->isDead()) {
         return;
     }
@@ -151,6 +179,14 @@ void idle(void) {
 
     for (auto a : airEnemies) {
         if (!a->isDead()) {
+            GLint turn = rand() % 2;
+
+            if (turn == 0) {
+                a->moveX(180, diffTime);
+            } else {
+                a->moveX(-180, diffTime);
+            }
+
             a->move(enemySpeedMultiplier, diffTime);
             // atira só depois de x tempos
             a->fire(enemyFireSpeedMultiplier, enemySpeedMultiplier, diffTime);
@@ -161,12 +197,12 @@ void idle(void) {
     if (player->isFlying()) {
         // A
         if (keyboard['a']) {
-            player->moveX(90, diffTime);
+            player->moveX(100, diffTime);
         }
 
         // D
         if (keyboard['d']) {
-            player->moveX(-90, diffTime);
+            player->moveX(-100, diffTime);
         }
 
         if (keyboard['='] || keyboard['+']) {
@@ -230,5 +266,13 @@ void mouseAction(int button, int state, int x, int y) {
         if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
             player->bomb();
         }
+    }
+}
+
+void renderBitmapString(float x, float y, void *font, string str) {
+    glRasterPos2f(x,y);
+
+    for (string::iterator c = (&str)->begin(); c != (&str)->end(); ++c)  {
+        glutBitmapCharacter(font, *c);
     }
 }

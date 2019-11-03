@@ -94,7 +94,7 @@ void Enemy::updateProjectiles(GLfloat dt) {
 
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(p);
-        } else if(distanceFromPlayer <= player->getRadius()) {
+        } else if(distanceFromPlayer <= player->getRadius() && player->isFlying()) {
             player->kill();
         } else {
             p->setCy(my);

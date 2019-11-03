@@ -54,6 +54,8 @@ class Player {
         GLfloat mouseX          = 0.0;
         GLfloat mouseY          = 0.0;
 
+        GLint points            = 0;
+
         /* Projeteis */
         list<Projectile*> projectiles;
 
@@ -63,6 +65,8 @@ class Player {
     public:
         ~Player();
         Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
+
+        GLint getPoints() { return points; }
 
         GLfloat getCx() { return cx; }
         void setCx(GLfloat cx) { this->cx = cx; }

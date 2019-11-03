@@ -158,6 +158,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
                     if (distanceFromEnemy <= enemy->getRadius()) {
                         enemy->kill();
+                        points++;
                         canUpdate = false;
                         break;
                     }
@@ -419,6 +420,7 @@ void Player::drawAirplane() {
 
 /* Reseta o player para as condicoes iniciais */
 void Player::reset() {
+    points = 0;
     cx = startX;
     cy = startY;
     radius = startR;
