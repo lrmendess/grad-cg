@@ -130,9 +130,7 @@ void display(void) {
                 + " | Remaining: " 
                 + totalGroundEnemies);
 
-        renderBitmapString(
-            0.0, arena->getRadius() - 30, 
-            GLUT_BITMAP_TIMES_ROMAN_24, score);
+        renderBitmapString(0.0, arena->getRadius() - 30, GLUT_BITMAP_TIMES_ROMAN_24, score);
     }
 
     /* Nao esperar! */
@@ -197,20 +195,20 @@ void idle(void) {
     if (player->isFlying()) {
         // A
         if (keyboard['a']) {
-            player->moveX(100, diffTime);
+            player->moveX(120, diffTime);
         }
 
         // D
         if (keyboard['d']) {
-            player->moveX(-100, diffTime);
+            player->moveX(-120, diffTime);
         }
 
         if (keyboard['='] || keyboard['+']) {
-            player->setSpeed(player->getSpeed() + 100.0 * diffTime);
+            player->setSpeed(player->getSpeed() + 200.0 * diffTime);
         }
 
         if (keyboard['-'] || keyboard['_']) {
-            GLfloat speed = player->getSpeed() - 100.0 * diffTime;
+            GLfloat speed = player->getSpeed() - 200.0 * diffTime;
 
             if (speed <= 0) {
                 speed = 0;

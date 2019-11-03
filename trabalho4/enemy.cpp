@@ -71,7 +71,8 @@ void Enemy::fire(GLfloat mul, GLfloat mulVelAirplane, GLfloat dt) {
         Projectile* projectile = new Projectile(this, mul, mulVelAirplane);
         projectiles.push_back(projectile);
 
-        currentTimeFire = currentTimeFire - maxTimeFire;
+        // currentTimeFire = currentTimeFire - maxTimeFire;
+        currentTimeFire = 0.0;
     }
 }
 
