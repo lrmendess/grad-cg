@@ -131,11 +131,11 @@ void Arena::draw() {
         }
     }
 
+    player->drawAirplane();
+    
     for (auto ae : airEnemies) {
         if (!ae->isDead()) {
             ae->drawAirplane();
         }
     }
-
-    player->drawAirplane();
 }

@@ -128,6 +128,28 @@ void Enemy::drawWings() {
         glVertex3f( this->radius / 4,  -this->radius, 0.0);
         glVertex3f( this->radius / 4,   0, 0.0);
     glEnd();
+
+    /* Asinhas de tras */
+    glPushMatrix();
+        glTranslatef(-this->radius * 0.9, 0.0, 0.0);
+        glColor3f(0.0, 0.0, 0.0);
+
+        // Direita
+        glBegin(GL_POLYGON);
+            glVertex3f(0.0, 0.0, 0.0);
+            glVertex3f(0.0, this->radius * 0.5, 0.0);
+            glVertex3f(this->radius * 0.25, this->radius / 3, 0.0);
+            glVertex3f(this->radius * 0.25, 0.0, 0.0);
+        glEnd();
+
+        //Esquerda
+        glBegin(GL_POLYGON);
+            glVertex3f(0.0, 0.0, 0.0);
+            glVertex3f(0.0, -this->radius * 0.5, 0.0);
+            glVertex3f(this->radius * 0.25, -this->radius / 3, 0.0);
+            glVertex3f(this->radius * 0.25, 0.0, 0.0);
+        glEnd();
+    glPopMatrix();
 }
 
 void Enemy::drawCannon() {
