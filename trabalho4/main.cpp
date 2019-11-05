@@ -122,16 +122,15 @@ void display(void) {
     } else if (player->isDead()) {
         string result("LOSE");
         renderBitmapString(-20.0, -5.0, GLUT_BITMAP_TIMES_ROMAN_24, result);
-    } else {
-        string totalGroundEnemies(to_string(arena->getGroundEnemies().size() - player->getPoints()));
-
-        string score("Destroyed: " 
-                + to_string(player->getPoints()) 
-                + " | Remaining: " 
-                + totalGroundEnemies);
-
-        renderBitmapString(0.0, arena->getRadius() - 30, GLUT_BITMAP_TIMES_ROMAN_24, score);
     }
+    
+    string totalGroundEnemies(to_string(arena->getGroundEnemies().size() - player->getPoints()));
+    string score("Destroyed: " 
+            + to_string(player->getPoints()) 
+            + " | Remaining: " 
+            + totalGroundEnemies);
+
+    renderBitmapString(0.0, arena->getRadius() - 30, GLUT_BITMAP_TIMES_ROMAN_24, score);
 
     /* Nao esperar! */
     glutSwapBuffers();
@@ -177,12 +176,12 @@ void idle(void) {
 
     for (auto a : airEnemies) {
         if (!a->isDead()) {
-            GLint turn = rand() % 2;
+            GLint turn = rand() % 18;
 
-            if (turn == 0) {
-                a->moveX(180, diffTime);
-            } else {
-                a->moveX(-180, diffTime);
+            if (turn <= 2) {
+                a->moveX(120, diffTime);
+            } else if (turn <= 6) {
+                a->moveX(-120, diffTime);
             }
 
             a->move(enemySpeedMultiplier, diffTime);
