@@ -149,7 +149,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(b);
-        } if(t >= 4.0) {
+        } if(t >= 2.0) {
             forRemove.push_back(b);
             
             for (auto enemy : arena->getGroundEnemies()) {

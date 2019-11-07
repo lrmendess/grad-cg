@@ -7,7 +7,7 @@ Bomb::Bomb(Player* player) {
     this->speed = player->getSpeed();
     this->radius = player->getRadius() / 4;
     this->startRadius = this->radius;
-    this->radiusSpeed = (this->radius / 2 - this->radius) / 4.0;
+    this->radiusSpeed = (this->radius / 2 - this->radius) / 2.0;
     this->timeReleased = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 }
 
