@@ -120,11 +120,11 @@ void DrawAxes()
 
 void DisplayEarth (GLuint texture)
 {
-    GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+    GLfloat materialEmission[] = { .1, .1, .1, 1};
     GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
     GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
-    GLfloat mat_shininess[] = { 100.0 };
+    GLfloat mat_shininess[] = { 50.0 };
     glColor3f(1,1,1);
  
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
@@ -222,52 +222,59 @@ void crossProduct(
     oZ /= norm;
 }
 
-OBJ * CreateSphere (double R, double space) 
-{
+OBJ * CreateSphere (double R, double space) {
     OBJ *obj = new OBJ;
     
-    obj->numVtx = (180 / space) * 
-                  (2 + 360 / (2*space)) * 4;
-    obj->vtx = new VERTICES[ obj->numVtx ];
+    obj->numVtx = (180 / space) * (2 + 360 / (2 * space)) * 4;
+    obj->vtx = new VERTICES[obj->numVtx];
     obj->radius = R;
 
-    int n;
+    int n = 0;
     double vR, lVR;
     double hR, lHR;
     double norm;
-    n = 0;
-    for( vR = 0; vR <= 180-space; vR+=space){
-        for(hR = 0; hR <= 360+2*space; hR+=2*space)
-        {
+    
+    for(vR = 0; vR <= 180 - space; vR += space){
+        for(hR = 0; hR <= 360 + 2 * space; hR += 2 * space) {
             lVR = vR;
             lHR = hR;
+
             obj->vtx[n].X = R * 
                     sin(lHR / 180 * M_PI) * 
                     sin(lVR / 180 * M_PI);
+
             obj->vtx[n].Y = R * 
                     cos(lHR / 180 * M_PI) * 
                     sin(lVR / 180 * M_PI);
+
             obj->vtx[n].Z = R * 
                     cos(lVR / 180 * M_PI);
+
             obj->vtx[n].V = lVR / 180;
             obj->vtx[n].U = lHR / 360;
+
             norm = sqrt(
-                    obj->vtx[n].X*obj->vtx[n].X+
-                    obj->vtx[n].Y*obj->vtx[n].Y+
-                    obj->vtx[n].Z*obj->vtx[n].Z);
-            obj->vtx[n].nX = obj->vtx[n].X/norm;
-            obj->vtx[n].nY = obj->vtx[n].Y/norm;
-            obj->vtx[n].nZ = obj->vtx[n].Z/norm;
+                    obj->vtx[n].X * obj->vtx[n].X+
+                    obj->vtx[n].Y * obj->vtx[n].Y+
+                    obj->vtx[n].Z * obj->vtx[n].Z);
+
+            obj->vtx[n].nX = obj->vtx[n].X / norm;
+            obj->vtx[n].nY = obj->vtx[n].Y / norm;
+            obj->vtx[n].nZ = obj->vtx[n].Z / norm;
+
             n++;
 
             lVR = vR + space;
             lHR = hR;
+
             obj->vtx[n].X = R * sin(lHR / 180 * M_PI) * sin(lVR / 180 * M_PI);
             obj->vtx[n].Y = R * cos(lHR / 180 * M_PI) * sin(lVR / 180 * M_PI);
             obj->vtx[n].Z = R * cos(lVR / 180 * M_PI);
             obj->vtx[n].V = lVR / 180;
             obj->vtx[n].U = lHR / 360;
+
             norm = sqrt(obj->vtx[n].X*obj->vtx[n].X+obj->vtx[n].Y*obj->vtx[n].Y+obj->vtx[n].Z*obj->vtx[n].Z);
+            
             obj->vtx[n].nX = obj->vtx[n].X/norm;
             obj->vtx[n].nY = obj->vtx[n].Y/norm;
             obj->vtx[n].nZ = obj->vtx[n].Z/norm;
@@ -275,28 +282,42 @@ OBJ * CreateSphere (double R, double space)
 
             lVR = vR;
             lHR = hR + space;
+
             obj->vtx[n].X = R * sin(lHR / 180 * M_PI) * sin(lVR / 180 * M_PI);
             obj->vtx[n].Y = R * cos(lHR / 180 * M_PI) * sin(lVR / 180 * M_PI);
             obj->vtx[n].Z = R * cos(lVR / 180 * M_PI);
             obj->vtx[n].V = lVR / 180;
             obj->vtx[n].U = lHR / 360;
-            norm = sqrt(obj->vtx[n].X*obj->vtx[n].X+obj->vtx[n].Y*obj->vtx[n].Y+obj->vtx[n].Z*obj->vtx[n].Z);
-            obj->vtx[n].nX = obj->vtx[n].X/norm;
-            obj->vtx[n].nY = obj->vtx[n].Y/norm;
-            obj->vtx[n].nZ = obj->vtx[n].Z/norm;
+
+            norm = sqrt(obj->vtx[n].X *
+                        obj->vtx[n].X +
+                        obj->vtx[n].Y *
+                        obj->vtx[n].Y +
+                        obj->vtx[n].Z *
+                        obj->vtx[n].Z);
+            
+            obj->vtx[n].nX = obj->vtx[n].X / norm;
+            obj->vtx[n].nY = obj->vtx[n].Y / norm;
+            obj->vtx[n].nZ = obj->vtx[n].Z / norm;
+            
             n++;
 
             lVR = vR + space;
             lHR = hR + space;
+
             obj->vtx[n].X = R * sin(lHR / 180 * M_PI) * sin(lVR / 180 * M_PI);
             obj->vtx[n].Y = R * cos(lHR / 180 * M_PI) * sin(lVR / 180 * M_PI);
             obj->vtx[n].Z = R * cos(lVR / 180 * M_PI);
+
             obj->vtx[n].V = lVR / 180;
             obj->vtx[n].U = lHR / 360;
-            norm = sqrt(obj->vtx[n].X*obj->vtx[n].X+obj->vtx[n].Y*obj->vtx[n].Y+obj->vtx[n].Z*obj->vtx[n].Z);
+
+            norm = sqrt(obj->vtx[n].X * obj->vtx[n].X + obj->vtx[n].Y * obj->vtx[n].Y + obj->vtx[n].Z * obj->vtx[n].Z);
+            
             obj->vtx[n].nX = obj->vtx[n].X/norm;
             obj->vtx[n].nY = obj->vtx[n].Y/norm;
             obj->vtx[n].nZ = obj->vtx[n].Z/norm;
+            
             n++;
         }
     }
@@ -324,17 +345,17 @@ void display (void) {
     GLfloat light_position[] = { 0.0, 0.0, 0.0, 1.0 };
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 
-//    glEnable(GL_LIGHT1);
-//    GLfloat light_position1[] = { 70.0, 70.0, 0.0, 1.0 };
-//    GLfloat light1[] = {1,1,1,1};
-//    glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
-//    glLightfv(GL_LIGHT1, GL_DIFFUSE, light1);
+    // glEnable(GL_LIGHT1);
+    // GLfloat light_position1[] = { 70.0, 70.0, 0.0, 1.0 };
+    // GLfloat light1[] = {1,1,1,1};
+    // glLightfv(GL_LIGHT1, GL_POSITION, light_position1);
+    // glLightfv(GL_LIGHT1, GL_DIFFUSE, light1);
 
     glPushMatrix();
         glScalef(70,70,1);
         glTranslatef(0,0,-12);
         glRotatef(90,1,0,0);
-        DisplayPlane (texturePlane);
+        DisplayPlane(texturePlane);
     glPopMatrix();
     
     if (toggleCam != 2){
@@ -523,9 +544,8 @@ int main (int argc, char **argv) {
 
     return 0;
 }
-GLuint LoadTextureRAW( const char * filename )
-{
 
+GLuint LoadTextureRAW(const char* filename) {
     GLuint texture;
     
     Image* image = loadBMP(filename);
@@ -535,15 +555,15 @@ GLuint LoadTextureRAW( const char * filename )
     glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
     glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
-    glTexImage2D(GL_TEXTURE_2D,                //Always GL_TEXTURE_2D
-                             0,                            //0 for now
-                             GL_RGB,                       //Format OpenGL uses for image
-                             image->width, image->height,  //Width and height
-                             0,                            //The border of the image
-                             GL_RGB, //GL_RGB, because pixels are stored in RGB format
-                             GL_UNSIGNED_BYTE, //GL_UNSIGNED_BYTE, because pixels are stored
-                                               //as unsigned numbers
-                             image->pixels);               //The actual pixel data
+    glTexImage2D(GL_TEXTURE_2D,                            // Always GL_TEXTURE_2D
+                             0,                            // 0 for now
+                             GL_RGB,                       // Format OpenGL uses for image
+                             image->width, image->height,  // Width and height
+                             0,                            // The border of the image
+                             GL_RGB,                       // GL_RGB, because pixels are stored in RGB format
+                             GL_UNSIGNED_BYTE,             // GL_UNSIGNED_BYTE, because pixels are stored
+                                                           // as unsigned numbers
+                             image->pixels);               // The actual pixel data
     delete image;
 
     return texture;
