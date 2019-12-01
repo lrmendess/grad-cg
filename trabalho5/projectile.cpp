@@ -1,6 +1,6 @@
 #include "projectile.h"
 
-Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane) {
+Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane, GLuint texture) {
     this->speed = player->getSpeed() * mul * mulVelAirplane;
     this->radius = player->getRadius() / 8;
 
@@ -18,10 +18,12 @@ Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane) {
     this->cx = px;
     this->cy = py;
     this->angle = player->getAngle() + player->getCannonAngle();
+    
+    this->texture = texture;
 
 }
 
-Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane) {
+Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane, GLuint texture) {
     this->speed = enemy->getSpeed() * mul * mulVelAirplane;
     this->radius = enemy->getRadius() / 8;
 
@@ -39,6 +41,8 @@ Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane) {
     this->cx = px;
     this->cy = py;
     this->angle = enemy->getAngle() + enemy->getCannonAngle();
+    
+    this->texture = texture;
 
 }
 
@@ -47,16 +51,18 @@ Projectile::~Projectile() {
 }
 
 void Projectile::draw() {
-    glColor3f(0.0, 0.0, 0.0);
+    glColor3f(1,1,1);
     
-    glBegin(GL_POLYGON);
-        GLfloat a, px, py;
+    glPushMatrix();
+        glBindTexture(GL_TEXTURE_2D, this->texture);
+        
+        GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricDrawStyle(obj, GLU_FILL);
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        gluQuadricTexture(obj, GLU_TRUE);
+        gluQuadricOrientation(obj, GLU_INSIDE);
 
-        for (int i = 0; i < 360; i += 18) {
-            a = (i * M_PI) / 180.0;
-            px = cos(a) * this->radius;
-            py = sin(a) * this->radius;
-            glVertex2f(px, py);
-        }
-    glEnd();
+        gluSphere(obj, this->radius, 360, 360);
+        gluDeleteQuadric(obj);
+    glPopMatrix();
 }

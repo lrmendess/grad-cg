@@ -17,9 +17,11 @@ class Bomb {
         GLfloat radiusSpeed  = 0.0;
         GLfloat timeReleased = 0.0;
         
+        GLuint texture;
+        
     public:
         ~Bomb();
-        Bomb(Player* player);
+        Bomb(Player* player, GLuint texture);
 
         GLfloat getCx() { return cx; }
         void setCx(GLfloat cx) { this->cx = cx; }

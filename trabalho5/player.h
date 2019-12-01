@@ -5,7 +5,6 @@
 #include <cmath>
 #include <list>
 #include "line.h"
-#include "circle.h"
 #include "arena.h"
 #include "projectile.h"
 #include "bomb.h"
@@ -62,9 +61,13 @@ class Player {
         /* Bombas */
         list<Bomb*> bombs;
         
+        /* Textura */
+        GLuint projTexture;
+        GLuint bombTexture;
+        
     public:
         ~Player();
-        Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
+        Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius, GLuint projTexture, GLuint bombTexture);
 
         GLint getPoints() { return points; }
 
