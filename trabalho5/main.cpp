@@ -38,7 +38,29 @@ GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
 
-GLuint texture;
+GLuint LoadTextureRAW(const char* filename) {
+    GLuint texture;
+    
+    Image* image = loadBMP(filename);
+
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
+    glTexImage2D(GL_TEXTURE_2D,                            // Always GL_TEXTURE_2D
+                             0,                            // 0 for now
+                             GL_RGB,                       // Format OpenGL uses for image
+                             image->width, image->height,  // Width and height
+                             0,                            // The border of the image
+                             GL_RGB,                       // GL_RGB, because pixels are stored in RGB format
+                             GL_UNSIGNED_BYTE,             // GL_UNSIGNED_BYTE, because pixels are stored
+                                                           // as unsigned numbers
+                             image->pixels);               // The actual pixel data
+    delete image;
+
+    return texture;
+}
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -80,13 +102,12 @@ int main(int argc, char** argv) {
     
     /* Glut */
     glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
     glutInitWindowSize(2 * arena->getRadius(), 2 * arena->getRadius());
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Ace Combat: Poor Edition");
 
     init();
-    arena->setTexture(texture);
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
@@ -107,40 +128,49 @@ void init(void) {
     /* Inicializar sistema de viz */
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(
-        arena->getCx() - arena->getRadius(),
-        arena->getCx() + arena->getRadius(),
-        arena->getCy() - arena->getRadius(),
-        arena->getCy() + arena->getRadius(), -800.0, 800.0);
-        
-    const char* filename = "earth.bmp";
-        
-    Image* image = loadBMP(filename);
 
-    glGenTextures( 1, &texture );
-    glBindTexture( GL_TEXTURE_2D, texture );
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
-    glTexImage2D(GL_TEXTURE_2D,                            // Always GL_TEXTURE_2D
-                             0,                            // 0 for now
-                             GL_RGB,                       // Format OpenGL uses for image
-                             image->width, image->height,  // Width and height
-                             0,                            // The border of the image
-                             GL_RGB,                       // GL_RGB, because pixels are stored in RGB format
-                             GL_UNSIGNED_BYTE,             // GL_UNSIGNED_BYTE, because pixels are stored
-                                                           // as unsigned numbers
-                             image->pixels);               // The actual pixel data
-    delete image;
+    GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
+    gluPerspective(90, aspectRatio, 1, arena->getRadius() * 5);
+    
+    //glEnable(GL_DEPTH_TEST);
+    
+    glEnable( GL_TEXTURE_2D );
+    GLuint tex = LoadTextureRAW( "stars1.bmp" );
+    arena->setTexture(tex);
+    
+    //glEnable(GL_LIGHTING);
+    //glShadeModel (GL_SMOOTH);
+
+    //glDepthFunc(GL_LEQUAL);
 }
 
 void display(void) {
     /* Limpar todos os pixels */
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
 
-    glPushMatrix();
-    glRotatef(45.0,1.0,0.0,0.0);
+    gluLookAt(
+        player->getCx(), player->getCy(), 5,
 
+        player->getCx() + (player->getRadius() / 2) * cos(player->getAngle() * M_PI / 180),   
+        player->getCy() + (player->getRadius() / 2) * sin(player->getAngle() * M_PI / 180), 
+        3,
+        
+        0, 0, 1
+    );
+
+/*
+gluLookAt(
+    0, 0, 150,
+
+    0,   
+    0, 
+    1000,
+    
+    0, 1, 0
+);
+*/
     arena->draw();
     
     glPopMatrix();

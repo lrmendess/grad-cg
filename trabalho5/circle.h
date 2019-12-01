@@ -21,9 +21,7 @@ class Circle {
 
         bool dead = false;
 
-    public:
-        void setTexture(GLuint texture);
-        
+    public:        
         ~Circle();
 
         Circle();
@@ -43,6 +41,8 @@ class Circle {
 
         bool isDead() { return dead; }
         void kill() { this->dead = true; }
+        
+        void setTexture(GLuint texture) { this->texture = texture }
 
         void reset();
 
