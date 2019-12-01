@@ -12,6 +12,7 @@ using namespace std;
 using namespace tinyxml2;
 
 void renderBitmapString(float x, float y, void *font, string str);
+GLuint loadTexture(const char* filename);
 
 void init(void);
 void display(void);
@@ -38,29 +39,10 @@ GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
 
-GLuint LoadTextureRAW(const char* filename) {
-    GLuint texture;
-    
-    Image* image = loadBMP(filename);
-
-    glGenTextures( 1, &texture );
-    glBindTexture( GL_TEXTURE_2D, texture );
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
-    glTexImage2D(GL_TEXTURE_2D,                            // Always GL_TEXTURE_2D
-                             0,                            // 0 for now
-                             GL_RGB,                       // Format OpenGL uses for image
-                             image->width, image->height,  // Width and height
-                             0,                            // The border of the image
-                             GL_RGB,                       // GL_RGB, because pixels are stored in RGB format
-                             GL_UNSIGNED_BYTE,             // GL_UNSIGNED_BYTE, because pixels are stored
-                                                           // as unsigned numbers
-                             image->pixels);               // The actual pixel data
-    delete image;
-
-    return texture;
-}
+GLuint arenaTexture;
+GLuint groundEnemiesTexture;
+GLuint projTexture;
+GLuint bombTexture;
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -132,16 +114,18 @@ void init(void) {
     GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
     gluPerspective(90, aspectRatio, 1, arena->getRadius() * 5);
     
-    //glEnable(GL_DEPTH_TEST);
+    glEnable(GL_DEPTH_TEST);
     
-    glEnable( GL_TEXTURE_2D );
-    GLuint tex = LoadTextureRAW( "stars1.bmp" );
-    arena->setTexture(tex);
-    
+    //glEnable(GL_TEXTURE_2D);
     //glEnable(GL_LIGHTING);
-    //glShadeModel (GL_SMOOTH);
+    glShadeModel (GL_SMOOTH);
 
-    //glDepthFunc(GL_LEQUAL);
+    glDepthFunc(GL_LEQUAL);
+    
+    arenaTexture = loadTexture("textures/stars1.bmp");
+    groundEnemiesTexture = loadTexture("textures/earth.bmp");
+    projTexture = loadTexture("textures/sun1.bmp");
+    bombTexture= loadTexture("textures/sun1.bmp");;
 }
 
 void display(void) {
@@ -149,29 +133,18 @@ void display(void) {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
+    
     gluLookAt(
-        player->getCx(), player->getCy(), 5,
+        player->getCx(), player->getCy(), player->getRadius(),
 
-        player->getCx() + (player->getRadius() / 2) * cos(player->getAngle() * M_PI / 180),   
-        player->getCy() + (player->getRadius() / 2) * sin(player->getAngle() * M_PI / 180), 
+        player->getCx() + (player->getRadius()) * cos(player->getAngle() * M_PI / 180),   
+        player->getCy() + (player->getRadius()) * sin(player->getAngle() * M_PI / 180), 
         3,
         
         0, 0, 1
     );
 
-/*
-gluLookAt(
-    0, 0, 150,
-
-    0,   
-    0, 
-    1000,
-    
-    0, 1, 0
-);
-*/
-    arena->draw();
+    arena->draw(arenaTexture, groundEnemiesTexture, projTexture, bombTexture);
     
     glPopMatrix();
 
@@ -331,4 +304,28 @@ void renderBitmapString(float x, float y, void *font, string str) {
     for (string::iterator c = (&str)->begin(); c != (&str)->end(); ++c)  {
         glutBitmapCharacter(font, *c);
     }
+}
+
+GLuint loadTexture(const char* filename) {
+    GLuint texture;
+    
+    Image* image = loadBMP(filename);
+
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D,                // Always GL_TEXTURE_2D
+                 0,                            // 0 for now
+                 GL_RGB,                       // Format OpenGL uses for image
+                 image->width, image->height,  // Width and height
+                 0,                            // The border of the image
+                 GL_RGB,                       // GL_RGB, because pixels are stored in RGB format
+                 GL_UNSIGNED_BYTE,             // GL_UNSIGNED_BYTE, because pixels are stored as unsigned numbers
+                 image->pixels);               // The actual pixel data
+                 
+    delete image;
+
+    return texture;
 }

@@ -15,17 +15,19 @@ Bomb::~Bomb() {
 
 }
 
-void Bomb::draw() {
-    glColor3f(0.0, 0.0, 0.0);
+void Bomb::draw(GLuint bombTexture) {    
+    glEnable(GL_TEXTURE_2D);
+    
+    glColor3f(1,1,1);
+    glBindTexture(GL_TEXTURE_2D, bombTexture);
+    
+    GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricDrawStyle(obj, GLU_FILL);
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        gluQuadricTexture(obj, GLU_TRUE);
+        gluQuadricOrientation(obj, GLU_OUTSIDE);
+        gluSphere(obj, this->radius, 360, 360);
+        gluDeleteQuadric(obj);
         
-    glBegin(GL_POLYGON);    
-        GLfloat a, px, py;
-
-        for (int i = 0; i < 360; i += 18) {
-            a = (i * M_PI) / 180.0;
-            px = cos(a) * this->radius;
-            py = sin(a) * this->radius;
-            glVertex2f(px, py);
-        }
-    glEnd();
+    glDisable(GL_TEXTURE_2D);
 }

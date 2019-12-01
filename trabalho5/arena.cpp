@@ -120,22 +120,79 @@ Arena::Arena(string path) : Circle() {
     }
 }
 
-void Arena::draw() {
-    this->drawSolidCircle();
+void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture) {
+    // Corpo do Cilindro
+    glPushMatrix();
+        glTranslatef(.0, .0, -this->getRadius() * .5);
+        
+        glEnable(GL_TEXTURE_2D);
+        
+        glColor3f(1,1,1);
+        glBindTexture(GL_TEXTURE_2D, arenaTexture);
+        
+        GLUquadricObj* obj = gluNewQuadric();
+            gluQuadricDrawStyle(obj, GLU_FILL);
+            gluQuadricNormals(obj, GLU_SMOOTH);
+            gluQuadricTexture(obj, GLU_TRUE);
+            gluQuadricOrientation(obj, GLU_INSIDE);
+            gluCylinder(obj, this->getRadius(), this->getRadius(), this->getRadius(), 360, 360);
+            gluDeleteQuadric(obj);
+            
+        glDisable(GL_TEXTURE_2D);
+    glPopMatrix();
+  
+    // Tampa superior
+    glPushMatrix();
+        glTranslatef(.0, .0, this->getRadius() * .5);
 
-    airstrip->drawSolidLine();
-    
-    for (auto ge : groundEnemies) {
-        if (!ge->isDead()) {
-            ge->drawSolidCircle();
+        this->drawSolidCircle();
+    glPopMatrix();
+
+    // Tampa inferior
+    glPushMatrix();
+        glTranslatef(.0, .0, -this->getRadius() * .5);
+
+        this->drawSolidCircle();
+    glPopMatrix();
+
+    // Pista e inimigos terrestres no chao
+    glPushMatrix();
+        glTranslatef(.0, .0, -this->getRadius() * .5);
+        
+        airstrip->drawSolidLine();
+
+        glColor3f(1.0, .5, .0);
+
+        for (auto ge : groundEnemies) {
+            if (!ge->isDead()) {
+                glPushMatrix();
+                    glTranslatef(ge->getCx(), ge->getCy(), .0);
+                    
+                    glEnable(GL_TEXTURE_2D);
+                    
+                    glColor3f(1,1,1);
+                    glBindTexture(GL_TEXTURE_2D, groundEnemiesTexture);
+                    
+                    GLUquadricObj* obj = gluNewQuadric();
+                        gluQuadricDrawStyle(obj, GLU_FILL);
+                        gluQuadricNormals(obj, GLU_SMOOTH);
+                        gluQuadricTexture(obj, GLU_TRUE);
+                        gluQuadricOrientation(obj, GLU_OUTSIDE);
+                        gluSphere(obj, ge->getRadius(), 360, 360);
+                        gluDeleteQuadric(obj);
+                        
+                    glDisable(GL_TEXTURE_2D);
+                glPopMatrix();
+            }
         }
-    }
+    glPopMatrix();
 
-    player->drawAirplane();
+    //player->drawAirplane();
+    player->drawAirplane(projTexture, bombTexture);
     
     for (auto ae : airEnemies) {
         if (!ae->isDead()) {
-            ae->drawAirplane();
+            ae->drawAirplane(projTexture);
         }
     }
 }

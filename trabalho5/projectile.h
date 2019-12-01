@@ -33,7 +33,7 @@ class Projectile {
         GLfloat getAngle() { return angle; }
         GLfloat getSpeed() { return speed; }
 
-        void draw();
+        void draw(GLuint projTexture);
 };
 
 #endif

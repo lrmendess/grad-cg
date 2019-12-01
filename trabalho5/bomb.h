@@ -36,7 +36,7 @@ class Bomb {
         GLfloat getRadiusSpeed() { return radiusSpeed; }
         GLfloat getTimeReleased() { return timeReleased; }
 
-        void draw();
+        void draw(GLuint bombTexture);
 };
 
 #endif

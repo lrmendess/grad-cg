@@ -16,8 +16,6 @@ class Circle {
 
         GLfloat startX;
         GLfloat startY;
-        
-        GLuint texture;
 
         bool dead = false;
 
@@ -41,8 +39,6 @@ class Circle {
 
         bool isDead() { return dead; }
         void kill() { this->dead = true; }
-        
-        void setTexture(GLuint texture) { this->texture = texture }
 
         void reset();
 
