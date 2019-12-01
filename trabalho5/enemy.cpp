@@ -111,44 +111,19 @@ void Enemy::updateProjectiles(GLfloat dt) {
 }
 
 void Enemy::drawWings() {
-    glColor3f(0.0, 0.0, 0.0);
-
-    // Direita
-    glBegin(GL_POLYGON);
-        glVertex3f(-this->radius / 4, 0.0, 0.0);
-        glVertex3f(-this->radius / 24, this->radius, 0.0);
-        glVertex3f( this->radius / 4, this->radius, 0.0);
-        glVertex3f( this->radius / 4, 0, 0.0);
-    glEnd();
-
-    //Esquerda
-    glBegin(GL_POLYGON);
-        glVertex3f(-this->radius / 4,   0.0, 0.0);
-        glVertex3f(-this->radius / 24, -this->radius, 0.0);
-        glVertex3f( this->radius / 4,  -this->radius, 0.0);
-        glVertex3f( this->radius / 4,   0, 0.0);
-    glEnd();
-
-    /* Asinhas de tras */
     glPushMatrix();
-        glTranslatef(-this->radius * 0.9, 0.0, 0.0);
-        glColor3f(0.0, 0.0, 0.0);
+        glColor3f(.0, .0, .0);
+        
+        glScalef(.5, 2.0, .0625);
+        glutSolidCube(this->radius);
+    glPopMatrix();
 
-        // Direita
-        glBegin(GL_POLYGON);
-            glVertex3f(0.0, 0.0, 0.0);
-            glVertex3f(0.0, this->radius * 0.5, 0.0);
-            glVertex3f(this->radius * 0.25, this->radius / 3, 0.0);
-            glVertex3f(this->radius * 0.25, 0.0, 0.0);
-        glEnd();
+    glPushMatrix();
+        glColor3f(.0, .0, .0);
+        glTranslatef(-this->radius * .65, .0, .0);
 
-        //Esquerda
-        glBegin(GL_POLYGON);
-            glVertex3f(0.0, 0.0, 0.0);
-            glVertex3f(0.0, -this->radius * 0.5, 0.0);
-            glVertex3f(this->radius * 0.25, -this->radius / 3, 0.0);
-            glVertex3f(this->radius * 0.25, 0.0, 0.0);
-        glEnd();
+        glScalef(.25, 1.25, .0625);
+        glutSolidCube(this->radius);
     glPopMatrix();
 }
 
@@ -157,147 +132,131 @@ void Enemy::drawCannon() {
 
     glPushMatrix();
 		glTranslatef(this->radius, 0.0, 0);
-		glRotatef(this->cannonAngle, 0.0, 0.0, 1.0);
+        glRotatef(90, 0.0, 1.0, 0.0);
+		glRotatef(-this->cannonAngle, 1.0, 0.0, 0.0);
 
-        glBegin(GL_POLYGON);
-            glVertex3f(0.0,             -this->radius / 12, 0.0);
-            glVertex3f(this->radius / 2,-this->radius / 12, 0.0);
-            glVertex3f(this->radius / 2, this->radius / 12, 0.0);
-            glVertex3f(0.0,              this->radius / 12, 0.0);
-        glEnd();
+        GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        gluCylinder(obj, this->radius / 12, this->radius / 12, this->radius / 2, 10, 10);
+        gluDeleteQuadric(obj);
     glPopMatrix();
 }
 
 void Enemy::drawFuselage() {
-    glColor3f(1.0, 0.0, 0.0);
+    glColor3f(1.0, .0, .0);
 
-    glBegin(GL_POLYGON);
-        GLfloat angle, px, py;
-
-        for (int i = 0; i < 360; i++) {
-            angle = (i * M_PI) / 180.0;
-            px = cos(angle) * this->radius;
-            py = sin(angle) * this->radius / 4;
-            glVertex2f(px, py);
-        }
-    glEnd();
+    glPushMatrix();
+        glScalef(1.0, .25, .25);
+        glutSolidSphere(this->radius, 30, 30);
+    glPopMatrix();
 }
 
 void Enemy::drawHourglass(GLfloat length) {
-    glColor3f(1.0, 1.0, 0.0);
+    glColor3f(1.0, 1.0, .0);
 
 	glBegin(GL_TRIANGLES);
-        glVertex3f(0.0, 0.0, 0.0);
-        glVertex3f(length, length, 0.0);
-		glVertex3f(-length, length, 0.0);
+        glVertex3f(.0, .0, .0);
+        glVertex3f(length, length, .0);
+		glVertex3f(-length, length, .0);
 	glEnd();
 
 	glBegin(GL_TRIANGLES);
-        glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(length, -length, 0.0);
-		glVertex3f(-length,  -length, 0.0);
+        glVertex3f(.0, .0, .0);
+		glVertex3f(length, -length, .0);
+		glVertex3f(-length,  -length, .0);
 	glEnd();
 }
 
 void Enemy::drawLeftPropeller() {
     glPushMatrix();
-        /* [INICIO] Haste das helices */
-        glColor3f(0.0, 0.0, 0.0);
+        glColor3f(.0, .0, .0);
+        glTranslatef(.0, this->radius * .5, .0);
+        glRotatef(90, .0, 1.0, .0);
 
-        glBegin(GL_POLYGON);
-		    glVertex3f(this->radius / 2, -this->radius / 2.50, 0.0);
-		    glVertex3f(this->radius / 2, -this->radius / 1.75, 0.0);
-		    glVertex3f(0.0, -this->radius / 1.75, 0.0);
-		    glVertex3f(0.0, -this->radius / 2.50, 0.0);
-	    glEnd();
+        GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        gluCylinder(obj, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
+        gluDeleteQuadric(obj);
+    glPopMatrix();
 
-        /* [FIM] Haste das helices */
-        glTranslatef(this->radius / 2, -this->radius / 2, 0);
+    glPushMatrix();
+        glColor3f(.0, .0, .0);
+        glTranslatef(this->radius * .5, -this->radius * .5, .0);
+
 		glPushMatrix();
-			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
-			drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle, 1.0, .0, .0);
+			drawHourglass(this->radius * .25);
 		glPopMatrix();
             glPushMatrix();
-			glRotatef(this->propellerAngle + 90, 1.0, 0.0, 0.0);
-			drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle + 90, 1.0, .0, .0);
+			drawHourglass(this->radius * .25);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->propellerAngle + 180, 1.0, 0.0, 0.0);
-			drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle + 180, 1.0, .0, .0);
+			drawHourglass(this->radius * .25);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->propellerAngle + 270, 1.0, 0.0, 0.0);
-            drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle + 270, 1.0, .0, .0);
+            drawHourglass(this->radius * .25);
 		glPopMatrix();
     glPopMatrix();
 }
 
 void Enemy::drawRightPropeller() {
     glPushMatrix();
-        /* [INICIO] Haste das helices */
-        glColor3f(0.0, 0.0, 0.0);
+        glColor3f(.0, .0, .0);
+        glTranslatef(.0, - this->radius * .5, .0);
+        glRotatef(90, .0, 1.0, .0);
 
-        glBegin(GL_POLYGON);
-		    glVertex3f(this->radius / 2, this->radius / 2.50, 0.0);
-		    glVertex3f(this->radius / 2, this->radius / 1.75, 0.0);
-		    glVertex3f(0.0, this->radius / 1.75, 0.0);
-		    glVertex3f(0.0, this->radius / 2.50, 0.0);
-	    glEnd();
+        GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        gluCylinder(obj, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
+        gluDeleteQuadric(obj);
+    glPopMatrix();
 
-        /* [FIM] Haste das helices */
-        glTranslatef(this->radius / 2, this->radius / 2, 0);
-		glPushMatrix();
-			glRotatef(this->propellerAngle, 1.0, 0.0, 0.0);
-			drawHourglass(this->radius / 4);
+    glPushMatrix();
+        glColor3f(.0, .0, .0);
+        glTranslatef(this->radius * .5, this->radius * .5, 0);
+		
+        glPushMatrix();
+			glRotatef(this->propellerAngle, 1.0, .0, .0);
+			drawHourglass(this->radius * .25);
 		glPopMatrix();
             glPushMatrix();
-			glRotatef(this->propellerAngle + 90, 1.0, 0.0, 0.0);
-			drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle + 90, 1.0, .0, .0);
+			drawHourglass(this->radius * .25);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->propellerAngle + 180, 1.0, 0.0, 0.0);
-			drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle + 180, 1.0, .0, .0);
+			drawHourglass(this->radius * .25);
 		glPopMatrix();
 		glPushMatrix();
-			glRotatef(this->propellerAngle + 270, 1.0, 0.0, 0.0);
-            drawHourglass(this->radius / 4);
+			glRotatef(this->propellerAngle + 270, 1.0, .0, .0);
+            drawHourglass(this->radius * .25);
 		glPopMatrix();
     glPopMatrix();
 }
 
 void Enemy::drawFin() {
-    glColor3f(0.0, 0.0, 0.0);
+    glColor3f(.0, .0, .0);
 
     glPushMatrix();
-        glTranslatef(-this->radius * 0.9, 0.0, 0.0);
+        glTranslatef(-this->radius * .65, .0, .0);
+        glScalef(.25, .0625, .5);
+        glTranslatef(.0, .0, this->radius * .5);
 
-        glBegin(GL_POLYGON);
-            glVertex3f(0.0,-this->radius / 12, 0.0);
-            glVertex3f(this->radius / 2,-this->radius / 12, 0.0);
-            glVertex3f(this->radius / 2, this->radius / 12, 0.0);
-            glVertex3f(0.0, this->radius / 12, 0.0);
-        glEnd();
+        glutSolidCube(this->radius);
     glPopMatrix();
 }
 
 void Enemy::drawCockpit() {
-    glColor3f(0.0, 0.0, 0.0);
+    glColor3f(.0, .0, .0);
 
-    GLfloat length = this->radius / 2;
-    
     glPushMatrix();
-        glTranslatef(this->radius / 2, 0.0, 0.0);
-        
-        glBegin(GL_POLYGON);
-            GLfloat angle, px, py;
+        glTranslatef(this->radius * .5, .0, .0);
+        glScalef(.375, .125, .25);
 
-            for (int i = 0; i < 360; i++) {
-                angle = (i * M_PI) / 180.0;
-                px = cos(angle) * length / 1.5;
-                py = sin(angle) * length / 4;
-                glVertex2f(px, py);
-            }
-        glEnd();
+        glutSolidSphere(this->radius, 20, 20);
     glPopMatrix();
 }
 
@@ -306,16 +265,16 @@ void Enemy::drawAirplane() {
     drawProjectiles();
 
     glPushMatrix();
-        glTranslatef(this->cx, this->cy, 0);
-        glRotatef(this->angle, 0, 0, 1.0);
+        glTranslatef(this->cx, this->cy, .0);
+        glRotatef(this->angle, .0, .0, 1.0);
 
         drawWings();
         drawLeftPropeller();
         drawRightPropeller();
+        drawCannon();
+        drawCockpit();
         drawFuselage();
         drawFin();
-        drawCockpit();
-        drawCannon();
     glPopMatrix();
 }
 

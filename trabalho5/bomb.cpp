@@ -17,15 +17,8 @@ Bomb::~Bomb() {
 
 void Bomb::draw() {
     glColor3f(0.0, 0.0, 0.0);
-        
-    glBegin(GL_POLYGON);    
-        GLfloat a, px, py;
-
-        for (int i = 0; i < 360; i += 18) {
-            a = (i * M_PI) / 180.0;
-            px = cos(a) * this->radius;
-            py = sin(a) * this->radius;
-            glVertex2f(px, py);
-        }
-    glEnd();
+    
+    glPushMatrix();
+        glutSolidSphere(this->radius, 10, 10);
+    glPopMatrix();
 }

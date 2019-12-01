@@ -101,6 +101,12 @@ void init(void) {
     /* Seleciona cor de fundo */
     glClearColor(1, 1, 1, 0);
 
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_TEXTURE_2D);
+    glShadeModel(GL_SMOOTH);
+
+    glDepthFunc(GL_LEQUAL);
+
     /* Inicializar sistema de viz */
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
@@ -116,10 +122,10 @@ void display(void) {
     glLoadIdentity();
 
     gluLookAt(
-        player->getCx(), player->getCy(), 5,
+        player->getCx(), player->getCy(), player->getRadius(),
 
-        player->getCx() + (player->getRadius() / 2) * cos(player->getAngle() * M_PI / 180),   
-        player->getCy() + (player->getRadius() / 2) * sin(player->getAngle() * M_PI / 180), 
+        player->getCx() + (player->getRadius()) * cos(player->getAngle() * M_PI / 180),   
+        player->getCy() + (player->getRadius()) * sin(player->getAngle() * M_PI / 180), 
         3,
         
         0, 0, 1

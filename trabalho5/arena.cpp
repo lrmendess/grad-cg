@@ -121,15 +121,50 @@ Arena::Arena(string path) : Circle() {
 }
 
 void Arena::draw() {
-    this->drawSolidCircle();
+    // Corpo do cilindro
+    glPushMatrix();
+        glColor3d(.0, .0, 1.0);
+        glTranslatef(.0, .0, -this->getRadius() * .5);
 
-    airstrip->drawSolidLine();
-    
-    for (auto ge : groundEnemies) {
-        if (!ge->isDead()) {
-            ge->drawSolidCircle();
+        GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        // Definir uma altura decente (4o parametro)
+        gluCylinder(obj, this->getRadius(), this->getRadius(), this->getRadius(), 10, 10);
+        gluDeleteQuadric(obj);
+    glPopMatrix();
+
+    // Tampa superior
+    glPushMatrix();
+        glColor3d(.0, .0, 1.0);
+        glTranslatef(.0, .0, this->getRadius() * .5);
+
+        this->drawSolidCircle();
+    glPopMatrix();
+
+    // Tampa inferior
+    glPushMatrix();
+        glColor3d(.0, .0, 1.0);
+        glTranslatef(.0, .0, -this->getRadius() * .5);
+
+        this->drawSolidCircle();
+    glPopMatrix();
+
+    // Pista e inimigos terrestres no chao
+    glPushMatrix();
+        glTranslatef(.0, .0, -this->getRadius() * .5);
+        airstrip->drawSolidLine();
+
+        glColor3f(1.0, .5, .0);
+
+        for (auto ge : groundEnemies) {
+            if (!ge->isDead()) {
+                glPushMatrix();
+                    glTranslatef(ge->getCx(), ge->getCy(), .0);
+                    glutSolidSphere(ge->getRadius(), 20, 20);
+                glPopMatrix();
+            }
         }
-    }
+    glPopMatrix();
 
     player->drawAirplane();
     
