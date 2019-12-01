@@ -16,10 +16,14 @@ class Circle {
 
         GLfloat startX;
         GLfloat startY;
+        
+        GLuint texture;
 
         bool dead = false;
 
     public:
+        void setTexture(GLuint texture);
+        
         ~Circle();
 
         Circle();

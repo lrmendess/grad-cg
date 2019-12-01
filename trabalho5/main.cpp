@@ -6,6 +6,7 @@
 #include "tinyxml2.h"
 #include "config_reader.h"
 #include "arena.h"
+#include "imageloader.h"
 
 using namespace std;
 using namespace tinyxml2;
@@ -36,6 +37,8 @@ GLfloat enemySpeedMultiplier;
 GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
+
+GLuint texture;
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -83,6 +86,7 @@ int main(int argc, char** argv) {
     glutCreateWindow("Ace Combat: Poor Edition");
 
     init();
+    arena->setTexture(texture);
 
     glutDisplayFunc(display);
     glutKeyboardFunc(keyPress);
@@ -107,14 +111,39 @@ void init(void) {
         arena->getCx() - arena->getRadius(),
         arena->getCx() + arena->getRadius(),
         arena->getCy() - arena->getRadius(),
-        arena->getCy() + arena->getRadius(), -1.0, 1.0);
+        arena->getCy() + arena->getRadius(), -800.0, 800.0);
+        
+    const char* filename = "earth.bmp";
+        
+    Image* image = loadBMP(filename);
+
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
+    glTexImage2D(GL_TEXTURE_2D,                            // Always GL_TEXTURE_2D
+                             0,                            // 0 for now
+                             GL_RGB,                       // Format OpenGL uses for image
+                             image->width, image->height,  // Width and height
+                             0,                            // The border of the image
+                             GL_RGB,                       // GL_RGB, because pixels are stored in RGB format
+                             GL_UNSIGNED_BYTE,             // GL_UNSIGNED_BYTE, because pixels are stored
+                                                           // as unsigned numbers
+                             image->pixels);               // The actual pixel data
+    delete image;
 }
 
 void display(void) {
     /* Limpar todos os pixels */
     glClear(GL_COLOR_BUFFER_BIT);
 
+    glPushMatrix();
+    glRotatef(45.0,1.0,0.0,0.0);
+
     arena->draw();
+    
+    glPopMatrix();
 
     if (player->getPoints() == arena->getGroundEnemies().size()) {
         string result("WIN");
