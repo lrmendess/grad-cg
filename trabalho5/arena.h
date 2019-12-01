@@ -28,14 +28,10 @@ class Arena : public Circle {
         Line* airstrip  = nullptr;
         list<Circle*> groundEnemies;
         list<Enemy*> airEnemies;
-        
-        GLuint arenaTexture;
-        GLuint projTexture;
-        GLuint bombTexture;
 
     public:
         ~Arena();
-        Arena(string path, GLuint arenaTexture, GLuint projTexture, GLuint bombTexture);
+        Arena(string path);
 
         Player* getPlayer() { return player; }
         Line* getAirstrip() { return airstrip; }

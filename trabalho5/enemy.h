@@ -44,12 +44,9 @@ class Enemy {
         /* Projeteis */
         list<Projectile*> projectiles;
         
-        /* Texture */
-        GLuint projTexture;
-        
     public:
         ~Enemy();
-        Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius, GLuint projTexture);
+        Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
 
         GLfloat getCx() { return cx; }
         void setCx(GLfloat cx) { this->cx = cx; }
@@ -70,7 +67,7 @@ class Enemy {
         void setCannonAngle(GLfloat cannonAngle) { this->cannonAngle = cannonAngle; }
 
         GLboolean isDead() { return dead; }
-        
+
         void moveX(GLfloat angle, GLfloat dt);
         void move(GLfloat mul, GLfloat dt);
 

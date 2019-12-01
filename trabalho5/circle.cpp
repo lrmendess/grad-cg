@@ -23,8 +23,18 @@ Circle::Circle(const GLfloat cx, const GLfloat cy, const GLfloat radius, const G
 }
 
 void Circle::drawSolidCircle() {
-    glColor3f(color[0], color[1], color[2]);
-
+    //glColor3f(color[0], color[1], color[2]);
+    
+    glColor3f(1,1,1);
+    
+    glBindTexture(GL_TEXTURE_2D, texture);
+    
+    GLUquadricObj* obj = gluNewQuadric();
+        gluQuadricNormals(obj, GLU_SMOOTH);
+        gluQuadricTexture(obj, texture);
+        gluCylinder(obj, this->radius, this->radius, this->radius * 2, 360, 360);
+        gluDeleteQuadric(obj);    
+/*
     glBegin(GL_POLYGON);
         GLfloat angle, px, py;
 
@@ -32,9 +42,10 @@ void Circle::drawSolidCircle() {
             angle = (i * M_PI) / 180.0;
             px = cx + (cos(angle) * radius);
             py = cy + (sin(angle) * radius);
-            glVertex2f(px, py);
+            glVertex3f(px, py, 0);
+            glVertex3f(px, py, 500);
         }
-    glEnd();
+    glEnd();*/
 }
 
 void Circle::reset() {

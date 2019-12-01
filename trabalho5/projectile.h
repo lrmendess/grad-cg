@@ -18,12 +18,10 @@ class Projectile {
         GLfloat angle       = 0.0;
         GLfloat speed       = 0.0;
         GLfloat radius      = 0.0;
-        
-        GLuint texture;
 
     public:
-        Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane, GLuint texture);
-        Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane, GLuint texture);
+        Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane);
+        Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane);
         ~Projectile();
 
         GLfloat getCx() { return cx; }

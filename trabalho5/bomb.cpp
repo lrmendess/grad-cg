@@ -1,6 +1,6 @@
 #include "bomb.h"
 
-Bomb::Bomb(Player* player, GLuint texture) {
+Bomb::Bomb(Player* player) {
     this->cx = player->getCx();
     this->cy = player->getCy();
     this->angle = player->getAngle();
@@ -9,8 +9,6 @@ Bomb::Bomb(Player* player, GLuint texture) {
     this->startRadius = this->radius;
     this->radiusSpeed = (this->radius / 2 - this->radius) / 2.0;
     this->timeReleased = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
-    
-    this->texture = texture;
 }
 
 Bomb::~Bomb() {
@@ -19,10 +17,15 @@ Bomb::~Bomb() {
 
 void Bomb::draw() {
     glColor3f(0.0, 0.0, 0.0);
-    
-    glBindTexture(GL_TEXTURE_2D, this->texture);
-    
-    glPushMatrix();
-        glutSolidSphere(this->radius, 10, 10);
-    glPopMatrix();
+        
+    glBegin(GL_POLYGON);    
+        GLfloat a, px, py;
+
+        for (int i = 0; i < 360; i += 18) {
+            a = (i * M_PI) / 180.0;
+            px = cos(a) * this->radius;
+            py = sin(a) * this->radius;
+            glVertex2f(px, py);
+        }
+    glEnd();
 }
