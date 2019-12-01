@@ -103,6 +103,7 @@ void init(void) {
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
+    glEnable(GL_LIGHTING);
     glShadeModel(GL_SMOOTH);
 
     glDepthFunc(GL_LEQUAL);
@@ -113,6 +114,11 @@ void init(void) {
 
     GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
     gluPerspective(90, aspectRatio, 1, arena->getRadius() * 2);
+
+    glEnable(GL_LIGHT0);
+    
+    GLfloat lightPosition[] = { .0, .0, .0, 1.0 };
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
 }
 
 void display(void) {
