@@ -121,13 +121,13 @@ Arena::Arena(string path) : Circle() {
 }
 
 void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture) {
+    glColor3f(1.0, 1.0, 1.0);
+    
     // Corpo do Cilindro
     glPushMatrix();
         glTranslatef(.0, .0, -this->getRadius() * .5);
         
         glEnable(GL_TEXTURE_2D);
-        
-        glColor3f(1,1,1);
         glBindTexture(GL_TEXTURE_2D, arenaTexture);
         
         GLUquadricObj* obj = gluNewQuadric();
@@ -140,6 +140,8 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
             
         glDisable(GL_TEXTURE_2D);
     glPopMatrix();
+    
+    glColor3f(0.0, 0.0, 1.0);
   
     // Tampa superior
     glPushMatrix();
@@ -147,6 +149,8 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
 
         this->drawSolidCircle();
     glPopMatrix();
+    
+    glColor3f(0.0, 0.0, 1.0);
 
     // Tampa inferior
     glPushMatrix();
@@ -154,6 +158,8 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
 
         this->drawSolidCircle();
     glPopMatrix();
+    
+    glColor3f(1.0, 1.0, 1.0);
 
     // Pista e inimigos terrestres no chao
     glPushMatrix();
@@ -161,16 +167,12 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
         
         airstrip->drawSolidLine();
 
-        glColor3f(1.0, .5, .0);
-
         for (auto ge : groundEnemies) {
             if (!ge->isDead()) {
                 glPushMatrix();
                     glTranslatef(ge->getCx(), ge->getCy(), .0);
                     
                     glEnable(GL_TEXTURE_2D);
-                    
-                    glColor3f(1,1,1);
                     glBindTexture(GL_TEXTURE_2D, groundEnemiesTexture);
                     
                     GLUquadricObj* obj = gluNewQuadric();
@@ -187,7 +189,6 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
         }
     glPopMatrix();
 
-    //player->drawAirplane();
     player->drawAirplane(projTexture, bombTexture);
     
     for (auto ae : airEnemies) {

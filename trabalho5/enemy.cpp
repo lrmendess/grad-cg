@@ -112,14 +112,11 @@ void Enemy::updateProjectiles(GLfloat dt) {
 
 void Enemy::drawWings() {
     glPushMatrix();
-        glColor3f(.0, .0, .0);
-        
         glScalef(.5, 2.0, .0625);
         glutSolidCube(this->radius);
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(-this->radius * .65, .0, .0);
 
         glScalef(.25, 1.25, .0625);
@@ -128,8 +125,6 @@ void Enemy::drawWings() {
 }
 
 void Enemy::drawCannon() {
-    glColor3f(0.0, 0.0, 0.0);
-
     glPushMatrix();
 		glTranslatef(this->radius, 0.0, 0);
         glRotatef(90, 0.0, 1.0, 0.0);
@@ -143,8 +138,6 @@ void Enemy::drawCannon() {
 }
 
 void Enemy::drawFuselage() {
-    glColor3f(1.0, .0, .0);
-
     glPushMatrix();
         glScalef(1.0, .25, .25);
         glutSolidSphere(this->radius, 30, 30);
@@ -152,8 +145,6 @@ void Enemy::drawFuselage() {
 }
 
 void Enemy::drawHourglass(GLfloat length) {
-    glColor3f(1.0, 1.0, .0);
-
 	glBegin(GL_TRIANGLES);
         glVertex3f(.0, .0, .0);
         glVertex3f(length, length, .0);
@@ -169,7 +160,6 @@ void Enemy::drawHourglass(GLfloat length) {
 
 void Enemy::drawLeftPropeller() {
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(.0, this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
@@ -180,7 +170,6 @@ void Enemy::drawLeftPropeller() {
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(this->radius * .5, -this->radius * .5, .0);
 
 		glPushMatrix();
@@ -204,7 +193,6 @@ void Enemy::drawLeftPropeller() {
 
 void Enemy::drawRightPropeller() {
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(.0, - this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
@@ -215,7 +203,6 @@ void Enemy::drawRightPropeller() {
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(this->radius * .5, this->radius * .5, 0);
 		
         glPushMatrix();
@@ -238,8 +225,6 @@ void Enemy::drawRightPropeller() {
 }
 
 void Enemy::drawFin() {
-    glColor3f(.0, .0, .0);
-
     glPushMatrix();
         glTranslatef(-this->radius * .65, .0, .0);
         glScalef(.25, .0625, .5);
@@ -250,8 +235,6 @@ void Enemy::drawFin() {
 }
 
 void Enemy::drawCockpit() {
-    glColor3f(.0, .0, .0);
-
     glPushMatrix();
         glTranslatef(this->radius * .5, .0, .0);
         glScalef(.375, .125, .25);
@@ -268,13 +251,21 @@ void Enemy::drawAirplane(GLuint projTexture) {
         glTranslatef(this->cx, this->cy, .0);
         glRotatef(this->angle, .0, .0, 1.0);
 
-        drawWings();
+        glColor3f(1.0, 1.0, 0.0);
+        
         drawLeftPropeller();
         drawRightPropeller();
+
+        glColor3f(0.0, 0.0, 0.0);
+
+        drawWings();
         drawCannon();
         drawCockpit();
-        drawFuselage();
         drawFin();
+    
+        glColor3f(1.0, 0.0, 0.0);
+    
+        drawFuselage();
     glPopMatrix();
 }
 

@@ -232,14 +232,11 @@ void Player::takeOffAirplane(GLint currentTime) {
 
 void Player::drawWings() {
     glPushMatrix();
-        glColor3f(.0, .0, .0);
-        
         glScalef(.5, 2.0, .125);
         glutSolidCube(this->radius);
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(-this->radius * .65, .0, .0);
 
         glScalef(.25, 1.25, .125);
@@ -248,8 +245,6 @@ void Player::drawWings() {
 }
 
 void Player::drawCannon() {
-    glColor3f(0.0, 0.0, 0.0);
-
     glPushMatrix();
 		glTranslatef(this->radius, 0.0, 0);
         glRotatef(90, 0.0, 1.0, 0.0);
@@ -263,8 +258,6 @@ void Player::drawCannon() {
 }
 
 void Player::drawFuselage() {
-    glColor3f(.0, 1.0, .0);
-
     glPushMatrix();
         glScalef(1.0, .25, .25);
         glutSolidSphere(this->radius, 30, 30);
@@ -272,8 +265,6 @@ void Player::drawFuselage() {
 }
 
 void Player::drawHourglass(GLfloat length) {
-    glColor3f(1.0, 1.0, .0);
-
 	glBegin(GL_TRIANGLES);
         glVertex3f(.0, .0, .0);
         glVertex3f(length, length, .0);
@@ -289,7 +280,6 @@ void Player::drawHourglass(GLfloat length) {
 
 void Player::drawLeftPropeller() {
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(.0, this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
@@ -300,7 +290,6 @@ void Player::drawLeftPropeller() {
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(this->radius * .5, -this->radius * .5, .0);
 
 		glPushMatrix();
@@ -324,7 +313,6 @@ void Player::drawLeftPropeller() {
 
 void Player::drawRightPropeller() {
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(.0, - this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
@@ -335,7 +323,6 @@ void Player::drawRightPropeller() {
     glPopMatrix();
 
     glPushMatrix();
-        glColor3f(.0, .0, .0);
         glTranslatef(this->radius * .5, this->radius * .5, 0);
 		
         glPushMatrix();
@@ -358,8 +345,6 @@ void Player::drawRightPropeller() {
 }
 
 void Player::drawFin() {
-    glColor3f(.0, .0, .0);
-
     glPushMatrix();
         glTranslatef(-this->radius * .65, .0, .0);
         glScalef(.25, .0625, .5);
@@ -370,8 +355,6 @@ void Player::drawFin() {
 }
 
 void Player::drawCockpit() {
-    glColor3f(.0, .0, .0);
-
     glPushMatrix();
         glTranslatef(this->radius * .5, .0, .0);
         glScalef(.375, .125, .25);
@@ -388,14 +371,22 @@ void Player::drawAirplane(GLuint projTexture, GLuint bombTexture) {
     glPushMatrix();
         glTranslatef(this->cx, this->cy, .0);
         glRotatef(this->angle, .0, .0, 1.0);
-
-        drawWings();
+        
+        glColor3f(1.0, 1.0, 0.0);
+        
         drawLeftPropeller();
         drawRightPropeller();
+
+        glColor3f(0.0, 0.0, 0.0);
+
+        drawWings();
         drawCannon();
         drawCockpit();
-        drawFuselage();
         drawFin();
+    
+        glColor3f(0.0, 1.0, 0.0);
+    
+        drawFuselage();
     glPopMatrix();
 }
 

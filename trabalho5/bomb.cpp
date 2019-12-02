@@ -15,10 +15,10 @@ Bomb::~Bomb() {
 
 }
 
-void Bomb::draw(GLuint bombTexture) {    
+void Bomb::draw(GLuint bombTexture) {     
+    glColor3f(1.0, 1.0, 1.0); 
+     
     glEnable(GL_TEXTURE_2D);
-    
-    glColor3f(1,1,1);
     glBindTexture(GL_TEXTURE_2D, bombTexture);
     
     GLUquadricObj* obj = gluNewQuadric();

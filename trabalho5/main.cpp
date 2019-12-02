@@ -117,15 +117,40 @@ void init(void) {
     glEnable(GL_DEPTH_TEST);
     
     //glEnable(GL_TEXTURE_2D);
-    //glEnable(GL_LIGHTING);
-    glShadeModel (GL_SMOOTH);
+    glEnable(GL_LIGHTING);
+    glShadeModel(GL_SMOOTH);
 
     glDepthFunc(GL_LEQUAL);
     
     arenaTexture = loadTexture("textures/stars1.bmp");
     groundEnemiesTexture = loadTexture("textures/earth.bmp");
     projTexture = loadTexture("textures/sun1.bmp");
-    bombTexture= loadTexture("textures/sun1.bmp");;
+    bombTexture= loadTexture("textures/sun1.bmp");
+    
+    glEnable(GL_LIGHT0);
+    glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    glEnable(GL_COLOR_MATERIAL);
+    glEnable(GL_NORMALIZE);
+    
+    GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
+    GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
+    GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat light_position[] = {0.0, arena->getRadius(), arena->getRadius(), 0.0};
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    
+    //GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat mat_shininess[] = {100.0};
+ 
+    //glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 }
 
 void display(void) {

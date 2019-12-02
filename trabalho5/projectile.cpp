@@ -47,9 +47,9 @@ Projectile::~Projectile() {
 }
 
 void Projectile::draw(GLuint projTexture) {
-    glEnable(GL_TEXTURE_2D);
+    glColor3f(1.0, 1.0, 1.0);
     
-    glColor3f(1,1,1);
+    glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, projTexture);
     
     GLUquadricObj* obj = gluNewQuadric();

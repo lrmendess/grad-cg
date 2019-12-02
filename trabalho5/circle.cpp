@@ -23,7 +23,7 @@ Circle::Circle(const GLfloat cx, const GLfloat cy, const GLfloat radius, const G
 }
 
 void Circle::drawSolidCircle() {
-        glColor3f(color[0], color[1], color[2]);
+        //glColor3f(color[0], color[1], color[2]);
 
         glBegin(GL_POLYGON);
             GLfloat angle, px, py;
