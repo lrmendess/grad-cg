@@ -26,7 +26,7 @@ void Bomb::draw(GLuint bombTexture) {
         gluQuadricNormals(obj, GLU_SMOOTH);
         gluQuadricTexture(obj, GLU_TRUE);
         gluQuadricOrientation(obj, GLU_OUTSIDE);
-        gluSphere(obj, this->radius, 360, 360);
+        gluSphere(obj, this->radius, 16, 16);
         gluDeleteQuadric(obj);
         
     glDisable(GL_TEXTURE_2D);

@@ -135,7 +135,7 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
             gluQuadricNormals(obj, GLU_SMOOTH);
             gluQuadricTexture(obj, GLU_TRUE);
             gluQuadricOrientation(obj, GLU_INSIDE);
-            gluCylinder(obj, this->getRadius(), this->getRadius(), this->getRadius(), 360, 360);
+            gluCylinder(obj, this->getRadius(), this->getRadius(), this->getRadius(), 360, 1);
             gluDeleteQuadric(obj);
             
         glDisable(GL_TEXTURE_2D);
@@ -178,7 +178,7 @@ void Arena::draw(GLuint arenaTexture, GLuint groundEnemiesTexture, GLuint projTe
                         gluQuadricNormals(obj, GLU_SMOOTH);
                         gluQuadricTexture(obj, GLU_TRUE);
                         gluQuadricOrientation(obj, GLU_OUTSIDE);
-                        gluSphere(obj, ge->getRadius(), 360, 360);
+                        gluSphere(obj, ge->getRadius(), 16, 16);
                         gluDeleteQuadric(obj);
                         
                     glDisable(GL_TEXTURE_2D);
