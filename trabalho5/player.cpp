@@ -9,10 +9,12 @@ Player::~Player() {
 Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
+    this->cz = 10;
     this->radius = radius;
     this->arena = arena;
     this->startX = this->cx;
     this->startY = this->cy;
+    this->startZ = this->cz;
     this->startR = radius;
 
     // Angulo inicial
@@ -77,7 +79,10 @@ void Player::move(GLfloat mul, GLfloat dt) {
     this->propellerAngle += this->speed / 8;
     this->cy = my;
     this->cx = mx;
-    this->cz = mz;
+
+    if (mz <= arena->getRadius() && mz >= 0) {
+        this->cz = mz;
+    }
 }
 
 void Player::drawProjectiles(GLuint projTexture) {

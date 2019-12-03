@@ -73,7 +73,10 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
     this->propellerAngle += this->speed / 8;
     this->cy = my;
     this->cx = mx;
-    this->cz = mz;
+
+    if (mz <= arena->getRadius() && mz >= 0) {
+        this->cz = mz;
+    }
 }
 
 void Enemy::drawProjectiles(GLuint projTexture) {
