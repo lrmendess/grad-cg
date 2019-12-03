@@ -64,7 +64,7 @@ void Player::move(GLfloat mul, GLfloat dt) {
 
     for (auto enemy : arena->getAirEnemies()) {
         if (!enemy->isDead()) {
-            GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
+            GLfloat distanceFromEnemy = d2p3d(mx, my, mz, enemy->getCx(), enemy->getCy(), enemy->getCz());
 
             GLfloat safetyDistance = enemy->getRadius() + this->radius;
             if ((distanceFromEnemy <= safetyDistance) && this->flying) {

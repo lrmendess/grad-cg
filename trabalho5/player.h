@@ -11,6 +11,7 @@
 #include "bomb.h"
 
 #define d2p(x1, y1, x2, y2) sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
+#define d2p3d(x1, y1, z1, x2, y2, z2) sqrt(pow(x1 - x2, 2) + pow (y1 - y2, 2) + pow(z1 - z2, 2))
 
 class Arena;
 class Projectile;
