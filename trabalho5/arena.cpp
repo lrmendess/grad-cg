@@ -206,6 +206,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                 glPushMatrix();
                     glTranslatef(ge->getCx(), ge->getCy(), .0);
                     
+                    // Esfera da base
                     glEnable(GL_TEXTURE_2D);
                         glMatrixMode(GL_TEXTURE);
                         glPushMatrix();
@@ -227,6 +228,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     GLfloat materialEmission2[] = {0.1, 0.1, 0.1, 1.0};
                     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission2);
                     
+                    // Haste da bandeira
                     glPushMatrix();
                         glTranslatef(0.0, 0.0, ge->getRadius());
                         
@@ -239,6 +241,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                             gluCylinder(stem, ge->getRadius() / 12, ge->getRadius() / 12, ge->getRadius() / 1.5, 16, 16);
                         gluDeleteQuadric(stem);
                         
+                        // Bandeira
                         glPushMatrix();
                             glTranslatef(0.0, ge->getRadius() / 8, ge->getRadius() / 1.5);
                             glScalef(1.0, ge->getRadius() / 4, ge->getRadius() / 8);
