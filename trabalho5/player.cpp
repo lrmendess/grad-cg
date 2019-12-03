@@ -28,9 +28,29 @@ void Player::moveX(GLfloat angle, GLfloat dt) {
     this->angle += angle * dt;
 }
 
+void Player::moveZ(GLfloat angle, GLfloat dt) {
+    this->angleTheta += angle * dt;
+
+    if (this->angleTheta > 45) {
+        this->angleTheta = 45;
+    }
+
+    if (this->angleTheta < -45) {
+        this->angleTheta = -45;
+    }
+}
+
 void Player::move(GLfloat mul, GLfloat dt) {
-    GLfloat my = this->cy + sin(this->angle * M_PI / 180) * (mul * sin(M_PI / 4) * this->speed * dt);
-    GLfloat mx = this->cx + cos(this->angle * M_PI / 180) * (mul * cos(M_PI / 4) * this->speed * dt);
+    GLfloat fiRad = this->angle * M_PI / 180;
+    GLfloat thetaRad = this->angleTheta * M_PI / 180;
+
+    GLfloat stepX = mul * this->speed * dt * cos(M_PI / 4) * cos(M_PI / 4);
+    GLfloat stepY = mul * this->speed * dt * cos(M_PI / 4) * sin(M_PI / 4);
+    GLfloat stepZ = mul * this->speed * dt * sin(M_PI / 4);
+
+    GLfloat mx = this->cx + stepY * cos(thetaRad) * cos(fiRad);
+    GLfloat my = this->cy + stepX * cos(thetaRad) * sin(fiRad);
+    GLfloat mz = this->cz + stepZ * sin(thetaRad);
 
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
@@ -57,6 +77,7 @@ void Player::move(GLfloat mul, GLfloat dt) {
     this->propellerAngle += this->speed / 8;
     this->cy = my;
     this->cx = mx;
+    this->cz = mz;
 }
 
 void Player::drawProjectiles(GLuint projTexture) {
@@ -399,8 +420,9 @@ void Player::drawAirplane(GLuint playerTexture, GLuint projTexture, GLuint bombT
     drawBombs(bombTexture);
 
     glPushMatrix();
-        glTranslatef(this->cx, this->cy, .0);
+        glTranslatef(this->cx, this->cy, this->cz);
         glRotatef(this->angle, .0, .0, 1.0);
+        glRotatef(-this->angleTheta, .0, 1.0, .0);
         
         GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1.0};
         glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
@@ -425,12 +447,15 @@ void Player::reset() {
     points = 0;
     cx = startX;
     cy = startY;
+    cz = startZ;
     radius = startR;
 
     angle = 1 / M_PI * 180 * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),
         arena->getAirstrip()->getX2() - arena->getAirstrip()->getX1()
     );
+
+    angleTheta = 0.0;
 
     dead = false;
     flying = false;
