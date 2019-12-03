@@ -125,33 +125,29 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
     
     // Corpo do Cilindro
-    glPushMatrix();
-        glTranslatef(.0, .0, -this->getRadius() * .5);
-        
-        glEnable(GL_TEXTURE_2D);
-            glMatrixMode(GL_TEXTURE);
-            glPushMatrix();
-                glScalef(8.0, 2.0, 1.0);
-                
-                glBindTexture(GL_TEXTURE_2D, arenaTexture1);   
-                GLUquadricObj* sky  = gluNewQuadric();
-                    glColor3f(1.0, 1.0, 1.0);
-                    gluQuadricDrawStyle(sky, GLU_FILL);
-                    gluQuadricNormals(sky, GLU_SMOOTH);
-                    gluQuadricTexture(sky, GLU_TRUE);
-                    gluQuadricOrientation(sky, GLU_INSIDE);
-                    gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 1);
-                gluDeleteQuadric(sky);
-            glPopMatrix();
-            glMatrixMode(GL_MODELVIEW);
-        glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    glEnable(GL_TEXTURE_2D);
+        glMatrixMode(GL_TEXTURE);
+        glPushMatrix();
+            glScalef(8.0, 2.0, 1.0);
+            
+            glBindTexture(GL_TEXTURE_2D, arenaTexture1);   
+            GLUquadricObj* sky  = gluNewQuadric();
+                glColor3f(1.0, 1.0, 1.0);
+                gluQuadricDrawStyle(sky, GLU_FILL);
+                gluQuadricNormals(sky, GLU_SMOOTH);
+                gluQuadricTexture(sky, GLU_TRUE);
+                gluQuadricOrientation(sky, GLU_INSIDE);
+                gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 1);
+            gluDeleteQuadric(sky);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+    glDisable(GL_TEXTURE_2D);
     
     glColor3f(0.0, 0.0, 1.0);
   
     // Tampa superior
     glPushMatrix();
-        glTranslatef(.0, .0, this->getRadius() * .5);
+        glTranslatef(.0, .0, this->getRadius());
         
         glEnable(GL_TEXTURE_2D);
             glMatrixMode(GL_TEXTURE);
@@ -173,87 +169,79 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
     glPopMatrix();
 
     // Tampa inferior
-    glPushMatrix();
-        glTranslatef(.0, .0, -this->getRadius() * .5);
-
-        glEnable(GL_TEXTURE_2D);
-            glMatrixMode(GL_TEXTURE);
-            glPushMatrix();
-                glScalef(10.0, 10.0, 1.0);
-                
-                glBindTexture(GL_TEXTURE_2D, arenaTexture2);
-                GLUquadricObj* ground = gluNewQuadric();
-                    glColor3f(1.0, 1.0, 1.0);
-                    gluQuadricDrawStyle(ground, GLU_FILL);
-                    gluQuadricNormals(ground, GLU_SMOOTH);
-                    gluQuadricTexture(ground, GLU_TRUE);
-                    gluQuadricOrientation(ground, GLU_OUTSIDE);
-                    gluDisk(ground, 0, this->getRadius(), 180, 1);
-                gluDeleteQuadric(ground);
-            glPopMatrix();
-            glMatrixMode(GL_MODELVIEW);
-        glDisable(GL_TEXTURE_2D);
-    glPopMatrix();
+    glEnable(GL_TEXTURE_2D);
+        glMatrixMode(GL_TEXTURE);
+        glPushMatrix();
+            glScalef(10.0, 10.0, 1.0);
+            
+            glBindTexture(GL_TEXTURE_2D, arenaTexture2);
+            GLUquadricObj* ground = gluNewQuadric();
+                glColor3f(1.0, 1.0, 1.0);
+                gluQuadricDrawStyle(ground, GLU_FILL);
+                gluQuadricNormals(ground, GLU_SMOOTH);
+                gluQuadricTexture(ground, GLU_TRUE);
+                gluQuadricOrientation(ground, GLU_OUTSIDE);
+                gluDisk(ground, 0, this->getRadius(), 180, 1);
+            gluDeleteQuadric(ground);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+    glDisable(GL_TEXTURE_2D);
 
     // Pista e inimigos terrestres no chao
-    glPushMatrix();
-        glTranslatef(.0, .0, -this->getRadius() * .5);
-        
-        airstrip->drawSolidLine();
+    airstrip->drawSolidLine();
 
-        for (auto ge : groundEnemies) {
-            if (!ge->isDead()) {
-                glPushMatrix();
-                    glTranslatef(ge->getCx(), ge->getCy(), .0);
-                    
-                    // Esfera da base
-                    glEnable(GL_TEXTURE_2D);
-                        glMatrixMode(GL_TEXTURE);
-                        glPushMatrix();
-                            glScalef(1.0, 2.0, 1.0);
-
-                            glBindTexture(GL_TEXTURE_2D, groundEnemiesTexture);
-                            GLUquadricObj* base = gluNewQuadric();
-                                glColor3f(1.0, 1.0, 1.0);
-                                gluQuadricDrawStyle(base, GLU_FILL);
-                                gluQuadricNormals(base, GLU_SMOOTH);
-                                gluQuadricTexture(base, GLU_TRUE);
-                                gluQuadricOrientation(base, GLU_OUTSIDE);
-                                gluSphere(base, ge->getRadius(), 16, 16);
-                            gluDeleteQuadric(base);
-                        glPopMatrix();
-                        glMatrixMode(GL_MODELVIEW);
-                    glDisable(GL_TEXTURE_2D);
-                    
-                    GLfloat materialEmission2[] = {0.1, 0.1, 0.1, 1.0};
-                    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission2);
-                    
-                    // Haste da bandeira
+    for (auto ge : groundEnemies) {
+        if (!ge->isDead()) {
+            glPushMatrix();
+                glTranslatef(ge->getCx(), ge->getCy(), .0);
+                
+                // Esfera da base
+                glEnable(GL_TEXTURE_2D);
+                    glMatrixMode(GL_TEXTURE);
                     glPushMatrix();
-                        glTranslatef(0.0, 0.0, ge->getRadius());
+                        glScalef(1.0, 2.0, 1.0);
+
+                        glBindTexture(GL_TEXTURE_2D, groundEnemiesTexture);
+                        GLUquadricObj* base = gluNewQuadric();
+                            glColor3f(1.0, 1.0, 1.0);
+                            gluQuadricDrawStyle(base, GLU_FILL);
+                            gluQuadricNormals(base, GLU_SMOOTH);
+                            gluQuadricTexture(base, GLU_TRUE);
+                            gluQuadricOrientation(base, GLU_OUTSIDE);
+                            gluSphere(base, ge->getRadius(), 16, 16);
+                        gluDeleteQuadric(base);
+                    glPopMatrix();
+                    glMatrixMode(GL_MODELVIEW);
+                glDisable(GL_TEXTURE_2D);
+                
+                GLfloat materialEmission2[] = {0.1, 0.1, 0.1, 1.0};
+                glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission2);
+                
+                // Haste da bandeira
+                glPushMatrix();
+                    glTranslatef(0.0, 0.0, ge->getRadius());
+                    
+                    GLUquadricObj* stem = gluNewQuadric();
+                        glColor3f(0.0, 0.0, 0.0);
+                        gluQuadricDrawStyle(stem, GLU_FILL);
+                        gluQuadricNormals(stem, GLU_SMOOTH);
+                        gluQuadricTexture(stem, GLU_FALSE);
+                        gluQuadricOrientation(stem, GLU_OUTSIDE);
+                        gluCylinder(stem, ge->getRadius() / 12, ge->getRadius() / 12, ge->getRadius() / 1.5, 16, 16);
+                    gluDeleteQuadric(stem);
+                    
+                    // Bandeira
+                    glPushMatrix();
+                        glTranslatef(0.0, ge->getRadius() / 8, ge->getRadius() / 1.5);
+                        glScalef(1.0, ge->getRadius() / 4, ge->getRadius() / 8);
                         
-                        GLUquadricObj* stem = gluNewQuadric();
-                            glColor3f(0.0, 0.0, 0.0);
-                            gluQuadricDrawStyle(stem, GLU_FILL);
-                            gluQuadricNormals(stem, GLU_SMOOTH);
-                            gluQuadricTexture(stem, GLU_FALSE);
-                            gluQuadricOrientation(stem, GLU_OUTSIDE);
-                            gluCylinder(stem, ge->getRadius() / 12, ge->getRadius() / 12, ge->getRadius() / 1.5, 16, 16);
-                        gluDeleteQuadric(stem);
-                        
-                        // Bandeira
-                        glPushMatrix();
-                            glTranslatef(0.0, ge->getRadius() / 8, ge->getRadius() / 1.5);
-                            glScalef(1.0, ge->getRadius() / 4, ge->getRadius() / 8);
-                            
-                            glColor3f(1.0, 0.0, 0.0);
-                            glutSolidCube(ge->getRadius() / 12);
-                        glPopMatrix();
+                        glColor3f(1.0, 0.0, 0.0);
+                        glutSolidCube(ge->getRadius() / 12);
                     glPopMatrix();
                 glPopMatrix();
-            }
+            glPopMatrix();
         }
-    glPopMatrix();
+    }
 
     player->drawAirplane(playerTexture, projTexture, bombTexture);
     
