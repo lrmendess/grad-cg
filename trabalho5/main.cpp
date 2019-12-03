@@ -174,8 +174,6 @@ void display(void) {
     cameraLookCockpit[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
     cameraLookCockpit[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
     cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
-
-    cout << sin(thetaRad) << endl;
     
     gluLookAt(
         cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
@@ -248,11 +246,18 @@ void idle(void) {
     for (auto a : airEnemies) {
         if (!a->isDead()) {
             GLint turn = rand() % 18;
+            GLint upDown = rand() % 24;
 
             if (turn <= 2) {
                 a->moveX(120, diffTime);
             } else if (turn <= 6) {
                 a->moveX(-120, diffTime);
+            }
+
+            if (upDown <= 4) {
+                a->moveZ(120, diffTime);
+            } else if (upDown <= 8) {
+                a->moveZ(-120, diffTime);
             }
 
             a->move(enemySpeedMultiplier, diffTime);
