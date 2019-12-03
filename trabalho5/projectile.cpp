@@ -20,7 +20,7 @@ Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane) {
 
     GLfloat pz = player->getCz();
     pz += player->getRadius() * sin(airplaneThetaRad);
-    pz += player->getRadius() / 2 * sin(cannonThetaRad);
+    pz += player->getRadius() / 2 * sin(cannonThetaRad + airplaneThetaRad);
 
     this->cx = px;
     this->cy = py;

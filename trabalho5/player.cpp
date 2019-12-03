@@ -284,9 +284,10 @@ void Player::drawWings() {
 
 void Player::drawCannon() {
     glPushMatrix();
-		glTranslatef(this->radius, 0.0, 0);
-        glRotatef(90, 0.0, 1.0, 0.0);
+		glTranslatef(this->radius, .0, .0);
+        glRotatef(90, .0, 1.0, 0.0);
 		glRotatef(-this->cannonAngle, 1.0, 0.0, 0.0);
+        glRotatef(-this->cannonAngleTheta, .0, 1.0, .0);
 
         GLUquadricObj* cannon = gluNewQuadric();
             glColor3f(0.0, 0.0, 0.0);
@@ -477,6 +478,7 @@ void Player::reset() {
 
     speed = 0.0;
     cannonAngle = 0.0;
+    cannonAngleTheta = 0.0;
 
     projectiles.clear();
     bombs.clear();
