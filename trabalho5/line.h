@@ -2,6 +2,7 @@
 #define LINE_H
 
 #include <GL/glut.h>
+#include <cmath>
 
 class Line {
     private:
@@ -21,7 +22,7 @@ class Line {
         GLfloat getX2() { return x2; }
         GLfloat getY2() { return y2; }
 
-        void drawSolidLine();
+        void drawSolidLine(GLuint airstripTexture);
 };
 
 #endif

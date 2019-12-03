@@ -39,7 +39,7 @@ class Arena : public Circle {
         list<Circle*>& getGroundEnemies() { return groundEnemies; }
         list<Enemy*>& getAirEnemies() { return airEnemies; }
 
-        void draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture);
+        void draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airstripTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture);
 };
 
 #endif

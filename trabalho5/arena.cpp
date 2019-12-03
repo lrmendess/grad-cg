@@ -120,7 +120,7 @@ Arena::Arena(string path) : Circle() {
     }
 }
 
-void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture) {
+void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airstripTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture) {
     GLfloat materialEmission[] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
     
@@ -188,7 +188,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
     glDisable(GL_TEXTURE_2D);
 
     // Pista e inimigos terrestres no chao
-    airstrip->drawSolidLine();
+    airstrip->drawSolidLine(airstripTexture);
 
     for (auto ge : groundEnemies) {
         if (!ge->isDead()) {

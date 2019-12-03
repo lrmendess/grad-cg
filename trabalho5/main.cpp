@@ -42,6 +42,7 @@ GLfloat oldTimeFlying;
 GLuint arenaTexture1;
 GLuint arenaTexture2;
 GLuint playerTexture;
+GLuint airstripTexture;
 GLuint airEnemiesTexture;
 GLuint groundEnemiesTexture;
 GLuint projTexture;
@@ -132,6 +133,7 @@ void init(void) {
     arenaTexture1 = loadTexture("textures/sky.bmp");
     arenaTexture2 = loadTexture("textures/sand.bmp");
     playerTexture = loadTexture("textures/greencamo.bmp");
+    airstripTexture = loadTexture("textures/road.bmp");
     airEnemiesTexture = loadTexture("textures/redcamo.bmp");
     groundEnemiesTexture = loadTexture("textures/wood.bmp");
     projTexture = loadTexture("textures/sun1.bmp");
@@ -193,7 +195,7 @@ void display(void) {
         0, 0, 1
     );
 
-    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture);
+    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture);
 
     if (player->getPoints() == arena->getGroundEnemies().size()) {
         string result("WIN");
