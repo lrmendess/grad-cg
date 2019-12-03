@@ -158,20 +158,34 @@ void display(void) {
     glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    /* Camera do Cockpit */
+    GLfloat fiRad = player->getAngle() * M_PI / 180;
+    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+
+    GLfloat cameraEyeCockpit[3];
+    GLfloat cameraLookCockpit[3];
+    GLfloat upCockpit = 1;
+
+    cameraEyeCockpit[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
+    cameraEyeCockpit[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
+    cameraEyeCockpit[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
+
+    cameraLookCockpit[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
+    cameraLookCockpit[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
+    cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
+
+    cout << sin(thetaRad) << endl;
     
     gluLookAt(
-        player->getCx(), player->getCy(), player->getRadius(),
+        cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
 
-        player->getCx() + (player->getRadius()) * cos(player->getAngle() * M_PI / 180),   
-        player->getCy() + (player->getRadius()) * sin(player->getAngle() * M_PI / 180), 
-        3,
+        cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
         
         0, 0, 1
     );
 
     arena->draw(arenaTexture, groundEnemiesTexture, projTexture, bombTexture);
-    
-    glPopMatrix();
 
     if (player->getPoints() == arena->getGroundEnemies().size()) {
         string result("WIN");
@@ -257,6 +271,14 @@ void idle(void) {
         // D
         if (keyboard['d']) {
             player->moveX(-120, diffTime);
+        }
+
+        if (keyboard['w']) {
+            player->moveZ(120, diffTime);
+        }
+
+        if (keyboard['s']) {
+            player->moveZ(-120, diffTime);
         }
 
         if (keyboard['='] || keyboard['+']) {

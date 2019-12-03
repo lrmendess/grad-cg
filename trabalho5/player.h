@@ -21,19 +21,23 @@ class Player {
         Arena* arena            = nullptr;
         GLfloat cx              = 0.0;
         GLfloat cy              = 0.0;
+        GLfloat cz              = 0.0; //
         GLfloat radius          = 0.0;
 
         /* Inicialmente o aviao esta no chao */
         GLfloat speed           = 0.0;
         GLfloat angle           = 0.0;
+        GLfloat angleTheta      = 0.0; //
         GLboolean flying        = false;
         GLboolean takeOff       = false;
         GLboolean dead          = false;
         GLfloat startX          = 0.0;
         GLfloat startY          = 0.0;
+        GLfloat startZ          = 0.0; //
         GLfloat startR          = 0.0;
         GLfloat ax              = 0.0;
         GLfloat ay              = 0.0;
+        GLfloat az              = 0.0;
 
         /* Ponto onde o aviao deve levantar voo */
         GLfloat midAirstripX    = 0.0;
@@ -49,10 +53,12 @@ class Player {
 
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
+        GLfloat cannonAngleTheta= 0.0;
 
         /* Ultima posicao registrada do mouse */
         GLfloat mouseX          = 0.0;
         GLfloat mouseY          = 0.0;
+        GLfloat mouseZ          = 0.0;
 
         GLint points            = 0;
 
@@ -74,8 +80,14 @@ class Player {
         GLfloat getCy() { return cy; }
         void setCy(GLfloat cy) { this->cy = cy; }
 
+        GLfloat getCz() { return cz; }
+        void setCz(GLfloat cz) { this->cz = cz; }
+
         GLfloat getAngle() { return angle; }
         void setAngle(GLfloat angle) { this->angle = angle; }
+
+        GLfloat getAngleTheta() { return angleTheta; }
+        void setAngleTheta(GLfloat angleTheta) { this->angleTheta = angleTheta; }
 
         GLfloat getRadius() { return radius; }
         void setRadius(GLfloat radius) { this->radius = radius; }
@@ -101,6 +113,7 @@ class Player {
         GLboolean isDead() { return dead; }
 
         void moveX(GLfloat angle, GLfloat dt);
+        void moveZ(GLfloat angle, GLfloat dt);
         void move(GLfloat mul, GLfloat dt);
 
         void fire(GLfloat mul, GLfloat mulVelAirplane);
