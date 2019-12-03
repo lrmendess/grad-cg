@@ -92,13 +92,13 @@ class Enemy {
         void drawWings();
         void drawCannon();
         void drawProjectiles(GLuint projTexture);
-        void drawFuselage();
+        void drawFuselage(GLuint airEnemiesTexture);
         void drawHourglass(GLfloat length);
         void drawLeftPropeller();
         void drawRightPropeller();
         void drawFin();
         void drawCockpit();
-        void drawAirplane(GLuint projTexture);
+        void drawAirplane(GLuint airEnemiesTexture, GLuint projTexture);
 
         void reset();
 };

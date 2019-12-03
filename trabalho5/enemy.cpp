@@ -131,16 +131,19 @@ void Enemy::updateProjectiles(GLfloat dt) {
     }
 }
 
-void Enemy::drawWings() {
+void Enemy::drawWings() {    
     glPushMatrix();
         glScalef(.5, 2.0, .0625);
+        
+        glColor3f(0.0, 0.0, 0.0);
         glutSolidCube(this->radius);
     glPopMatrix();
 
     glPushMatrix();
         glTranslatef(-this->radius * .65, .0, .0);
-
         glScalef(.25, 1.25, .0625);
+        
+        glColor3f(0.0, 0.0, 0.0);
         glutSolidCube(this->radius);
     glPopMatrix();
 }
@@ -151,21 +154,38 @@ void Enemy::drawCannon() {
         glRotatef(90, 0.0, 1.0, 0.0);
 		glRotatef(-this->cannonAngle, 1.0, 0.0, 0.0);
 
-        GLUquadricObj* obj = gluNewQuadric();
-        gluQuadricNormals(obj, GLU_SMOOTH);
-        gluCylinder(obj, this->radius / 12, this->radius / 12, this->radius / 2, 10, 10);
-        gluDeleteQuadric(obj);
+        GLUquadricObj* cannon = gluNewQuadric();
+            glColor3f(0.0, 0.0, 0.0);
+            gluQuadricDrawStyle(cannon, GLU_FILL);
+            gluQuadricNormals(cannon, GLU_SMOOTH);
+            gluQuadricTexture(cannon, GLU_FALSE);
+            gluQuadricOrientation(cannon, GLU_OUTSIDE);
+            gluCylinder(cannon, this->radius / 12, this->radius / 12, this->radius / 2, 16, 16);
+        gluDeleteQuadric(cannon);
     glPopMatrix();
 }
 
-void Enemy::drawFuselage() {
+void Enemy::drawFuselage(GLuint airEnemiesTexture) {
     glPushMatrix();
         glScalef(1.0, .25, .25);
-        glutSolidSphere(this->radius, 30, 30);
+        
+        glEnable(GL_TEXTURE_2D);
+            glBindTexture(GL_TEXTURE_2D, airEnemiesTexture);
+            GLUquadricObj* fuselage = gluNewQuadric();
+                glColor3f(1.0, 1.0, 1.0);
+                gluQuadricDrawStyle(fuselage, GLU_FILL);
+                gluQuadricNormals(fuselage, GLU_SMOOTH);
+                gluQuadricTexture(fuselage, GLU_TRUE);
+                gluQuadricOrientation(fuselage, GLU_OUTSIDE);
+                gluSphere(fuselage, this->radius, 16, 16);
+            gluDeleteQuadric(fuselage);
+        glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
 void Enemy::drawHourglass(GLfloat length) {
+    glColor3f(1.0, 1.0, 0.0);
+    
 	glBegin(GL_TRIANGLES);
         glVertex3f(.0, .0, .0);
         glVertex3f(length, length, .0);
@@ -184,10 +204,14 @@ void Enemy::drawLeftPropeller() {
         glTranslatef(.0, this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
-        GLUquadricObj* obj = gluNewQuadric();
-        gluQuadricNormals(obj, GLU_SMOOTH);
-        gluCylinder(obj, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
-        gluDeleteQuadric(obj);
+        GLUquadricObj* stem = gluNewQuadric();
+            glColor3f(0.0, 0.0, 0.0);
+            gluQuadricDrawStyle(stem, GLU_FILL);
+            gluQuadricNormals(stem, GLU_SMOOTH);
+            gluQuadricTexture(stem, GLU_FALSE);
+            gluQuadricOrientation(stem, GLU_OUTSIDE);
+            gluCylinder(stem, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
+        gluDeleteQuadric(stem);
     glPopMatrix();
 
     glPushMatrix();
@@ -217,10 +241,14 @@ void Enemy::drawRightPropeller() {
         glTranslatef(.0, - this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
-        GLUquadricObj* obj = gluNewQuadric();
-        gluQuadricNormals(obj, GLU_SMOOTH);
-        gluCylinder(obj, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
-        gluDeleteQuadric(obj);
+        GLUquadricObj* stem = gluNewQuadric();
+            glColor3f(0.0, 0.0, 0.0);
+            gluQuadricDrawStyle(stem, GLU_FILL);
+            gluQuadricNormals(stem, GLU_SMOOTH);
+            gluQuadricTexture(stem, GLU_FALSE);
+            gluQuadricOrientation(stem, GLU_OUTSIDE);
+            gluCylinder(stem, this->radius * .0625, this->radius * .0625, this->radius * .5, 16, 16);
+        gluDeleteQuadric(stem);
     glPopMatrix();
 
     glPushMatrix();
@@ -251,6 +279,7 @@ void Enemy::drawFin() {
         glScalef(.25, .0625, .5);
         glTranslatef(.0, .0, this->radius * .5);
 
+        glColor3f(0.0, 0.0, 0.0);
         glutSolidCube(this->radius);
     glPopMatrix();
 }
@@ -260,12 +289,13 @@ void Enemy::drawCockpit() {
         glTranslatef(this->radius * .5, .0, .0);
         glScalef(.375, .125, .25);
 
+        glColor3f(0.0, 0.0, 0.0);
         glutSolidSphere(this->radius, 20, 20);
     glPopMatrix();
 }
 
 /* Desenha todo o corpo do aviao */
-void Enemy::drawAirplane(GLuint projTexture) {
+void Enemy::drawAirplane(GLuint airEnemiesTexture, GLuint projTexture) {
     drawProjectiles(projTexture);
 
     glPushMatrix();
@@ -273,21 +303,21 @@ void Enemy::drawAirplane(GLuint projTexture) {
         glRotatef(this->angle, .0, .0, 1.0);
         glRotatef(-this->angleTheta, .0, 1.0, .0);
 
-        glColor3f(1.0, 1.0, 0.0);
+        GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
         
         drawLeftPropeller();
         drawRightPropeller();
-
-        glColor3f(0.0, 0.0, 0.0);
 
         drawWings();
         drawCannon();
         drawCockpit();
         drawFin();
+        
+        GLfloat materialEmission2[] = {0.1, 0.1, 0.1, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission2);
     
-        glColor3f(1.0, 0.0, 0.0);
-    
-        drawFuselage();
+        drawFuselage(airEnemiesTexture);
     glPopMatrix();
 }
 
