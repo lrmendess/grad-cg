@@ -338,14 +338,20 @@ void idle(void) {
 
 void mouseMovement(int x, int y) {
     if (!player->isTakeOff() && player->isFlying() && !player->isDead()) {
-        GLfloat distance = player->getMouseX() - x;
+        GLfloat distanceX = player->getMouseX() - x;
+        GLfloat distanceY = player->getMouseY() - y;
 
-        if (player->getCannonAngle() + distance >= -45 && player->getCannonAngle() + distance <= 45) {
-            player->setCannonAngle(player->getCannonAngle() + distance / 3);
+        if (player->getCannonAngle() + distanceX >= -30 && player->getCannonAngle() + distanceX <= 30) {
+            player->setCannonAngle(player->getCannonAngle() + distanceX / 3);
+        }
+
+        if (player->getCannonAngleTheta() + distanceY >= -30 && player->getCannonAngleTheta() + distanceY <= 30) {
+            player->setCannonAngleTheta(player->getCannonAngleTheta() + distanceY / 3);
         }
     }
 
     player->setMouseX(x);
+    player->setMouseY(y);
 }
 
 void mouseAction(int button, int state, int x, int y) {
