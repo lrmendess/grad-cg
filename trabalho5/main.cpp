@@ -39,7 +39,10 @@ GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
 
-GLuint arenaTexture;
+GLuint arenaTexture1;
+GLuint arenaTexture2;
+GLuint playerTexture;
+GLuint airEnemiesTexture;
 GLuint groundEnemiesTexture;
 GLuint projTexture;
 GLuint bombTexture;
@@ -106,6 +109,10 @@ int main(int argc, char** argv) {
 void init(void) {
     /* Seleciona cor de fundo */
     glClearColor(1, 1, 1, 0);
+    
+    /* Inicializar matriz de texturas */
+    glMatrixMode(GL_TEXTURE);
+    glLoadIdentity();
 
     /* Inicializar sistema de viz */
     glMatrixMode(GL_PROJECTION);
@@ -122,8 +129,11 @@ void init(void) {
 
     glDepthFunc(GL_LEQUAL);
     
-    arenaTexture = loadTexture("textures/stars1.bmp");
-    groundEnemiesTexture = loadTexture("textures/earth.bmp");
+    arenaTexture1 = loadTexture("textures/sky.bmp");
+    arenaTexture2 = loadTexture("textures/sand.bmp");
+    playerTexture = loadTexture("textures/greencamo.bmp");
+    airEnemiesTexture = loadTexture("textures/redcamo.bmp");
+    groundEnemiesTexture = loadTexture("textures/wood.bmp");
     projTexture = loadTexture("textures/sun1.bmp");
     bombTexture= loadTexture("textures/sun1.bmp");
     
@@ -135,7 +145,7 @@ void init(void) {
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_position[] = {0.0, arena->getRadius(), arena->getRadius(), 0.0};
+    GLfloat light_position[] = {arena->getRadius(), arena->getRadius(), arena->getRadius(), 0.0};
 
     glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
 
@@ -144,18 +154,18 @@ void init(void) {
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light_position);
     
-    //GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
     GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat mat_shininess[] = {100.0};
  
-    //glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
+    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 }
 
 void display(void) {
     /* Limpar todos os pixels */
-    glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
@@ -169,9 +179,7 @@ void display(void) {
         0, 0, 1
     );
 
-    arena->draw(arenaTexture, groundEnemiesTexture, projTexture, bombTexture);
-    
-    glPopMatrix();
+    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture);
 
     if (player->getPoints() == arena->getGroundEnemies().size()) {
         string result("WIN");

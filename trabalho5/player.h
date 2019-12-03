@@ -118,13 +118,13 @@ class Player {
         void drawCannon();
         void drawProjectiles(GLuint projTexture);
         void drawBombs(GLuint bombTexture);
-        void drawFuselage();
+        void drawFuselage(GLuint playerTexture);
         void drawHourglass(GLfloat length);
         void drawLeftPropeller();
         void drawRightPropeller();
         void drawFin();
         void drawCockpit();
-        void drawAirplane(GLuint projTexture, GLuint bombTexture);
+        void drawAirplane(GLuint playerTexture, GLuint projTexture, GLuint bombTexture);
 
         void reset();
 };
