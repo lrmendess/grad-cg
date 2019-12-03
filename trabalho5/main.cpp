@@ -265,9 +265,9 @@ void idle(void) {
             }
 
             if (upDown <= 4) {
-                a->moveZ(120, diffTime);
+                a->moveZ(30, diffTime);
             } else if (upDown <= 8) {
-                a->moveZ(-120, diffTime);
+                a->moveZ(-30, diffTime);
             }
 
             a->move(enemySpeedMultiplier, diffTime);

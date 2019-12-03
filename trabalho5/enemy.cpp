@@ -82,7 +82,9 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
 void Enemy::drawProjectiles(GLuint projTexture) {
     for (auto p : this->projectiles) {
         glPushMatrix();
-            glTranslatef(p->getCx(), p->getCy(), 0.0);
+            glTranslatef(p->getCx(), p->getCy(), p->getCz());
+            glRotatef(p->getAngle(), .0, .0, 1.0);
+            glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
             p->draw(projTexture);
         glPopMatrix();
     }
@@ -104,10 +106,17 @@ void Enemy::updateProjectiles(GLfloat dt) {
     list<Projectile*> forRemove;
 
     for (auto p : this->projectiles) {
-        GLfloat projectileAngle = p->getAngle() * M_PI / 180;
+        bool canUpdate = true;
+        GLfloat projectileFiRad = p->getAngle() * M_PI / 180;
+        GLfloat projectileThetaRad = p->getAngleTheta() * M_PI / 180;
 
-        GLfloat my = p->getCy() + sin(projectileAngle) * (sin(M_PI / 4) * p->getSpeed() * dt);
-        GLfloat mx = p->getCx() + cos(projectileAngle) * (cos(M_PI / 4) * p->getSpeed() * dt);
+        GLfloat stepX = p->getSpeed() * dt * cos(M_PI / 4) * cos(M_PI / 4);
+        GLfloat stepY = p->getSpeed() * dt * cos(M_PI / 4) * sin(M_PI / 4);
+        GLfloat stepZ = p->getSpeed() * dt * sin(M_PI / 4);
+
+        GLfloat mx = p->getCx() + stepY * cos(projectileThetaRad) * cos(projectileFiRad);
+        GLfloat my = p->getCy() + stepX * cos(projectileThetaRad) * sin(projectileFiRad);
+        GLfloat mz = p->getCz() + stepZ * sin(projectileThetaRad);
 
         // Se o projetil encostar na borda, ele sera removido da lista de projeteis
         // disparados pelo player em questao
@@ -115,15 +124,16 @@ void Enemy::updateProjectiles(GLfloat dt) {
 
         Player* player = arena->getPlayer();
 
-        GLfloat distanceFromPlayer = d2p(mx, my, player->getCx(), player->getCy());
+        GLfloat distanceFromPlayer = d2p3d(mx, my, mz, player->getCx(), player->getCy(), player->getCz());
 
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(p);
         } else if(distanceFromPlayer <= player->getRadius() && player->isFlying()) {
             player->kill();
         } else {
-            p->setCy(my);
             p->setCx(mx);
+            p->setCy(my);
+            p->setCz(mz);
         }
     }
 

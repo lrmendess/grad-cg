@@ -15,7 +15,9 @@ class Projectile {
     private:
         GLfloat cx          = 0.0;
         GLfloat cy          = 0.0;
+        GLfloat cz          = 0.0;
         GLfloat angle       = 0.0;
+        GLfloat angleTheta  = 0.0;
         GLfloat speed       = 0.0;
         GLfloat radius      = 0.0;
 
@@ -30,7 +32,11 @@ class Projectile {
         GLfloat getCy() { return cy; }
         void setCy(GLfloat cy) { this->cy = cy; }
 
+        GLfloat getCz() { return cz; }
+        void setCz(GLfloat cz) { this->cz = cz; }
+
         GLfloat getAngle() { return angle; }
+        GLfloat getAngleTheta() { return angleTheta; }
         GLfloat getSpeed() { return speed; }
 
         void draw(GLuint projTexture);

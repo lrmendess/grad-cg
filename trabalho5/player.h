@@ -99,6 +99,9 @@ class Player {
         GLfloat getCannonAngle() { return cannonAngle; }
         void setCannonAngle(GLfloat cannonAngle) { this->cannonAngle = cannonAngle; }
 
+        GLfloat getCannonAngleTheta() { return cannonAngleTheta; }
+        void setCannonAngleTheta(GLfloat cannonAngleTheta) { this->cannonAngleTheta = cannonAngleTheta; }
+
         GLfloat getMouseX() { return mouseX; }
         void setMouseX(GLfloat mouseX) { this->mouseX = mouseX; }
 

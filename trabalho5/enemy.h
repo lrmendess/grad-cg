@@ -39,6 +39,7 @@ class Enemy {
 
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
+        GLfloat cannonAngleTheta= 0.0;
 
         /* Tempo para disparo */
         GLfloat maxTimeFire = 0.0;
