@@ -146,7 +146,7 @@ void Enemy::updateProjectiles(GLfloat dt) {
 }
 
 void Enemy::drawWings() {
-    GLfloat wingsEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat wingsEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat wingsColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, wingsEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wingsColor);
@@ -167,7 +167,7 @@ void Enemy::drawWings() {
 }
 
 void Enemy::drawCannon() {
-    GLfloat cannonEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat cannonEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat cannonColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, cannonEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cannonColor);
@@ -189,7 +189,7 @@ void Enemy::drawCannon() {
 }
 
 void Enemy::drawFuselage(GLuint airEnemiesTexture) {
-    GLfloat fuselageEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat fuselageEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat fuselageColor[] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, fuselageEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fuselageColor);
@@ -212,7 +212,7 @@ void Enemy::drawFuselage(GLuint airEnemiesTexture) {
 }
 
 void Enemy::drawHourglass(GLfloat length) {
-    GLfloat hourglassEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat hourglassEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat hourglassColor[] = {1.0, 1.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, hourglassEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, hourglassColor);
@@ -232,7 +232,7 @@ void Enemy::drawHourglass(GLfloat length) {
 }
 
 void Enemy::drawLeftPropeller() {
-    GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat stemEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
@@ -274,7 +274,7 @@ void Enemy::drawLeftPropeller() {
 }
 
 void Enemy::drawRightPropeller() {
-    GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat stemEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
@@ -316,7 +316,7 @@ void Enemy::drawRightPropeller() {
 }
 
 void Enemy::drawFin() {
-    GLfloat finEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat finEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat finColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, finEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, finColor);
@@ -332,7 +332,7 @@ void Enemy::drawFin() {
 }
 
 void Enemy::drawCockpit() {
-    GLfloat cockpitEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat cockpitEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat cockpitColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, cockpitEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cockpitColor);

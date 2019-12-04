@@ -145,7 +145,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                 gluQuadricNormals(sky, GLU_SMOOTH);
                 gluQuadricTexture(sky, GLU_TRUE);
                 gluQuadricOrientation(sky, GLU_INSIDE);
-                gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 1);
+                gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 60);
             gluDeleteQuadric(sky);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -178,7 +178,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     gluQuadricNormals(roof, GLU_SMOOTH);
                     gluQuadricTexture(roof, GLU_TRUE);
                     gluQuadricOrientation(roof, GLU_OUTSIDE);
-                    gluDisk(roof, 0, this->getRadius(), 180, 1);
+                    gluDisk(roof, 0, this->getRadius(), 180, 60);
                 gluDeleteQuadric(roof);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -209,7 +209,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                 gluQuadricNormals(ground, GLU_SMOOTH);
                 gluQuadricTexture(ground, GLU_TRUE);
                 gluQuadricOrientation(ground, GLU_OUTSIDE);
-                gluDisk(ground, 0, this->getRadius(), 180, 1);
+                gluDisk(ground, 0, this->getRadius(), 180, 60);
             gluDeleteQuadric(ground);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -233,7 +233,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
     // Inimigos Terrestres
     for (auto ge : groundEnemies) {
         if (!ge->isDead()) {
-            GLfloat geEmission[] = {0.1, 0.1, 0.1, 1.0};
+            GLfloat geEmission[] = {0.0, 0.0, 0.0, 1.0};
             GLfloat geColor[] = {1.0, 1.0, 1.0, 1.0};
             glMaterialfv(GL_FRONT, GL_EMISSION, geEmission);
             glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, geColor);
@@ -261,7 +261,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                 glDisable(GL_TEXTURE_2D);
                 
                 // Haste da bandeira
-                GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+                GLfloat stemEmission[] = {0.0, 0.0, 0.0, 1.0};
                 GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
                 glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
                 glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
@@ -279,7 +279,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     gluDeleteQuadric(stem);
                     
                     // Bandeira
-                    GLfloat flagEmission[] = {0.1, 0.1, 0.1, 1.0};
+                    GLfloat flagEmission[] = {0.0, 0.0, 0.0, 1.0};
                     GLfloat flagColor[] = {1.0, 0.0, 0.0, 1.0};
                     glMaterialfv(GL_FRONT, GL_EMISSION, flagEmission);
                     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, flagColor);

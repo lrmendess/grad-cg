@@ -285,7 +285,7 @@ void Player::takeOffAirplane(GLint currentTime) {
 }
 
 void Player::drawWings() {
-    GLfloat wingsEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat wingsEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat wingsColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, wingsEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wingsColor);
@@ -306,7 +306,7 @@ void Player::drawWings() {
 }
 
 void Player::drawCannon() {
-    GLfloat cannonEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat cannonEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat cannonColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, cannonEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cannonColor);
@@ -329,11 +329,22 @@ void Player::drawCannon() {
 }
 
 void Player::drawFuselage(GLuint playerTexture) {
-    GLfloat fuselageEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat fuselageEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat fuselageColor[] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, fuselageEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fuselageColor);
     glColor3f(1.0, 1.0, 1.0);
+    
+    glPushMatrix();    
+        glTranslatef(this->radius, 0.0, 0);
+        glRotatef(90, 0.0, 1.0, 0.0);
+        
+        GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
+        GLfloat light1_direction[] = {0.0, 0.0, 1.0};
+        
+        glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);    
+    glPopMatrix();
     
     glPushMatrix();
         glScalef(1.0, .25, .25);
@@ -352,7 +363,7 @@ void Player::drawFuselage(GLuint playerTexture) {
 }
 
 void Player::drawHourglass(GLfloat length) {
-    GLfloat hourglassEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat hourglassEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat hourglassColor[] = {1.0, 1.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, hourglassEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, hourglassColor);
@@ -372,7 +383,7 @@ void Player::drawHourglass(GLfloat length) {
 }
 
 void Player::drawLeftPropeller() {
-    GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat stemEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
@@ -414,7 +425,7 @@ void Player::drawLeftPropeller() {
 }
 
 void Player::drawRightPropeller() {
-    GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat stemEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
@@ -456,7 +467,7 @@ void Player::drawRightPropeller() {
 }
 
 void Player::drawFin() {
-    GLfloat finEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat finEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat finColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, finEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, finColor);
@@ -472,7 +483,7 @@ void Player::drawFin() {
 }
 
 void Player::drawCockpit() {
-    GLfloat cockpitEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat cockpitEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat cockpitColor[] = {0.0, 0.0, 0.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, cockpitEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cockpitColor);

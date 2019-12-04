@@ -144,38 +144,38 @@ void init(void) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     
+    GLfloat lightModel[] = {0.0, 0.0, 0.0, 1.0};
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, lightModel);
+    
     glEnable(GL_LIGHT0);
     //glColorMaterial(GL_FRONT, GL_DIFFUSE);
-    //glEnable(GL_COLOR_MATERIAL);
+    //glDisable(GL_COLOR_MATERIAL);
     
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat light0_position[] = {arena->getRadius(), arena->getRadius(), arena->getRadius(), 0.0};
-    GLfloat light1_position[] = {};
-    GLfloat light1_direction[] = {};
-    GLfloat light1_angle[] = {45.0};
+    GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
+    GLfloat light1_direction[] = {0.0, 0.0, 1.0};
+    GLfloat light1_angle[] = {20.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-    
     glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
     glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
-    //glLightfv(GL_LIGHT1, GL_SPOT_EXPONENT, light1_direction);
     glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
     
-    GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat mat_shininess[] = {100.0};
+    GLfloat materialSpecular[] = {1.0, 1.0, 1.0, 1.0};
+    GLfloat materialShininess[] = {100.0};
  
-    glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+    glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
+    glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess);
 }
 
 void display(void) {
@@ -183,30 +183,6 @@ void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    
-    /* Modo noturno */
-    if (nightMode) {
-        glDisable(GL_LIGHT0);
-        
-        GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-        //glEnable(GL_LIGHT1);
-        
-        //GLfloat light1_position[] = {arena->getPlayer()->getCx(), arena->getPlayer()->getCy(), arena->getPlayer()->getCz(), 0.0};
-        //GLfloat light1_direction[] = {arena->getPlayer()->getCx() + 100, arena->getPlayer()->getCy() + 100, arena->getPlayer()->getCz(), 0.0};
-        //GLfloat light1_angle[] = {45.0};
-        
-        //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-        //glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
-        //glLightfv(GL_LIGHT1, GL_SPOT_EXPONENT, light1_direction);
-        //glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
-    } else {
-        glEnable(GL_LIGHT0);
-        
-        GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
-        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-        //glDisable(GL_LIGHT1);
-    }
 
     /* Camera do Cockpit */
     if (toggleCamera == 1) {
@@ -226,7 +202,7 @@ void display(void) {
         cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
         
         gluLookAt(
-            cameraEyeCockpit[0] + 100, cameraEyeCockpit[1], cameraEyeCockpit[2],
+            cameraEyeCockpit[0]+100, cameraEyeCockpit[1], cameraEyeCockpit[2],
 
             cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
             
@@ -238,6 +214,15 @@ void display(void) {
     /* Camera em Terceira Pessoa */    
     } else if (toggleCamera == 3) {
         
+    }
+    
+    /* Modo noturno */
+    if (nightMode) {
+        glDisable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+    } else {
+        glEnable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
     }
 
     arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);

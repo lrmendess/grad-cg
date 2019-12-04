@@ -16,7 +16,7 @@ Bomb::~Bomb() {
 }
 
 void Bomb::draw(GLuint bombTexture) {
-    GLfloat bombEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat bombEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat bombColor[] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, bombEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bombColor);

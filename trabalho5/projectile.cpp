@@ -65,7 +65,7 @@ Projectile::~Projectile() {
 }
 
 void Projectile::draw(GLuint projTexture) {
-    GLfloat projEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat projEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat projColor[] = {1.0, 1.0, 1.0, 1.0};
     glMaterialfv(GL_FRONT, GL_EMISSION, projEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, projColor);
