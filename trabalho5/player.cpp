@@ -148,7 +148,7 @@ void Player::updateProjectiles(GLfloat dt) {
     // Sendo removido da lista e tendo sua memoria liberada, ele nao sera mais desenhado
     for (auto p : forRemove) {
         this->projectiles.remove(p);
-        delete(p);
+        // delete(p);
     }
 }
 
@@ -161,8 +161,8 @@ void Player::drawBombs(GLuint bombTexture) {
     }
 }
 
-void Player::bomb() {
-    Bomb* bomb = new Bomb(this);
+void Player::bomb(GLfloat mulVelAirplane) {
+    Bomb* bomb = new Bomb(this, mulVelAirplane);
     bombs.push_back(bomb);
 }
 
@@ -171,10 +171,16 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
     for (auto b : this->bombs) {
         bool canUpdate = true;
-        GLfloat bombAngle = b->getAngle() * M_PI / 180;
+        GLfloat bombFiRad = b->getAngle() * M_PI / 180;
+        GLfloat bombThetaRad = .0;
 
-        GLfloat my = b->getCy() + sin(bombAngle) * (sin(M_PI / 4) * b->getSpeed() * dt);
-        GLfloat mx = b->getCx() + cos(bombAngle) * (cos(M_PI / 4) * b->getSpeed() * dt);
+        GLfloat stepX = b->getSpeed() * dt * cos(M_PI / 4) * cos(M_PI / 4);
+        GLfloat stepY = b->getSpeed() * dt * cos(M_PI / 4) * sin(M_PI / 4);
+        // GLfloat stepZ = b->getSpeed() * dt * sin(M_PI / 4);
+
+        GLfloat mx = b->getCx() + stepY * cos(bombThetaRad) * cos(bombFiRad);
+        GLfloat my = b->getCy() + stepX * cos(bombThetaRad) * sin(bombFiRad);
+        // GLfloat mz = b->getCz() + stepZ * sin(bombThetaRad);
 
         // Se a bomba encostar na borda, ela sera removido da lista de bombas
         // lancadas pelo player em questao
@@ -214,8 +220,8 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
             }
 
             if (canUpdate) {
-                b->setCy(my);
                 b->setCx(mx);
+                b->setCy(my);
                 b->setCz(b->getCz() - (9.8 * t) / 2);
             }
         }
@@ -223,7 +229,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
     for (auto b : forRemove) {
         this->bombs.remove(b);
-        delete(b);
+        // delete(b);
     }
 }
 

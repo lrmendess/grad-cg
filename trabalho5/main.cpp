@@ -363,7 +363,7 @@ void mouseAction(int button, int state, int x, int y) {
         }
 
         if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-            player->bomb();
+            player->bomb(speedMultiplier);
         }
     }
 }

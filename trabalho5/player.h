@@ -120,7 +120,7 @@ class Player {
         void move(GLfloat mul, GLfloat dt);
 
         void fire(GLfloat mul, GLfloat mulVelAirplane);
-        void bomb();
+        void bomb(GLfloat mulVelAirplane);
 
         void kill();
 

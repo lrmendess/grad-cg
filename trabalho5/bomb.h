@@ -15,12 +15,11 @@ class Bomb {
         GLfloat speed        = 0.0;
         GLfloat radius       = 0.0;
         GLfloat startRadius  = 0.0;
-        GLfloat radiusSpeed  = 0.0;
         GLfloat timeReleased = 0.0;
         
     public:
         ~Bomb();
-        Bomb(Player* player);
+        Bomb(Player* player, GLfloat mulVelAirplane);
 
         GLfloat getCx() { return cx; }
         void setCx(GLfloat cx) { this->cx = cx; }
@@ -37,7 +36,6 @@ class Bomb {
         GLfloat getAngle() { return angle; }
         GLfloat getSpeed() { return speed; }
         GLfloat getStartRadius() { return startRadius; }
-        GLfloat getRadiusSpeed() { return radiusSpeed; }
         GLfloat getTimeReleased() { return timeReleased; }
 
         void draw(GLuint bombTexture);
