@@ -316,6 +316,7 @@ void Player::drawCannon() {
 		glTranslatef(this->radius, 0.0, 0);
         glRotatef(90, 0.0, 1.0, 0.0);
 		glRotatef(-this->cannonAngle, 1.0, 0.0, 0.0);
+        glRotatef(-this->cannonAngleTheta, .0, 1.0, .0);
 
         GLUquadricObj* cannon = gluNewQuadric();
             gluQuadricDrawStyle(cannon, GLU_FILL);
@@ -511,7 +512,6 @@ void Player::reset() {
     cx = startX;
     cy = startY;
     cz = startZ;
-    radius = startR;
 
     angle = 1 / M_PI * 180 * atan2(
         arena->getAirstrip()->getY2() - arena->getAirstrip()->getY1(),

@@ -220,7 +220,7 @@ void display(void) {
         cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
         
         gluLookAt(
-            cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
+            cameraEyeCockpit[0] + 100, cameraEyeCockpit[1], cameraEyeCockpit[2],
 
             cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
             

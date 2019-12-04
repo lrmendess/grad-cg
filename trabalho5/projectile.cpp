@@ -65,18 +65,21 @@ Projectile::~Projectile() {
 }
 
 void Projectile::draw(GLuint projTexture) {
+    GLfloat projEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat projColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, projEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, projColor);
     glColor3f(1.0, 1.0, 1.0);
     
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, projTexture);
-    
-    GLUquadricObj* obj = gluNewQuadric();
-        gluQuadricDrawStyle(obj, GLU_FILL);
-        gluQuadricNormals(obj, GLU_SMOOTH);
-        gluQuadricTexture(obj, GLU_TRUE);
-        gluQuadricOrientation(obj, GLU_OUTSIDE);
-        gluSphere(obj, this->radius, 16, 16);
-        gluDeleteQuadric(obj);
+        glBindTexture(GL_TEXTURE_2D, projTexture);
         
+        GLUquadricObj* proj = gluNewQuadric();
+            gluQuadricDrawStyle(proj, GLU_FILL);
+            gluQuadricNormals(proj, GLU_SMOOTH);
+            gluQuadricTexture(proj, GLU_TRUE);
+            gluQuadricOrientation(proj, GLU_OUTSIDE);
+            gluSphere(proj, this->radius, 16, 16);
+        gluDeleteQuadric(proj);
     glDisable(GL_TEXTURE_2D);
 }

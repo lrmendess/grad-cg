@@ -15,19 +15,22 @@ Bomb::~Bomb() {
 
 }
 
-void Bomb::draw(GLuint bombTexture) {     
-    glColor3f(1.0, 1.0, 1.0); 
-     
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, bombTexture);
+void Bomb::draw(GLuint bombTexture) {
+    GLfloat bombEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat bombColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, bombEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, bombColor);
+    glColor3f(1.0, 1.0, 1.0);
     
-    GLUquadricObj* obj = gluNewQuadric();
-        gluQuadricDrawStyle(obj, GLU_FILL);
-        gluQuadricNormals(obj, GLU_SMOOTH);
-        gluQuadricTexture(obj, GLU_TRUE);
-        gluQuadricOrientation(obj, GLU_OUTSIDE);
-        gluSphere(obj, this->radius, 16, 16);
-        gluDeleteQuadric(obj);
+    glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, bombTexture);
         
+        GLUquadricObj* bomb = gluNewQuadric();
+            gluQuadricDrawStyle(bomb, GLU_FILL);
+            gluQuadricNormals(bomb, GLU_SMOOTH);
+            gluQuadricTexture(bomb, GLU_TRUE);
+            gluQuadricOrientation(bomb, GLU_OUTSIDE);
+            gluSphere(bomb, this->radius, 16, 16);
+        gluDeleteQuadric(bomb);
     glDisable(GL_TEXTURE_2D);
 }
