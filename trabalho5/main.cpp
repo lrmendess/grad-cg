@@ -11,6 +11,7 @@
 using namespace std;
 using namespace tinyxml2;
 
+void changeCamera(GLdouble angle, GLdouble width, GLdouble height, GLdouble near, GLdouble far);
 void renderBitmapString(float x, float y, void *font, string str);
 GLuint loadTexture(const char* filename);
 
@@ -47,6 +48,9 @@ GLuint airEnemiesTexture;
 GLuint groundEnemiesTexture;
 GLuint projTexture;
 GLuint bombTexture;
+
+int toggleCamera = 1;
+bool nightMode = false;
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -140,27 +144,36 @@ void init(void) {
     bombTexture= loadTexture("textures/sun1.bmp");
     
     glEnable(GL_LIGHT0);
-    glColorMaterial(GL_FRONT, GL_DIFFUSE);
-    glEnable(GL_COLOR_MATERIAL);
+    //glColorMaterial(GL_FRONT, GL_DIFFUSE);
+    //glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_NORMALIZE);
     
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
     GLfloat light_specular[] = {1.0, 1.0, 1.0, 1.0};
-    GLfloat light_position[] = {arena->getRadius(), arena->getRadius(), arena->getRadius(), 0.0};
+    GLfloat light0_position[] = {arena->getRadius(), arena->getRadius(), arena->getRadius(), 0.0};
+    GLfloat light1_position[] = {};
+    GLfloat light1_direction[] = {};
+    GLfloat light1_angle[] = {45.0};
 
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+    glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
     
-    GLfloat mat_emission[] = {0.1, 0.1, 0.1, 1.0};
+    glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT1, GL_SPECULAR, light_specular);
+    glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+    glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
+    //glLightfv(GL_LIGHT1, GL_SPOT_EXPONENT, light1_direction);
+    glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
+    
     GLfloat mat_specular[] = {1.0, 1.0, 1.0, 1.0};
     GLfloat mat_shininess[] = {100.0};
  
-    glMaterialfv(GL_FRONT, GL_EMISSION, mat_emission);
     glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 }
@@ -170,32 +183,56 @@ void display(void) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+    
+    /* Modo noturno */
+    if (nightMode) {
+        glDisable(GL_LIGHT0);
+        glEnable(GL_LIGHT1);
+        
+        GLfloat light1_position[] = {arena->getPlayer()->getCx(), arena->getPlayer()->getCy(), arena->getPlayer()->getCz(), 0.0};
+        GLfloat light1_direction[] = {arena->getPlayer()->getCx() + 100, arena->getPlayer()->getCy() + 100, arena->getPlayer()->getCz(), 0.0};
+        GLfloat light1_angle[] = {45.0};
+        
+        glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
+        //glLightfv(GL_LIGHT1, GL_SPOT_EXPONENT, light1_direction);
+        glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
+    } else {
+        glEnable(GL_LIGHT0);
+        glDisable(GL_LIGHT1);
+    }
 
     /* Camera do Cockpit */
-    GLfloat fiRad = player->getAngle() * M_PI / 180;
-    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+    if (toggleCamera == 1) {
+        GLfloat fiRad = player->getAngle() * M_PI / 180;
+        GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
 
-    GLfloat cameraEyeCockpit[3];
-    GLfloat cameraLookCockpit[3];
-    GLfloat upCockpit = 1;
+        GLfloat cameraEyeCockpit[3];
+        GLfloat cameraLookCockpit[3];
+        GLfloat upCockpit = 1;
 
-    cameraEyeCockpit[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
-    cameraEyeCockpit[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
-    cameraEyeCockpit[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
+        cameraEyeCockpit[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
+        cameraEyeCockpit[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
+        cameraEyeCockpit[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
 
-    cameraLookCockpit[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
-    cameraLookCockpit[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
-    cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
-    
-    gluLookAt(
-        cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
-
-        cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
+        cameraLookCockpit[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
+        cameraLookCockpit[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
+        cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
         
-        0, 0, 1
-    );
+        gluLookAt(
+            cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
 
-    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture);
+            cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
+            
+            0, 0, 1
+        );
+    } else if (toggleCamera == 2) {
+        
+    } else if (toggleCamera == 3) {
+        
+    }
+
+    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
     if (player->getPoints() == arena->getGroundEnemies().size()) {
         string result("WIN");
@@ -219,6 +256,11 @@ void display(void) {
 
 void keyPress(unsigned char key, int x, int y) {
     keyboard[key] = true;
+    
+    /* Modo noturno */
+    if (key == 'n') {
+        nightMode = not nightMode;
+    }
 }
 
 void keyUp(unsigned char key, int x, int y) {
@@ -226,6 +268,18 @@ void keyUp(unsigned char key, int x, int y) {
 }
 
 void idle(void) {
+    /* Mudanca de camera */
+    if (keyboard['1']) {
+        toggleCamera = 1;
+        changeCamera(90, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 1, arena->getRadius() * 5);
+    } else if (keyboard['2']) {
+        toggleCamera = 2;
+        changeCamera(90, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 1, arena->getRadius() * 5);
+    } else if (keyboard['3']) {
+        toggleCamera = 3;
+        changeCamera(90, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 1, arena->getRadius() * 5);
+    }
+    
     // R
     if (keyboard['r']) {
         player->reset();
@@ -366,6 +420,15 @@ void mouseAction(int button, int state, int x, int y) {
             player->bomb();
         }
     }
+}
+
+void changeCamera(GLdouble angle, GLdouble width, GLdouble height, GLdouble near, GLdouble far) {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+
+    gluPerspective(angle, width / height, near, far);
+
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void renderBitmapString(float x, float y, void *font, string str) {

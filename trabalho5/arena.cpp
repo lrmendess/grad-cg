@@ -120,11 +120,20 @@ Arena::Arena(string path) : Circle() {
     }
 }
 
-void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airstripTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture) {
-    GLfloat materialEmission[] = {1.0, 1.0, 1.0, 1.0};
-    glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-    
+void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airstripTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture, bool nightMode) {    
     // Corpo do Cilindro
+    if (nightMode) {
+        GLfloat skyEmission[] = {0.0, 0.0, 0.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, skyEmission);
+    } else {
+        GLfloat skyEmission[] = {1.0, 1.0, 1.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, skyEmission);
+    }
+    
+    GLfloat skyColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, skyColor);
+    glColor3f(1.0, 1.0, 1.0);
+
     glEnable(GL_TEXTURE_2D);
         glMatrixMode(GL_TEXTURE);
         glPushMatrix();
@@ -132,7 +141,6 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
             
             glBindTexture(GL_TEXTURE_2D, arenaTexture1);   
             GLUquadricObj* sky  = gluNewQuadric();
-                glColor3f(1.0, 1.0, 1.0);
                 gluQuadricDrawStyle(sky, GLU_FILL);
                 gluQuadricNormals(sky, GLU_SMOOTH);
                 gluQuadricTexture(sky, GLU_TRUE);
@@ -142,10 +150,20 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
     glDisable(GL_TEXTURE_2D);
-    
-    glColor3f(0.0, 0.0, 1.0);
   
     // Tampa superior
+    if (nightMode) {
+        GLfloat roofEmission[] = {0.0, 0.0, 0.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, roofEmission);
+    } else {
+        GLfloat roofEmission[] = {1.0, 1.0, 1.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, roofEmission);
+    }
+    
+    GLfloat roofColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, roofColor);
+    glColor3f(1.0, 1.0, 1.0);
+    
     glPushMatrix();
         glTranslatef(.0, .0, this->getRadius());
         
@@ -154,9 +172,8 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
             glPushMatrix();
                 glScalef(8.0, 2.0, 1.0);
                 
-                glBindTexture(GL_TEXTURE_2D, arenaTexture2);
+                glBindTexture(GL_TEXTURE_2D, arenaTexture1);
                 GLUquadricObj* roof = gluNewQuadric();
-                    glColor3f(1.0, 1.0, 1.0);
                     gluQuadricDrawStyle(roof, GLU_FILL);
                     gluQuadricNormals(roof, GLU_SMOOTH);
                     gluQuadricTexture(roof, GLU_TRUE);
@@ -169,6 +186,18 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
     glPopMatrix();
 
     // Tampa inferior
+    if (nightMode) {
+        GLfloat groundEmission[] = {0.0, 0.0, 0.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, groundEmission);
+    } else {
+        GLfloat groundEmission[] = {1.0, 1.0, 1.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, groundEmission);
+    }
+    
+    GLfloat groundColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, groundColor);
+    glColor3f(1.0, 1.0, 1.0);
+    
     glEnable(GL_TEXTURE_2D);
         glMatrixMode(GL_TEXTURE);
         glPushMatrix();
@@ -176,7 +205,6 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
             
             glBindTexture(GL_TEXTURE_2D, arenaTexture2);
             GLUquadricObj* ground = gluNewQuadric();
-                glColor3f(1.0, 1.0, 1.0);
                 gluQuadricDrawStyle(ground, GLU_FILL);
                 gluQuadricNormals(ground, GLU_SMOOTH);
                 gluQuadricTexture(ground, GLU_TRUE);
@@ -187,11 +215,30 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
         glMatrixMode(GL_MODELVIEW);
     glDisable(GL_TEXTURE_2D);
 
-    // Pista e inimigos terrestres no chao
+    // Pista
+    if (nightMode) {
+        GLfloat airstripEmission[] = {0.0, 0.0, 0.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, airstripEmission);
+    } else {
+        GLfloat airstripEmission[] = {1.0, 1.0, 1.0, 1.0};
+        glMaterialfv(GL_FRONT, GL_EMISSION, airstripEmission);
+    }
+    
+    GLfloat airstripColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, airstripColor);
+    glColor3f(1.0, 1.0, 1.0);
+    
     airstrip->drawSolidLine(airstripTexture);
 
+    // Inimigos Terrestres
     for (auto ge : groundEnemies) {
         if (!ge->isDead()) {
+            GLfloat geEmission[] = {0.1, 0.1, 0.1, 1.0};
+            GLfloat geColor[] = {1.0, 1.0, 1.0, 1.0};
+            glMaterialfv(GL_FRONT, GL_EMISSION, geEmission);
+            glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, geColor);
+            glColor3f(1.0, 1.0, 1.0);
+            
             glPushMatrix();
                 glTranslatef(ge->getCx(), ge->getCy(), .0);
                 
@@ -203,7 +250,6 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
 
                         glBindTexture(GL_TEXTURE_2D, groundEnemiesTexture);
                         GLUquadricObj* base = gluNewQuadric();
-                            glColor3f(1.0, 1.0, 1.0);
                             gluQuadricDrawStyle(base, GLU_FILL);
                             gluQuadricNormals(base, GLU_SMOOTH);
                             gluQuadricTexture(base, GLU_TRUE);
@@ -214,15 +260,17 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     glMatrixMode(GL_MODELVIEW);
                 glDisable(GL_TEXTURE_2D);
                 
-                GLfloat materialEmission2[] = {0.1, 0.1, 0.1, 1.0};
-                glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission2);
-                
                 // Haste da bandeira
+                GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+                GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
+                glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
+                glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
+                glColor3f(0.0, 0.0, 0.0);
+                
                 glPushMatrix();
                     glTranslatef(0.0, 0.0, ge->getRadius());
                     
                     GLUquadricObj* stem = gluNewQuadric();
-                        glColor3f(0.0, 0.0, 0.0);
                         gluQuadricDrawStyle(stem, GLU_FILL);
                         gluQuadricNormals(stem, GLU_SMOOTH);
                         gluQuadricTexture(stem, GLU_FALSE);
@@ -231,11 +279,16 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     gluDeleteQuadric(stem);
                     
                     // Bandeira
+                    GLfloat flagEmission[] = {0.1, 0.1, 0.1, 1.0};
+                    GLfloat flagColor[] = {1.0, 0.0, 0.0, 1.0};
+                    glMaterialfv(GL_FRONT, GL_EMISSION, flagEmission);
+                    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, flagColor);
+                    glColor3f(1.0, 0.0, 0.0);
+                    
                     glPushMatrix();
                         glTranslatef(0.0, ge->getRadius() / 8, ge->getRadius() / 1.5);
                         glScalef(1.0, ge->getRadius() / 4, ge->getRadius() / 8);
                         
-                        glColor3f(1.0, 0.0, 0.0);
                         glutSolidCube(ge->getRadius() / 12);
                     glPopMatrix();
                 glPopMatrix();

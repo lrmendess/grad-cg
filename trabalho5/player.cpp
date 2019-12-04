@@ -265,11 +265,16 @@ void Player::takeOffAirplane(GLint currentTime) {
     this->propellerAngle += this->speed / 8;
 }
 
-void Player::drawWings() {    
+void Player::drawWings() {
+    GLfloat wingsEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat wingsColor[] = {0.0, 0.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, wingsEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, wingsColor);
+    glColor3f(0.0, 0.0, 0.0);
+    
     glPushMatrix();
         glScalef(.5, 2.0, .0625);
         
-        glColor3f(0.0, 0.0, 0.0);
         glutSolidCube(this->radius);
     glPopMatrix();
 
@@ -277,20 +282,23 @@ void Player::drawWings() {
         glTranslatef(-this->radius * .65, .0, .0);
         glScalef(.25, 1.25, .0625);
         
-        glColor3f(0.0, 0.0, 0.0);
         glutSolidCube(this->radius);
     glPopMatrix();
 }
 
 void Player::drawCannon() {
+    GLfloat cannonEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat cannonColor[] = {0.0, 0.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, cannonEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cannonColor);
+    glColor3f(0.0, 0.0, 0.0);
+    
     glPushMatrix();
-		glTranslatef(this->radius, .0, .0);
-        glRotatef(90, .0, 1.0, 0.0);
+		glTranslatef(this->radius, 0.0, 0);
+        glRotatef(90, 0.0, 1.0, 0.0);
 		glRotatef(-this->cannonAngle, 1.0, 0.0, 0.0);
-        glRotatef(-this->cannonAngleTheta, .0, 1.0, .0);
 
         GLUquadricObj* cannon = gluNewQuadric();
-            glColor3f(0.0, 0.0, 0.0);
             gluQuadricDrawStyle(cannon, GLU_FILL);
             gluQuadricNormals(cannon, GLU_SMOOTH);
             gluQuadricTexture(cannon, GLU_FALSE);
@@ -301,24 +309,33 @@ void Player::drawCannon() {
 }
 
 void Player::drawFuselage(GLuint playerTexture) {
+    GLfloat fuselageEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat fuselageColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, fuselageEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, fuselageColor);
+    glColor3f(1.0, 1.0, 1.0);
+    
     glPushMatrix();
         glScalef(1.0, .25, .25);
         
         glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, playerTexture);
             GLUquadricObj* fuselage = gluNewQuadric();
-                glColor3f(1.0, 1.0, 1.0);
                 gluQuadricDrawStyle(fuselage, GLU_FILL);
                 gluQuadricNormals(fuselage, GLU_SMOOTH);
                 gluQuadricTexture(fuselage, GLU_TRUE);
                 gluQuadricOrientation(fuselage, GLU_OUTSIDE);
-                gluSphere(fuselage, this->radius, 16, 16);
+                gluSphere(fuselage, this->radius, 32, 32);
             gluDeleteQuadric(fuselage);
         glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 }
 
 void Player::drawHourglass(GLfloat length) {
+    GLfloat hourglassEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat hourglassColor[] = {1.0, 1.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, hourglassEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, hourglassColor);
     glColor3f(1.0, 1.0, 0.0);
     
 	glBegin(GL_TRIANGLES);
@@ -335,17 +352,22 @@ void Player::drawHourglass(GLfloat length) {
 }
 
 void Player::drawLeftPropeller() {
+    GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
+    glColor3f(0.0, 0.0, 0.0);
+    
     glPushMatrix();
         glTranslatef(.0, this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
         GLUquadricObj* stem = gluNewQuadric();
-            glColor3f(0.0, 0.0, 0.0);
             gluQuadricDrawStyle(stem, GLU_FILL);
             gluQuadricNormals(stem, GLU_SMOOTH);
             gluQuadricTexture(stem, GLU_FALSE);
             gluQuadricOrientation(stem, GLU_OUTSIDE);
-            gluCylinder(stem, this->radius * .0625, this->radius * .0625, this->radius * .5, 16, 16);
+            gluCylinder(stem, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
         gluDeleteQuadric(stem);
     glPopMatrix();
 
@@ -372,17 +394,22 @@ void Player::drawLeftPropeller() {
 }
 
 void Player::drawRightPropeller() {
+    GLfloat stemEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat stemColor[] = {0.0, 0.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, stemEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, stemColor);
+    glColor3f(0.0, 0.0, 0.0);
+    
     glPushMatrix();
         glTranslatef(.0, - this->radius * .5, .0);
         glRotatef(90, .0, 1.0, .0);
 
         GLUquadricObj* stem = gluNewQuadric();
-            glColor3f(0.0, 0.0, 0.0);
             gluQuadricDrawStyle(stem, GLU_FILL);
             gluQuadricNormals(stem, GLU_SMOOTH);
             gluQuadricTexture(stem, GLU_FALSE);
             gluQuadricOrientation(stem, GLU_OUTSIDE);
-            gluCylinder(stem, this->radius * .0625, this->radius * .0625, this->radius * .5, 10, 10);
+            gluCylinder(stem, this->radius * .0625, this->radius * .0625, this->radius * .5, 16, 16);
         gluDeleteQuadric(stem);
     glPopMatrix();
 
@@ -409,22 +436,32 @@ void Player::drawRightPropeller() {
 }
 
 void Player::drawFin() {
+    GLfloat finEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat finColor[] = {0.0, 0.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, finEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, finColor);
+    glColor3f(0.0, 0.0, 0.0);
+    
     glPushMatrix();
         glTranslatef(-this->radius * .65, .0, .0);
         glScalef(.25, .0625, .5);
         glTranslatef(.0, .0, this->radius * .5);
 
-        glColor3f(0.0, 0.0, 0.0);
         glutSolidCube(this->radius);
     glPopMatrix();
 }
 
 void Player::drawCockpit() {
+    GLfloat cockpitEmission[] = {0.1, 0.1, 0.1, 1.0};
+    GLfloat cockpitColor[] = {0.0, 0.0, 0.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, cockpitEmission);
+    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, cockpitColor);
+    glColor3f(0.0, 0.0, 0.0);
+    
     glPushMatrix();
         glTranslatef(this->radius * .5, .0, .0);
         glScalef(.375, .125, .25);
 
-        glColor3f(0.0, 0.0, 0.0);
         glutSolidSphere(this->radius, 20, 20);
     glPopMatrix();
 }
@@ -439,20 +476,12 @@ void Player::drawAirplane(GLuint playerTexture, GLuint projTexture, GLuint bombT
         glRotatef(this->angle, .0, .0, 1.0);
         glRotatef(-this->angleTheta, .0, 1.0, .0);
         
-        GLfloat materialEmission[] = {0.0, 0.0, 0.0, 1.0};
-        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-        
         drawLeftPropeller();
         drawRightPropeller();
-
         drawWings();
         drawCannon();
         drawCockpit();
         drawFin();
-        
-        GLfloat materialEmission2[] = {0.1, 0.1, 0.1, 1.0};
-        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission2);
-    
         drawFuselage(playerTexture);
     glPopMatrix();
 }
