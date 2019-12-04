@@ -9,6 +9,7 @@ Enemy::~Enemy() {
 Enemy::Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
+    this->cz = arena->getRadius() / 2;
     this->radius = radius;
     this->arena = arena;
 

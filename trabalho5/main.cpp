@@ -126,14 +126,7 @@ void init(void) {
     GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
     gluPerspective(90, aspectRatio, 1, arena->getRadius() * 5);
     
-    glEnable(GL_DEPTH_TEST);
-    
-    //glEnable(GL_TEXTURE_2D);
-    glEnable(GL_LIGHTING);
-    glShadeModel(GL_SMOOTH);
-
-    glDepthFunc(GL_LEQUAL);
-    
+    /* Carrega todas as texturas */
     arenaTexture1 = loadTexture("textures/sky.bmp");
     arenaTexture2 = loadTexture("textures/sand.bmp");
     playerTexture = loadTexture("textures/greencamo.bmp");
@@ -141,12 +134,19 @@ void init(void) {
     airEnemiesTexture = loadTexture("textures/redcamo.bmp");
     groundEnemiesTexture = loadTexture("textures/wood.bmp");
     projTexture = loadTexture("textures/sun1.bmp");
-    bombTexture= loadTexture("textures/sun1.bmp");
+    bombTexture = loadTexture("textures/sun1.bmp");
+    
+    /* Inicializa iluminacao */
+    glEnable(GL_LIGHTING);
+    glShadeModel(GL_SMOOTH);
+    
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
     
     glEnable(GL_LIGHT0);
     //glColorMaterial(GL_FRONT, GL_DIFFUSE);
     //glEnable(GL_COLOR_MATERIAL);
-    glEnable(GL_NORMALIZE);
     
     GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
     GLfloat light_diffuse[] = {0.8, 0.8, 0.8, 1.0};
@@ -156,12 +156,12 @@ void init(void) {
     GLfloat light1_direction[] = {};
     GLfloat light1_angle[] = {45.0};
 
-    //glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
-
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
     glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
     glLightfv(GL_LIGHT0, GL_POSITION, light0_position);
+    
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
     
     glLightfv(GL_LIGHT1, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT1, GL_DIFFUSE, light_diffuse);
@@ -187,19 +187,25 @@ void display(void) {
     /* Modo noturno */
     if (nightMode) {
         glDisable(GL_LIGHT0);
-        glEnable(GL_LIGHT1);
         
-        GLfloat light1_position[] = {arena->getPlayer()->getCx(), arena->getPlayer()->getCy(), arena->getPlayer()->getCz(), 0.0};
-        GLfloat light1_direction[] = {arena->getPlayer()->getCx() + 100, arena->getPlayer()->getCy() + 100, arena->getPlayer()->getCz(), 0.0};
-        GLfloat light1_angle[] = {45.0};
+        GLfloat light_ambient[] = {0.0, 0.0, 0.0, 1.0};
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+        //glEnable(GL_LIGHT1);
         
-        glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
-        glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
+        //GLfloat light1_position[] = {arena->getPlayer()->getCx(), arena->getPlayer()->getCy(), arena->getPlayer()->getCz(), 0.0};
+        //GLfloat light1_direction[] = {arena->getPlayer()->getCx() + 100, arena->getPlayer()->getCy() + 100, arena->getPlayer()->getCz(), 0.0};
+        //GLfloat light1_angle[] = {45.0};
+        
+        //glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+        //glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, light1_direction);
         //glLightfv(GL_LIGHT1, GL_SPOT_EXPONENT, light1_direction);
-        glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
+        //glLightfv(GL_LIGHT1, GL_SPOT_CUTOFF, light1_angle);
     } else {
         glEnable(GL_LIGHT0);
-        glDisable(GL_LIGHT1);
+        
+        GLfloat light_ambient[] = {0.2, 0.2, 0.2, 1.0};
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+        //glDisable(GL_LIGHT1);
     }
 
     /* Camera do Cockpit */
@@ -226,8 +232,10 @@ void display(void) {
             
             0, 0, 1
         );
+    /* Camera do Canhao */
     } else if (toggleCamera == 2) {
-        
+    
+    /* Camera em Terceira Pessoa */    
     } else if (toggleCamera == 3) {
         
     }
