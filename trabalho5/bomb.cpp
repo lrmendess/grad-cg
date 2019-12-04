@@ -1,13 +1,13 @@
 #include "bomb.h"
 
-Bomb::Bomb(Player* player) {
+Bomb::Bomb(Player* player, GLfloat mulVelAirplane) {
     this->cx = player->getCx();
     this->cy = player->getCy();
+    this->cz = player->getCz();
     this->angle = player->getAngle();
-    this->speed = player->getSpeed();
+    this->speed = player->getSpeed() * mulVelAirplane;
     this->radius = player->getRadius() / 4;
     this->startRadius = this->radius;
-    this->radiusSpeed = (this->radius / 2 - this->radius) / 2.0;
     this->timeReleased = glutGet(GLUT_ELAPSED_TIME) / 1000.0;
 }
 

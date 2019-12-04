@@ -46,8 +46,7 @@ class Player {
         GLfloat midAirstripTime = 0.0;
 
         /* Dados do raio */
-        GLfloat radiusSpeed     = 0.0;
-        GLfloat oldRadiusTime   = 0.0;
+        GLfloat oldTime   = 0.0;
 
         /* Angulo das helices do aviao */
         GLfloat propellerAngle  = 0.0;
@@ -121,7 +120,7 @@ class Player {
         void move(GLfloat mul, GLfloat dt);
 
         void fire(GLfloat mul, GLfloat mulVelAirplane);
-        void bomb();
+        void bomb(GLfloat mulVelAirplane);
 
         void kill();
 
