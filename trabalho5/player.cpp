@@ -10,7 +10,7 @@ Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
     this->cz = 10;
-    this->radius = radius;
+    this->radius = 2 * radius;
     this->arena = arena;
     this->startX = this->cx;
     this->startY = this->cy;
@@ -155,7 +155,7 @@ void Player::updateProjectiles(GLfloat dt) {
 void Player::drawBombs(GLuint bombTexture) {
     for (auto b : this->bombs) {
         glPushMatrix();
-            glTranslatef(b->getCx(), b->getCy(), 0.0);
+            glTranslatef(b->getCx(), b->getCy(), b->getCz());
             b->draw(bombTexture);
         glPopMatrix();
     }
@@ -184,7 +184,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(b);
-        } if(t >= 2.0) {
+        } if(b->getCz() <= 0.0) {
             forRemove.push_back(b);
             
             for (auto enemy : arena->getGroundEnemies()) {
@@ -200,10 +200,23 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
                 }
             }
         } else {
+            for (auto enemy : arena->getGroundEnemies()) {
+                if (!enemy->isDead()) {
+                    GLfloat distanceFromEnemy = d2p3d(mx, my, b->getCz() - (9.8 * t) / 2, enemy->getCx(), enemy->getCy(), .0);
+
+                    if (distanceFromEnemy <= enemy->getRadius()) {
+                        enemy->kill();
+                        points++;
+                        canUpdate = false;
+                        break;
+                    }
+                }
+            }
+
             if (canUpdate) {
                 b->setCy(my);
                 b->setCx(mx);
-                b->setRadius(b->getStartRadius() + b->getRadiusSpeed() * t);
+                b->setCz(b->getCz() - (9.8 * t) / 2);
             }
         }
     }
@@ -241,8 +254,8 @@ void Player::calculatePhysics() {
     GLfloat acc = 2 * distance / pow(t, 2);
     this->midAirstripTime = sqrt(2 * (distance - startDistance) / acc);
 
-    // V = S / t
-    radiusSpeed = this->radius / (t - midAirstripTime);
+    GLfloat dz = 4 * this->radius;
+    az = 2 * dz / pow(t - midAirstripTime, 2);
 }
 
 /* Decolagem do aviao */
@@ -255,11 +268,11 @@ void Player::takeOffAirplane(GLint currentTime) {
 
     // S = So + V * t
     if ((currentTime / 1000.0) >= midAirstripTime) {
-        GLfloat timeR = (currentTime - oldRadiusTime) / 1000.0;
-        GLfloat stepR = radiusSpeed * timeR;
-        this->radius = startR + stepR;
+        GLfloat time = (currentTime - oldTime) / 1000.0;
+        GLfloat stepZ = (az * pow(time, 2)) / 2;
+        this->cz = startZ + stepZ;
     } else {
-        oldRadiusTime = currentTime;
+        oldTime = currentTime;
     }
 
     this->propellerAngle += this->speed / 8;

@@ -3,6 +3,7 @@
 Bomb::Bomb(Player* player) {
     this->cx = player->getCx();
     this->cy = player->getCy();
+    this->cz = player->getCz();
     this->angle = player->getAngle();
     this->speed = player->getSpeed();
     this->radius = player->getRadius() / 4;

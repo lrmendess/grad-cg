@@ -46,8 +46,7 @@ class Player {
         GLfloat midAirstripTime = 0.0;
 
         /* Dados do raio */
-        GLfloat radiusSpeed     = 0.0;
-        GLfloat oldRadiusTime   = 0.0;
+        GLfloat oldTime   = 0.0;
 
         /* Angulo das helices do aviao */
         GLfloat propellerAngle  = 0.0;
