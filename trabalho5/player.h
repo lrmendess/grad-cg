@@ -126,7 +126,7 @@ class Player {
 
         /* Funcoes referentes a decolagem */
         void calculatePhysics();
-        void takeOffAirplane(GLint currentTime);
+        void takeOffAirplane(GLint currentTime, GLfloat diffTime);
         void updateProjectiles(GLfloat dt);
         void updateBombs(GLfloat currentTime, GLfloat dt);
 

@@ -80,7 +80,12 @@ void Player::move(GLfloat mul, GLfloat dt) {
     this->cy = my;
     this->cx = mx;
 
-    if (mz <= arena->getRadius() && mz >= 0) {
+    GLfloat groundEnemyHeight = .0;
+    if (arena->getGroundEnemies().size() > 0) {
+        groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
+    }
+
+    if (mz <= arena->getRadius() && mz > groundEnemyHeight) {
         this->cz = mz;
     }
 }
@@ -260,12 +265,12 @@ void Player::calculatePhysics() {
     GLfloat acc = 2 * distance / pow(t, 2);
     this->midAirstripTime = sqrt(2 * (distance - startDistance) / acc);
 
-    GLfloat dz = 4 * this->radius;
+    GLfloat dz = arena->getRadius() / 2;
     az = 2 * dz / pow(t - midAirstripTime, 2);
 }
 
 /* Decolagem do aviao */
-void Player::takeOffAirplane(GLint currentTime) {
+void Player::takeOffAirplane(GLint currentTime, GLfloat diffTime) {
     GLfloat stepY = (ay * pow(currentTime / 1000.0, 2)) / 2;
     this->cy = startY + stepY;
 
@@ -277,6 +282,10 @@ void Player::takeOffAirplane(GLint currentTime) {
         GLfloat time = (currentTime - oldTime) / 1000.0;
         GLfloat stepZ = (az * pow(time, 2)) / 2;
         this->cz = startZ + stepZ;
+
+        /* Inclinar ao decolar */
+        this->moveZ(30, diffTime);
+
     } else {
         oldTime = currentTime;
     }

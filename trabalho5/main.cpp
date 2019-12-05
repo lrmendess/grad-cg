@@ -320,6 +320,7 @@ void idle(void) {
     GLfloat diffTime = currentTime - oldTimeFlying;
     oldTimeFlying = currentTime;
 
+    // MOVIMENTACAO DOS INIMIGOS
     for (auto a : airEnemies) {
         if (!a->isDead()) {
             GLint turn = rand() % 18;
@@ -355,12 +356,22 @@ void idle(void) {
             player->moveX(-120, diffTime);
         }
 
-        if (keyboard['w']) {
-            player->moveZ(120, diffTime);
-        }
+        if (!keyboard['s'] && !keyboard['w']) {
+            if (player->getAngleTheta() > 2) {
+                player->moveZ(-90, diffTime);
+            } else if (player->getAngleTheta() < -2) {
+                player->moveZ(90, diffTime);
+            } else {
+                player->setAngleTheta(.0);
+            }
+        } else {
+            if (keyboard['w']) {
+                player->moveZ(90, diffTime);
+            }
 
-        if (keyboard['s']) {
-            player->moveZ(-120, diffTime);
+            if (keyboard['s']) {
+                player->moveZ(-90, diffTime);
+            }
         }
 
         if (keyboard['='] || keyboard['+']) {
@@ -390,7 +401,7 @@ void idle(void) {
         if (player->isTakeOff()) {
             GLint currentTime = glutGet(GLUT_ELAPSED_TIME) - oldTimeTakeOff;
 
-            player->takeOffAirplane(currentTime);
+            player->takeOffAirplane(currentTime, diffTime);
 
             if (currentTime > 4000) {
                 player->setTakeOff(false);
