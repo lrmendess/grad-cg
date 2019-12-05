@@ -470,21 +470,36 @@ void cannonCamera() {
 
     GLfloat px = player->getCx();
     px += (player->getRadius()) * cos(airplaneThetaRad) * cos(airplaneFiRad);
-    cameraEye[0] = px + player->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
-    px += (player->getRadius() / 2 + 10) * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
+    // cameraEye[0] = px + player->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
+    px += (player->getRadius() / 2 + 1000) * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
     cameraLook[0] = px;
     
     GLfloat py = player->getCy();
     py += (player->getRadius()) * cos(airplaneThetaRad) * sin(airplaneFiRad);
-    cameraEye[1] = py + player->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
-    py += (player->getRadius() / 2 + 10) * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
+    // cameraEye[1] = py + player->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
+    py += (player->getRadius() / 2 + 1000) * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
     cameraLook[1] = py;
 
     GLfloat pz = player->getCz();
     pz += (player->getRadius()) * sin(airplaneThetaRad);
-    cameraEye[2] = pz + player->getRadius() / 2 * sin(cannonThetaRad + airplaneThetaRad);
-    pz += (player->getRadius() / 2 + 10) * sin(cannonThetaRad + airplaneThetaRad);
+    // cameraEye[2] = pz + player->getRadius() / 2 * sin(cannonThetaRad + airplaneThetaRad);
+    pz += (player->getRadius() / 2 + 1000) * sin(cannonThetaRad + airplaneThetaRad);
     cameraLook[2] = pz;
+
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+
+    GLfloat fiRad = player->getAngle() * M_PI / 180;
+    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+
+    cameraEye[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 24) * cos(fiRad);
+    cameraEye[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 24) * sin(fiRad);
+    cameraEye[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 24);
+
+    //cameraLook[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
+    //cameraLook[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
+    //cameraLook[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
 
     up[0] = 0;
     up[1] = 0;
