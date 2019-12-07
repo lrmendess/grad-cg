@@ -213,7 +213,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
         } else {
             for (auto enemy : arena->getGroundEnemies()) {
                 if (!enemy->isDead()) {
-                    GLfloat distanceFromEnemy = d2p3d(mx, my, b->getCz() - (9.8 * t) / 2, enemy->getCx(), enemy->getCy(), .0);
+                    GLfloat distanceFromEnemy = d2p3d(mx, my, b->getCz() - (9.8 * pow(t, 2)) / 2, enemy->getCx(), enemy->getCy(), .0);
 
                     if (distanceFromEnemy <= enemy->getRadius()) {
                         enemy->kill();
@@ -227,7 +227,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
             if (canUpdate) {
                 b->setCx(mx);
                 b->setCy(my);
-                b->setCz(b->getCz() - (9.8 * t) / 2);
+                b->setCz(b->getCz() - (9.8 * pow(t, 2)) / 2);
             }
         }
     }
