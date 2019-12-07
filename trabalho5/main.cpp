@@ -124,7 +124,7 @@ void init(void) {
     glLoadIdentity();
 
     GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
-    gluPerspective(90, aspectRatio, 1, arena->getRadius() * 5);
+    gluPerspective(90, aspectRatio, 10, arena->getRadius() * 5);
     
     /* Carrega todas as texturas */
     arenaTexture1 = loadTexture("textures/sky.bmp");
@@ -188,24 +188,24 @@ void display(void) {
     if (toggleCamera == 1) {
         GLfloat fiRad = player->getAngle() * M_PI / 180;
         GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
-
+    
         GLfloat cameraEyeCockpit[3];
         GLfloat cameraLookCockpit[3];
         GLfloat upCockpit = 1;
-
+    
         cameraEyeCockpit[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
         cameraEyeCockpit[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
         cameraEyeCockpit[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
-
+    
         cameraLookCockpit[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
         cameraLookCockpit[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
         cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
-        
+    
         gluLookAt(
-            cameraEyeCockpit[0]+100, cameraEyeCockpit[1], cameraEyeCockpit[2],
-
+            cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
+    
             cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
-            
+    
             0, 0, 1
         );
     /* Camera do Canhao */
@@ -213,7 +213,7 @@ void display(void) {
     
     /* Camera em Terceira Pessoa */    
     } else if (toggleCamera == 3) {
-        
+    
     }
     
     /* Modo noturno */
