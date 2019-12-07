@@ -11,7 +11,11 @@
 using namespace std;
 using namespace tinyxml2;
 
-void changeCamera(GLdouble angle, GLdouble width, GLdouble height, GLdouble near, GLdouble far);
+void cockpitCamera();
+void cannonCamera();
+void thirdPersonalCamera();
+void bombCamera();
+
 void renderBitmapString(float x, float y, void *font, string str);
 GLuint loadTexture(const char* filename);
 
@@ -39,6 +43,13 @@ GLfloat enemySpeedMultiplier;
 GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
+
+GLfloat cameraEye[3];
+GLfloat cameraLook[3];
+GLfloat up[3];
+
+GLfloat tpsAngleXZ;
+GLfloat tpsAngleXY;
 
 GLuint arenaTexture1;
 GLuint arenaTexture2;
@@ -124,7 +135,7 @@ void init(void) {
     glLoadIdentity();
 
     GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
-    gluPerspective(90, aspectRatio, 10, arena->getRadius() * 5);
+    gluPerspective(90, aspectRatio, 1, arena->getRadius() * 5);
     
     /* Carrega todas as texturas */
     arenaTexture1 = loadTexture("textures/sky.bmp");
@@ -176,6 +187,8 @@ void init(void) {
  
     glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular);
     glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess);
+
+    cockpitCamera();
 }
 
 void display(void) {
@@ -186,30 +199,11 @@ void display(void) {
 
     /* Camera do Cockpit */
     if (toggleCamera == 1) {
-        GLfloat fiRad = player->getAngle() * M_PI / 180;
-        GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
-    
-        GLfloat cameraEyeCockpit[3];
-        GLfloat cameraLookCockpit[3];
-        GLfloat upCockpit = 1;
-    
-        cameraEyeCockpit[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
-        cameraEyeCockpit[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
-        cameraEyeCockpit[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
-    
-        cameraLookCockpit[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
-        cameraLookCockpit[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
-        cameraLookCockpit[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
-    
-        gluLookAt(
-            cameraEyeCockpit[0], cameraEyeCockpit[1], cameraEyeCockpit[2],
-    
-            cameraLookCockpit[0], cameraLookCockpit[1], cameraLookCockpit[2],
-    
-            0, 0, 1
-        );
+        cockpitCamera();
+
     /* Camera do Canhao */
     } else if (toggleCamera == 2) {
+        cannonCamera();
     
     /* Camera em Terceira Pessoa */    
     } else if (toggleCamera == 3) {
@@ -224,6 +218,12 @@ void display(void) {
         glEnable(GL_LIGHT0);
         glDisable(GL_LIGHT1);
     }
+
+    gluLookAt(
+        cameraEye[0], cameraEye[1], cameraEye[2],
+        cameraLook[0], cameraLook[1], cameraLook[2],
+        up[0], up[1], up[2]
+    );
 
     arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
@@ -264,13 +264,15 @@ void idle(void) {
     /* Mudanca de camera */
     if (keyboard['1']) {
         toggleCamera = 1;
-        changeCamera(90, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 1, arena->getRadius() * 5);
+        cockpitCamera();
+
     } else if (keyboard['2']) {
         toggleCamera = 2;
-        changeCamera(90, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 1, arena->getRadius() * 5);
+        cannonCamera();
+        
     } else if (keyboard['3']) {
         toggleCamera = 3;
-        changeCamera(90, glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT), 1, arena->getRadius() * 5);
+        
     }
     
     // R
@@ -302,6 +304,7 @@ void idle(void) {
     GLfloat diffTime = currentTime - oldTimeFlying;
     oldTimeFlying = currentTime;
 
+    // MOVIMENTACAO DOS INIMIGOS
     for (auto a : airEnemies) {
         if (!a->isDead()) {
             GLint turn = rand() % 18;
@@ -337,12 +340,22 @@ void idle(void) {
             player->moveX(-120, diffTime);
         }
 
-        if (keyboard['w']) {
-            player->moveZ(120, diffTime);
-        }
+        if (!keyboard['s'] && !keyboard['w']) {
+            if (player->getAngleTheta() > 2) {
+                player->moveZ(-90, diffTime);
+            } else if (player->getAngleTheta() < -2) {
+                player->moveZ(90, diffTime);
+            } else {
+                player->setAngleTheta(.0);
+            }
+        } else {
+            if (keyboard['w']) {
+                player->moveZ(90, diffTime);
+            }
 
-        if (keyboard['s']) {
-            player->moveZ(-120, diffTime);
+            if (keyboard['s']) {
+                player->moveZ(-90, diffTime);
+            }
         }
 
         if (keyboard['='] || keyboard['+']) {
@@ -372,7 +385,7 @@ void idle(void) {
         if (player->isTakeOff()) {
             GLint currentTime = glutGet(GLUT_ELAPSED_TIME) - oldTimeTakeOff;
 
-            player->takeOffAirplane(currentTime);
+            player->takeOffAirplane(currentTime, diffTime);
 
             if (currentTime > 4000) {
                 player->setTakeOff(false);
@@ -415,13 +428,83 @@ void mouseAction(int button, int state, int x, int y) {
     }
 }
 
-void changeCamera(GLdouble angle, GLdouble width, GLdouble height, GLdouble near, GLdouble far) {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+void cockpitCamera() {
+    GLfloat fiRad = player->getAngle() * M_PI / 180;
+    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
 
-    gluPerspective(angle, width / height, near, far);
+    cameraEye[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
+    cameraEye[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
+    cameraEye[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
 
-    glMatrixMode(GL_MODELVIEW);
+    cameraLook[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
+    cameraLook[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
+    cameraLook[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
+
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+}
+
+void cannonCamera() {
+    GLfloat airplaneFiRad = player->getAngle() * M_PI / 180;
+    GLfloat airplaneThetaRad = player->getAngleTheta() * M_PI / 180;
+
+    GLfloat cannonFiRad = player->getCannonAngle() * M_PI / 180;
+    GLfloat cannonThetaRad = player->getCannonAngleTheta() * M_PI / 180;
+
+    GLfloat px = player->getCx();
+    px += (player->getRadius()) * cos(airplaneThetaRad) * cos(airplaneFiRad);
+    // cameraEye[0] = px + player->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
+    px += (player->getRadius() / 2 + 1000) * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
+    cameraLook[0] = px;
+    
+    GLfloat py = player->getCy();
+    py += (player->getRadius()) * cos(airplaneThetaRad) * sin(airplaneFiRad);
+    // cameraEye[1] = py + player->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
+    py += (player->getRadius() / 2 + 1000) * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
+    cameraLook[1] = py;
+
+    GLfloat pz = player->getCz();
+    pz += (player->getRadius()) * sin(airplaneThetaRad);
+    // cameraEye[2] = pz + player->getRadius() / 2 * sin(cannonThetaRad + airplaneThetaRad);
+    pz += (player->getRadius() / 2 + 1000) * sin(cannonThetaRad + airplaneThetaRad);
+    cameraLook[2] = pz;
+
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+
+    GLfloat fiRad = player->getAngle() * M_PI / 180;
+    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+
+    cameraEye[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 24) * cos(fiRad);
+    cameraEye[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 24) * sin(fiRad);
+    cameraEye[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 24);
+
+    //cameraLook[0] = player->getCx() + 2 * player->getRadius() * cos(thetaRad) * cos(fiRad);
+    //cameraLook[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
+    //cameraLook[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
+
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
+}
+
+void thirdPersonalCamera() {
+    GLfloat fiRad = player->getAngle() * M_PI / 180;
+    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+
+    cameraEye[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
+    cameraEye[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
+    cameraEye[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
+
+    cameraLook[0] = player->getCx();
+    cameraLook[1] = player->getCy();
+    cameraLook[2] = player->getCz();
+
+    up[0] = 0;
+    up[1] = 0;
+    up[2] = 1;
 }
 
 void renderBitmapString(float x, float y, void *font, string str) {
