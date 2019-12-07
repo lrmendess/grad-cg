@@ -48,6 +48,10 @@ class Enemy {
         /* Projeteis */
         list<Projectile*> projectiles;
         
+        /* Movimentacao */
+        GLint movementType = 0;
+        GLfloat lastMovementTime = 0.0;
+        
     public:
         ~Enemy();
         Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
@@ -86,6 +90,12 @@ class Enemy {
         void setFireFreq(GLfloat fireFreq) { this->maxTimeFire = 1.0 / fireFreq; }
 
         void kill();
+        
+        GLint getMovementType() { return this->movementType; }
+        void setMovementType(GLint movementType) { this->movementType = movementType; }
+        
+        GLfloat getLastMovementTime() { return this->lastMovementTime; }
+        void setLastMovementTime(GLint lastMovementTime) { this->lastMovementTime = lastMovementTime; }
 
         /* Funcoes referentes a decolagem */
         void updateProjectiles(GLfloat dt);

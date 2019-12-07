@@ -307,20 +307,24 @@ void idle(void) {
     // MOVIMENTACAO DOS INIMIGOS
     for (auto a : airEnemies) {
         if (!a->isDead()) {
-            GLint turn = rand() % 18;
-            GLint upDown = rand() % 24;
-
-            if (turn <= 2) {
+            if ((currentTime - a->getLastMovementTime()) >= 2.0) {
+                a->setMovementType(rand() % 5);
+                a->setLastMovementTime(currentTime);
+            }
+            
+            // Turn Left
+            if (a->getMovementType() == 1) {
                 a->moveX(120, diffTime);
-            } else if (turn <= 6) {
+            // Turn Right
+            } else if (a->getMovementType() == 2) {
                 a->moveX(-120, diffTime);
-            }
-
-            if (upDown <= 4) {
+            // Fly Up
+            } else if (a->getMovementType() == 3) {
                 a->moveZ(30, diffTime);
-            } else if (upDown <= 8) {
+            // Fly Down
+            } else if (a->getMovementType() == 4) {
                 a->moveZ(-30, diffTime);
-            }
+            }    
 
             a->move(enemySpeedMultiplier, diffTime);
             // atira só depois de x tempos
