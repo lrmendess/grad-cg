@@ -17,6 +17,7 @@ Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->startZ = this->cz;
     this->startR = radius;
     this->cannonLength = CANNON_LENGTH;
+    this->bombIsAvaliable = true;
 
     // Angulo inicial
     this->angle = (180 / M_PI) * atan2(
@@ -180,8 +181,12 @@ void Player::drawBombs(GLuint bombTexture) {
 }
 
 void Player::bomb(GLfloat mulVelAirplane) {
-    Bomb* bomb = new Bomb(this, mulVelAirplane);
-    bombs.push_back(bomb);
+    if (this->bombIsAvaliable == true) {
+        Bomb* bomb = new Bomb(this, mulVelAirplane);
+        bombs.push_back(bomb);
+
+        this->bombIsAvaliable = false;
+    }
 }
 
 void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
@@ -247,6 +252,10 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
     for (auto b : forRemove) {
         this->bombs.remove(b);
         // delete(b);
+    }
+
+    if (forRemove.size() > 0) {
+        this->bombIsAvaliable = true;
     }
 }
 
@@ -560,6 +569,8 @@ void Player::reset() {
 
     projectiles.clear();
     bombs.clear();
+
+    this->bombIsAvaliable = true;
 
     calculatePhysics();
 }

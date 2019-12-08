@@ -70,6 +70,7 @@ class Player {
 
         /* Bombas */
         list<Bomb*> bombs;
+        GLboolean bombIsAvaliable = true;
         
     public:
         ~Player();
