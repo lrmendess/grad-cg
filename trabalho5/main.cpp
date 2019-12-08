@@ -229,6 +229,7 @@ void display(void) {
 
     arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
+    // Textos na tela
     glDisable(GL_LIGHTING);
         glPushMatrix();
             glLoadIdentity();
