@@ -171,7 +171,7 @@ void init(void) {
     GLfloat light0_position[] = {arena->getRadius(), arena->getRadius(), arena->getRadius(), 0.0};
     GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat light1_direction[] = {0.0, 0.0, 1.0};
-    GLfloat light1_angle[] = {20.0};
+    GLfloat light1_angle[] = {25.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);

@@ -335,7 +335,7 @@ void Player::drawCannon() {
     glColor3f(0.0, 0.0, 0.0);
     
     glPushMatrix();
-		glTranslatef(this->radius, 0.0, 0);
+		glTranslatef(this->radius, 0.0, 0.0);
         glRotatef(90, 0.0, 1.0, 0.0);
 		glRotatef(-this->cannonAngle, 1.0, 0.0, 0.0);
         glRotatef(-this->cannonAngleTheta, .0, 1.0, .0);
@@ -347,6 +347,26 @@ void Player::drawCannon() {
             gluQuadricOrientation(cannon, GLU_OUTSIDE);
             gluCylinder(cannon, this->radius / 12, this->radius / 12, CANNON_LENGTH, 16, 16);
         gluDeleteQuadric(cannon);
+        
+        GLUquadricObj* cover1 = gluNewQuadric();
+            gluQuadricDrawStyle(cover1, GLU_FILL);
+            gluQuadricNormals(cover1, GLU_SMOOTH);
+            gluQuadricTexture(cover1, GLU_FALSE);
+            gluQuadricOrientation(cover1, GLU_OUTSIDE);
+            gluDisk(cover1, 0, this->radius / 12, 16, 16);
+        gluDeleteQuadric(cover1);
+    
+        glPushMatrix();
+            glTranslatef(0.0, 0.0, CANNON_LENGTH);
+                
+            GLUquadricObj* cover2 = gluNewQuadric();
+                gluQuadricDrawStyle(cover2, GLU_FILL);
+                gluQuadricNormals(cover2, GLU_SMOOTH);
+                gluQuadricTexture(cover2, GLU_FALSE);
+                gluQuadricOrientation(cover2, GLU_OUTSIDE);
+                gluDisk(cover2, 0, this->radius / 12, 16, 16);
+            gluDeleteQuadric(cover2);
+        glPopMatrix();
     glPopMatrix();
 }
 
@@ -391,17 +411,10 @@ void Player::drawHourglass(GLfloat length) {
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, hourglassColor);
     glColor3f(1.0, 1.0, 0.0);
     
-	glBegin(GL_TRIANGLES);
-        glVertex3f(.0, .0, .0);
-        glVertex3f(length, length, .0);
-		glVertex3f(-length, length, .0);
-	glEnd();
-
-	glBegin(GL_TRIANGLES);
-        glVertex3f(.0, .0, .0);
-		glVertex3f(length, -length, .0);
-		glVertex3f(-length,  -length, .0);
-	glEnd();
+    glPushMatrix();
+        glScalef(0.25, length / 2, 0.25);
+        glutSolidCube(length);
+    glPopMatrix();
 }
 
 void Player::drawLeftPropeller() {
@@ -431,17 +444,9 @@ void Player::drawLeftPropeller() {
 			glRotatef(this->propellerAngle, 1.0, .0, .0);
 			drawHourglass(this->radius * .25);
 		glPopMatrix();
-            glPushMatrix();
+		    glPushMatrix();
 			glRotatef(this->propellerAngle + 90, 1.0, .0, .0);
 			drawHourglass(this->radius * .25);
-		glPopMatrix();
-		glPushMatrix();
-			glRotatef(this->propellerAngle + 180, 1.0, .0, .0);
-			drawHourglass(this->radius * .25);
-		glPopMatrix();
-		glPushMatrix();
-			glRotatef(this->propellerAngle + 270, 1.0, .0, .0);
-            drawHourglass(this->radius * .25);
 		glPopMatrix();
     glPopMatrix();
 }
@@ -473,17 +478,9 @@ void Player::drawRightPropeller() {
 			glRotatef(this->propellerAngle, 1.0, .0, .0);
 			drawHourglass(this->radius * .25);
 		glPopMatrix();
-            glPushMatrix();
+		    glPushMatrix();
 			glRotatef(this->propellerAngle + 90, 1.0, .0, .0);
 			drawHourglass(this->radius * .25);
-		glPopMatrix();
-		glPushMatrix();
-			glRotatef(this->propellerAngle + 180, 1.0, .0, .0);
-			drawHourglass(this->radius * .25);
-		glPopMatrix();
-		glPushMatrix();
-			glRotatef(this->propellerAngle + 270, 1.0, .0, .0);
-            drawHourglass(this->radius * .25);
 		glPopMatrix();
     glPopMatrix();
 }
