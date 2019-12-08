@@ -43,6 +43,7 @@ class Circle {
         void reset();
 
         void drawSolidCircle();
+        void drawSolidRing();
 };
 
 #endif

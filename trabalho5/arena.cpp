@@ -145,7 +145,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                 gluQuadricNormals(sky, GLU_SMOOTH);
                 gluQuadricTexture(sky, GLU_TRUE);
                 gluQuadricOrientation(sky, GLU_INSIDE);
-                gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 60);
+                gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 180);
             gluDeleteQuadric(sky);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -178,7 +178,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     gluQuadricNormals(roof, GLU_SMOOTH);
                     gluQuadricTexture(roof, GLU_TRUE);
                     gluQuadricOrientation(roof, GLU_OUTSIDE);
-                    gluDisk(roof, 0, this->getRadius(), 180, 60);
+                    gluDisk(roof, 0, this->getRadius(), 180, 180);
                 gluDeleteQuadric(roof);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -209,7 +209,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                 gluQuadricNormals(ground, GLU_SMOOTH);
                 gluQuadricTexture(ground, GLU_TRUE);
                 gluQuadricOrientation(ground, GLU_OUTSIDE);
-                gluDisk(ground, 0, this->getRadius(), 180, 60);
+                gluDisk(ground, 0, this->getRadius(), 180, 180);
             gluDeleteQuadric(ground);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -224,7 +224,9 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
         glMaterialfv(GL_FRONT, GL_EMISSION, airstripEmission);
     }
     
+    GLfloat airstripEmission[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat airstripColor[] = {1.0, 1.0, 1.0, 1.0};
+    glMaterialfv(GL_FRONT, GL_EMISSION, airstripEmission);
     glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, airstripColor);
     glColor3f(1.0, 1.0, 1.0);
     

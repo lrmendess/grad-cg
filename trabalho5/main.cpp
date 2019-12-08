@@ -15,6 +15,7 @@ void cockpitCamera();
 void cannonCamera();
 void thirdPersonalCamera();
 void bombCamera();
+void minimap();
 
 void printText(GLfloat x, GLfloat y, void *font, string text);
 void renderBitmapString(GLfloat x, GLfloat y, void *font, string str);
@@ -229,7 +230,7 @@ void display(void) {
 
     arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
-    // Textos na tela
+    // Textos na tela e minimapa
     glDisable(GL_LIGHTING);
         glPushMatrix();
             glLoadIdentity();
@@ -249,6 +250,8 @@ void display(void) {
                     + totalGroundEnemies);
 
             printText(85.0, 230.0, GLUT_BITMAP_HELVETICA_12, score);
+            
+            minimap();
         glPopMatrix();
     glEnable(GL_LIGHTING);
 
@@ -316,7 +319,7 @@ void idle(void) {
     // MOVIMENTACAO DOS INIMIGOS
     for (auto a : airEnemies) {
         if (!a->isDead()) {
-            if ((currentTime - a->getLastMovementTime()) >= 2.0) {
+            if ((currentTime - a->getLastMovementTime()) >= 1.0) {
                 a->setMovementType(rand() % 5);
                 a->setLastMovementTime(currentTime);
             }
@@ -532,12 +535,55 @@ void thirdPersonalCamera() {
     up[2] = 1;
 }
 
+void minimap() {
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+        glLoadIdentity();
+        glOrtho(-250, 250, -250, 250, -1, 1);
+        glScalef(0.25, 0.25, 0.0);
+        glTranslatef(arena->getRadius() * 2, -arena->getRadius() * 2, 0.0);
+        
+        // Arena
+        GLfloat minimapArenaColor[] = {1.0, 1.0, 1.0};
+        Circle* minimapArena = new Circle(arena->getCx(), arena->getCy(), arena->getRadius(), minimapArenaColor);
+        minimapArena->drawSolidRing();
+        delete minimapArena;
+        
+        // Inimigos terrestres
+        for (auto ge : arena->getGroundEnemies()) {
+            if (!ge->isDead()) {
+                GLfloat minimapGroundEnemyColor[] = {1.0, 0.5, 0.0};
+                Circle* minimapGroundEnemy = new Circle(ge->getCx(), ge->getCy(), ge->getRadius(), minimapGroundEnemyColor);
+                minimapGroundEnemy->drawSolidCircle();
+                delete minimapGroundEnemy;
+            }
+        }
+        
+        // Inimigos aereos
+        for (auto ae : arena->getAirEnemies()) {
+            if (!ae->isDead()) {
+                GLfloat minimapAirEnemyColor[] = {1.0, 0.0, 0.0};
+                Circle* minimapAirEnemy = new Circle(ae->getCx(), ae->getCy(), ae->getRadius(), minimapAirEnemyColor);
+                minimapAirEnemy->drawSolidCircle();
+                delete minimapAirEnemy;
+            }
+        }
+        
+        // Jogador
+        GLfloat minimapPlayerColor[] = {0.0, 1.0, 0.0};
+        Circle* minimapPlayer = new Circle(arena->getPlayer()->getCx(), arena->getPlayer()->getCy(), arena->getPlayer()->getRadius(), minimapPlayerColor);
+        minimapPlayer->drawSolidCircle();
+        delete minimapPlayer;
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
 void printText(GLfloat x, GLfloat y, void *font, string text) {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
         glLoadIdentity();
         glOrtho(-250, 250, -250, 250, -1, 1);
-        glColor3f(0.0, 0.0, 0.0);
+        glColor3f(1.0, 1.0, 1.0);
         renderBitmapString(x, y, font, text);    
     glPopMatrix();
     glMatrixMode(GL_MODELVIEW);

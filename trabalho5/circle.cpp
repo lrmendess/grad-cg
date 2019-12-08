@@ -23,9 +23,24 @@ Circle::Circle(const GLfloat cx, const GLfloat cy, const GLfloat radius, const G
 }
 
 void Circle::drawSolidCircle() {
-        //glColor3f(color[0], color[1], color[2]);
-
+        glColor3f(this->color[0], this->color[1], this->color[2]);
+    
         glBegin(GL_POLYGON);
+            GLfloat angle, px, py;
+
+            for (int i = 0; i < 360; i++) {
+                angle = (i * M_PI) / 180.0;
+                px = cx + (cos(angle) * radius);
+                py = cy + (sin(angle) * radius);
+                glVertex2f(px, py);
+            }
+        glEnd();
+}
+
+void Circle::drawSolidRing() {
+        glColor3f(this->color[0], this->color[1], this->color[2]);
+    
+        glBegin(GL_LINE_STRIP);
             GLfloat angle, px, py;
 
             for (int i = 0; i < 360; i++) {
