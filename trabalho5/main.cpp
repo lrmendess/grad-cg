@@ -335,7 +335,6 @@ void idle(void) {
             }
             
             if (a->getCz() <= groundEnemyHeight + 50) {
-                printf("oi");
                 a->setMovementType(3);
                 a->setLastMovementTime(currentTime);
             }
