@@ -62,7 +62,7 @@ Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane) {
 }
 
 Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane) {
-    this->radius = enemy->getCannonLength() / 16;
+    this->radius = enemy->getCannonLength() / 3;
     this->cannonLength = enemy->getCannonLength();
     this->speed = enemy->getSpeed() * mul * mulVelAirplane;
 
@@ -74,15 +74,15 @@ Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane) {
 
     GLfloat px = enemy->getCx();
     px += enemy->getRadius() * cos(airplaneThetaRad) * cos(airplaneFiRad);
-    px += enemy->getRadius() / 4 * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
+    px += this->cannonLength * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
     
     GLfloat py = enemy->getCy();
     py += enemy->getRadius() * cos(airplaneThetaRad) * sin(airplaneFiRad);
-    py += enemy->getRadius() / 4 * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
+    py += this->cannonLength * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
 
     GLfloat pz = enemy->getCz();
     pz += enemy->getRadius() * sin(airplaneThetaRad);
-    pz += enemy->getRadius() / 4 * sin(cannonThetaRad);
+    pz += this->cannonLength * sin(cannonThetaRad);
 
     this->cx = px;
     this->cy = py;
