@@ -480,7 +480,9 @@ void mouseAction(int button, int state, int x, int y) {
             player->fire(fireSpeedMultiplier, speedMultiplier);
         }
 
-        if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && !keyboard[' ']) {
+        if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && !keyboard[' ']
+            && player->getAngleTheta() >= -2 && player->getAngleTheta() <= 2) {
+                
             player->bomb(speedMultiplier);
         }
     }
