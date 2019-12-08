@@ -79,7 +79,6 @@ void Enemy::drawProjectiles(GLuint projTexture) {
     for (auto p : this->projectiles) {
         glPushMatrix();
             glTranslatef(p->getCx(), p->getCy(), p->getCz());
-            cout << p->getCx() << ", " << p->getCy() << ", " << p->getCz() << endl;
             // glRotatef(p->getAngle(), .0, .0, 1.0);
             // glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
             p->draw(projTexture);

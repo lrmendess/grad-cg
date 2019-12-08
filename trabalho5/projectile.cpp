@@ -27,27 +27,6 @@ Projectile::Projectile(Player* player, GLfloat mul, GLfloat mulVelAirplane) {
     // this->cx = px;
     // this->cz = pz;
 
-    //float dy = cos((this->playerAngleXZ + this->cannonVertical) * M_PI / 180) 
-    //    * sin((this->playerAngle + 90 + this->cannonAngle) * M_PI / 180) 
-    //    * this->velocity 
-    //    * dt 
-    //    * this->velocityMult;
-//
-	//float dx = cos((this->playerAngleXZ + this->cannonVertical) * M_PI / 180) 
-    //    * cos((this->playerAngle + 90 + this->cannonAngle) * M_PI / 180) 
-    //    * this->velocity 
-    //    * dt 
-    //    * this->velocityMult;	
-//
-	//float dz = sin((this->playerAngleXZ + this->cannonVertical) * M_PI / 180) 
-	//	* this->velocity 
-	//	* dt 
-	//	* this->velocityMult;
-//
-	//this->body->setX(this->body->getX() + dx);
-	//this->body->setY(this->body->getY() + dy);
-	//this->body->setZ(this->body->getZ() + dz);
-
     this->angle = player->getAngle() + player->getCannonAngle();
     this->angleTheta = player->getAngleTheta() + player->getCannonAngleTheta();
 
