@@ -319,24 +319,42 @@ void idle(void) {
     // MOVIMENTACAO DOS INIMIGOS
     for (auto a : airEnemies) {
         if (!a->isDead()) {
-            if ((currentTime - a->getLastMovementTime()) >= 1.0) {
+            if ((currentTime - a->getLastMovementTime()) >= 2.0) {
                 a->setMovementType(rand() % 5);
                 a->setLastMovementTime(currentTime);
             }
             
-            // Turn Left
-            if (a->getMovementType() == 1) {
+            GLfloat groundEnemyHeight = .0;
+            if (arena->getGroundEnemies().size() > 0) {
+                groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
+            }
+
+            if (a->getCz() >= arena->getRadius() * .9 - 50) {
+                a->setMovementType(4);
+                a->setLastMovementTime(currentTime);
+            }
+            
+            if (a->getCz() <= groundEnemyHeight + 50) {
+                printf("oi");
+                a->setMovementType(3);
+                a->setLastMovementTime(currentTime);
+            }
+            
+            // Voa reto
+            if (a->getMovementType() == 0) {
+            // Vira para esquerda
+            } else if (a->getMovementType() == 1) {
                 a->moveX(120, diffTime);
-            // Turn Right
+            // Vira para direita
             } else if (a->getMovementType() == 2) {
                 a->moveX(-120, diffTime);
-            // Fly Up
+            // Voa para cima
             } else if (a->getMovementType() == 3) {
-                a->moveZ(30, diffTime);
-            // Fly Down
+                a->moveZ(10, diffTime);
+            // Voa para baixo
             } else if (a->getMovementType() == 4) {
-                a->moveZ(-30, diffTime);
-            }    
+                a->moveZ(-10, diffTime);
+            }
 
             a->move(enemySpeedMultiplier, diffTime);
             // atira só depois de x tempos

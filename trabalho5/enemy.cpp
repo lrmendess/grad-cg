@@ -29,9 +29,9 @@ void Enemy::moveX(GLfloat angle, GLfloat dt) {
     this->angle += angle * dt;
 }
 
-void Enemy::moveZ(GLfloat angle, GLfloat dt) {
+void Enemy::moveZ(GLfloat angle, GLfloat dt) {    
     this->angleTheta += angle * dt;
-
+    
     if (this->angleTheta > 45) {
         this->angleTheta = 45;
     }
