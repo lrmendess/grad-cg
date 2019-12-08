@@ -74,15 +74,15 @@ Projectile::Projectile(Enemy* enemy, GLfloat mul, GLfloat mulVelAirplane) {
 
     GLfloat px = enemy->getCx();
     px += enemy->getRadius() * cos(airplaneThetaRad) * cos(airplaneFiRad);
-    px += enemy->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
+    px += enemy->getRadius() / 4 * cos(cannonThetaRad + airplaneThetaRad) * cos(cannonFiRad + airplaneFiRad);
     
     GLfloat py = enemy->getCy();
     py += enemy->getRadius() * cos(airplaneThetaRad) * sin(airplaneFiRad);
-    py += enemy->getRadius() / 2 * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
+    py += enemy->getRadius() / 4 * cos(cannonThetaRad + airplaneThetaRad) * sin(cannonFiRad + airplaneFiRad);
 
     GLfloat pz = enemy->getCz();
     pz += enemy->getRadius() * sin(airplaneThetaRad);
-    pz += enemy->getRadius() / 2 * sin(cannonThetaRad);
+    pz += enemy->getRadius() / 4 * sin(cannonThetaRad);
 
     this->cx = px;
     this->cy = py;
