@@ -15,7 +15,6 @@ void switchViewportCamera(int cam);
 void cockpitCamera();
 void cannonCamera();
 void thirdPersonalCamera();
-void bombCamera();
 void minimap();
 
 void printText(GLfloat x, GLfloat y, void *font, string text);
@@ -293,14 +292,16 @@ void display(void) {
     glLoadIdentity();
     
     if(player->getBombs().size() > 0) {
-        Bomb* droppedBomb = player->getBombs().front();
-        gluLookAt(
-            droppedBomb->getCx(), droppedBomb->getCy(), droppedBomb->getCz(),
-            droppedBomb->getCx(), droppedBomb->getCy(), 0.0,
-            0.0, 1.0, 0.0
-        );
-        
-        arena->draw(arenaTexture1, arenaTexture1_night, arenaTexture2, arenaTexture2_night, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
+        if(!nightMode) {
+            Bomb* droppedBomb = player->getBombs().front();
+            gluLookAt(
+                droppedBomb->getCx(), droppedBomb->getCy(), droppedBomb->getCz(),
+                droppedBomb->getCx(), droppedBomb->getCy(), 0.0,
+                0.0, 1.0, 0.0
+            );
+            
+            arena->draw(arenaTexture1, arenaTexture1_night, arenaTexture2, arenaTexture2_night, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
+        }
     }
 
     /* Nao esperar! */
@@ -691,10 +692,6 @@ void thirdPersonalCamera() {
     up[0] = 0;
     up[1] = 0;
     up[2] = 1;
-}
-
-void bombCamera() {
-    
 }
 
 void minimap() {

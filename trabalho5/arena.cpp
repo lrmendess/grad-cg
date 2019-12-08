@@ -143,13 +143,13 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture1_night, GLuint arenaT
         glPushMatrix();
             glScalef(8.0, 2.0, 1.0);
             
-            glBindTexture(GL_TEXTURE_2D, skyTexture);   
+            glBindTexture(GL_TEXTURE_2D, skyTexture);
             GLUquadricObj* sky  = gluNewQuadric();
                 gluQuadricDrawStyle(sky, GLU_FILL);
                 gluQuadricNormals(sky, GLU_SMOOTH);
                 gluQuadricTexture(sky, GLU_TRUE);
                 gluQuadricOrientation(sky, GLU_INSIDE);
-                gluCylinder(sky, this->getRadius(), this->getRadius(), this->getRadius(), 180, 180);
+                gluCylinder(sky, this->getRadius() + this->player->getRadius() * 5, this->getRadius() + this->player->getRadius() * 5, this->getRadius() + this->player->getRadius() * 5, 180, 180);
             gluDeleteQuadric(sky);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
@@ -169,7 +169,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture1_night, GLuint arenaT
     glColor3f(1.0, 1.0, 1.0);
     
     glPushMatrix();
-        glTranslatef(.0, .0, this->getRadius());
+        glTranslatef(.0, .0, this->getRadius() + this->player->getRadius() * 5);
         
         glEnable(GL_TEXTURE_2D);
             glMatrixMode(GL_TEXTURE);
@@ -182,7 +182,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture1_night, GLuint arenaT
                     gluQuadricNormals(roof, GLU_SMOOTH);
                     gluQuadricTexture(roof, GLU_TRUE);
                     gluQuadricOrientation(roof, GLU_OUTSIDE);
-                    gluDisk(roof, 0, this->getRadius(), 180, 180);
+                    gluDisk(roof, 0, this->getRadius() + this->player->getRadius() * 5, 180, 180);
                 gluDeleteQuadric(roof);
             glPopMatrix();
             glMatrixMode(GL_MODELVIEW);
@@ -217,7 +217,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture1_night, GLuint arenaT
                 gluQuadricNormals(ground, GLU_SMOOTH);
                 gluQuadricTexture(ground, GLU_TRUE);
                 gluQuadricOrientation(ground, GLU_OUTSIDE);
-                gluDisk(ground, 0, this->getRadius(), 180, 180);
+                gluDisk(ground, 0, this->getRadius() + this->player->getRadius() * 5, 180, 180);
             gluDeleteQuadric(ground);
         glPopMatrix();
         glMatrixMode(GL_MODELVIEW);
