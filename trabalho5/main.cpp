@@ -480,13 +480,13 @@ void mouseAction(int button, int state, int x, int y) {
             player->fire(fireSpeedMultiplier, speedMultiplier);
         }
 
-        if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN && !keyboard[' ']) {
             player->bomb(speedMultiplier);
         }
     }
 
     if (button == GLUT_RIGHT_BUTTON && toggleCamera == 3){
-        if (state == GLUT_DOWN)
+        if (state == GLUT_DOWN && keyboard[' '])
             lockTpsCamera = false;
         
         if(state == GLUT_UP)
