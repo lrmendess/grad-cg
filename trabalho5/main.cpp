@@ -404,8 +404,8 @@ void idle(void) {
 
 void mouseMovement(int x, int y) {
     if (!player->isTakeOff() && player->isFlying() && !player->isDead()) {
-        GLint distanceX = player->getMouseX() - x;
-        GLint distanceY = player->getMouseY() - y;
+        GLint distanceX = (player->getMouseX() - x) / 4;
+        GLint distanceY = (player->getMouseY() - y) / 4;
 
         GLint newX = player->getCannonAngle() + distanceX;
 

@@ -16,6 +16,7 @@ Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->startY = this->cy;
     this->startZ = this->cz;
     this->startR = radius;
+    this->cannonLength = CANNON_LENGTH;
 
     // Angulo inicial
     this->angle = (180 / M_PI) * atan2(
@@ -46,13 +47,11 @@ void Player::move(GLfloat mul, GLfloat dt) {
     GLfloat fiRad = this->angle * M_PI / 180;
     GLfloat thetaRad = this->angleTheta * M_PI / 180;
 
-    GLfloat stepX = mul * this->speed * dt * cos(M_PI / 4) * cos(M_PI / 4);
-    GLfloat stepY = mul * this->speed * dt * cos(M_PI / 4) * sin(M_PI / 4);
-    GLfloat stepZ = mul * this->speed * dt * sin(M_PI / 4);
+    GLfloat step = mul * this->speed * dt;
 
-    GLfloat mx = this->cx + stepY * cos(thetaRad) * cos(fiRad);
-    GLfloat my = this->cy + stepX * cos(thetaRad) * sin(fiRad);
-    GLfloat mz = this->cz + stepZ * sin(thetaRad);
+    GLfloat mx = this->cx + step * cos(thetaRad) * cos(fiRad);
+    GLfloat my = this->cy + step * cos(thetaRad) * sin(fiRad);
+    GLfloat mz = this->cz + step * sin(thetaRad);
 
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
@@ -85,7 +84,7 @@ void Player::move(GLfloat mul, GLfloat dt) {
         groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
     }
 
-    if (mz <= arena->getRadius() && mz > groundEnemyHeight) {
+    if (mz <= arena->getRadius() * .9 && mz > groundEnemyHeight) {
         this->cz = mz;
     }
 }
@@ -94,8 +93,15 @@ void Player::drawProjectiles(GLuint projTexture) {
     for (auto p : this->projectiles) {
         glPushMatrix();
             glTranslatef(p->getCx(), p->getCy(), p->getCz());
-            glRotatef(p->getAngle(), .0, .0, 1.0);
-            glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
+            // glRotatef(p->getAngle(), .0, .0, 1.0);
+            // glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
+            // glTranslatef(p->airplaneX, p->airplaneY, p->airplaneZ);
+            // glRotatef(p->airplaneFi, 0.0, 0.0, 1.0);
+            // glRotatef(-p->airplaneTheta, 0.0, 1.0, 0.0);
+            // glTranslatef(this->radius, 0.0, 0.0);
+            // glRotatef(p->cannonFi, 0.0, 0.0, 1.0);
+            // glRotatef(-p->cannonTheta, 0.0,1.0,0.0);
+            // glTranslatef(CANNON_LENGTH, 0.0, 0.0);
             p->draw(projTexture);
         glPopMatrix();
     }
@@ -113,14 +119,12 @@ void Player::updateProjectiles(GLfloat dt) {
         bool canUpdate = true;
         GLfloat projectileFiRad = p->getAngle() * M_PI / 180;
         GLfloat projectileThetaRad = p->getAngleTheta() * M_PI / 180;
+        
+        GLfloat step = p->getSpeed() * dt;
 
-        GLfloat stepX = p->getSpeed() * dt * cos(M_PI / 4) * cos(M_PI / 4);
-        GLfloat stepY = p->getSpeed() * dt * cos(M_PI / 4) * sin(M_PI / 4);
-        GLfloat stepZ = p->getSpeed() * dt * sin(M_PI / 4);
-
-        GLfloat mx = p->getCx() + stepY * cos(projectileThetaRad) * cos(projectileFiRad);
-        GLfloat my = p->getCy() + stepX * cos(projectileThetaRad) * sin(projectileFiRad);
-        GLfloat mz = p->getCz() + stepZ * sin(projectileThetaRad);
+        GLfloat my = p->getCy() + step * cos(projectileThetaRad) * sin(projectileFiRad);
+        GLfloat mx = p->getCx() + step * cos(projectileThetaRad) * cos(projectileFiRad);
+        GLfloat mz = p->getCz() + step * sin(projectileThetaRad);
 
         // Se o projetil encostar na borda, ele sera removido da lista de projeteis
         // disparados pelo player em questao
@@ -179,12 +183,11 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
         GLfloat bombFiRad = b->getAngle() * M_PI / 180;
         GLfloat bombThetaRad = .0;
 
-        GLfloat stepX = b->getSpeed() * dt * cos(M_PI / 4) * cos(M_PI / 4);
-        GLfloat stepY = b->getSpeed() * dt * cos(M_PI / 4) * sin(M_PI / 4);
+        GLfloat step = b->getSpeed() * dt;
         // GLfloat stepZ = b->getSpeed() * dt * sin(M_PI / 4);
 
-        GLfloat mx = b->getCx() + stepY * cos(bombThetaRad) * cos(bombFiRad);
-        GLfloat my = b->getCy() + stepX * cos(bombThetaRad) * sin(bombFiRad);
+        GLfloat mx = b->getCx() + step * cos(bombThetaRad) * cos(bombFiRad);
+        GLfloat my = b->getCy() + step * cos(bombThetaRad) * sin(bombFiRad);
         // GLfloat mz = b->getCz() + stepZ * sin(bombThetaRad);
 
         // Se a bomba encostar na borda, ela sera removido da lista de bombas
@@ -255,6 +258,7 @@ void Player::calculatePhysics() {
 
     GLfloat distance = sqrt(pow(dy, 2) + pow(dx, 2));
     this->speed = sqrt(pow(ay, 2) + pow(ax, 2)) * t;
+    this->speed *= sin(M_PI / 4);
 
     /* Tratamento do inicio do crescimento do raio do player */
     midAirstripX = strip->getX1() + (strip->getX2() - strip->getX1()) / 2;
@@ -332,7 +336,7 @@ void Player::drawCannon() {
             gluQuadricNormals(cannon, GLU_SMOOTH);
             gluQuadricTexture(cannon, GLU_FALSE);
             gluQuadricOrientation(cannon, GLU_OUTSIDE);
-            gluCylinder(cannon, this->radius / 12, this->radius / 12, this->radius / 2, 16, 16);
+            gluCylinder(cannon, this->radius / 12, this->radius / 12, CANNON_LENGTH, 16, 16);
         gluDeleteQuadric(cannon);
     glPopMatrix();
 }

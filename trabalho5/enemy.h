@@ -10,6 +10,8 @@
 #include "projectile.h"
 #include "player.h"
 
+#define CANNON_LENGTH this->radius / 4
+
 #define d2p(x1, y1, x2, y2) sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
 
 class Arena;
@@ -40,6 +42,7 @@ class Enemy {
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
         GLfloat cannonAngleTheta= 0.0;
+        GLfloat cannonLength    = 0.0;
 
         /* Tempo para disparo */
         GLfloat maxTimeFire = 0.0;
@@ -79,6 +82,8 @@ class Enemy {
 
         GLfloat getCannonAngle() { return cannonAngle; }
         void setCannonAngle(GLfloat cannonAngle) { this->cannonAngle = cannonAngle; }
+
+        GLfloat getCannonLength() { return cannonLength; }
 
         GLboolean isDead() { return dead; }
 

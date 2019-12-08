@@ -10,6 +10,8 @@
 #include "projectile.h"
 #include "bomb.h"
 
+#define CANNON_LENGTH this->radius / 4
+
 #define d2p(x1, y1, x2, y2) sqrt(pow(x1 - x2, 2) + pow(y1 - y2, 2))
 #define d2p3d(x1, y1, z1, x2, y2, z2) sqrt(pow(x1 - x2, 2) + pow (y1 - y2, 2) + pow(z1 - z2, 2))
 
@@ -54,6 +56,7 @@ class Player {
         /* Canhao */
         GLfloat cannonAngle     = 0.0;
         GLfloat cannonAngleTheta= 0.0;
+        GLfloat cannonLength    = 0.0;
 
         /* Ultima posicao registrada do mouse */
         GLfloat mouseX          = 0.0;
@@ -100,6 +103,9 @@ class Player {
 
         GLfloat getCannonAngleTheta() { return cannonAngleTheta; }
         void setCannonAngleTheta(GLfloat cannonAngleTheta) { this->cannonAngleTheta = cannonAngleTheta; }
+
+        GLfloat getCannonLength() { return cannonLength; }
+        void setCannonLength(GLfloat cannonLength) { this->cannonLength = cannonLength; }
 
         GLfloat getMouseX() { return mouseX; }
         void setMouseX(GLfloat mouseX) { this->mouseX = mouseX; }
