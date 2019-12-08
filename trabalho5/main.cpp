@@ -50,8 +50,8 @@ GLfloat cameraEye[3];
 GLfloat cameraLook[3];
 GLfloat up[3];
 
-GLfloat tpsAngleXZ;
-GLfloat tpsAngleXY;
+GLfloat tpsAngleTheta;
+GLfloat tpsAngleFi;
 
 GLuint arenaTexture1;
 GLuint arenaTexture2;
@@ -210,7 +210,9 @@ void display(void) {
     
     /* Camera em Terceira Pessoa */    
     } else if (toggleCamera == 3) {
-    
+        tpsAngleTheta = 60;
+        tpsAngleFi = 0;
+        thirdPersonalCamera();
     }
     
     /* Modo noturno */
@@ -276,18 +278,14 @@ void keyUp(unsigned char key, int x, int y) {
 
 void idle(void) {
     /* Mudanca de camera */
-    if (keyboard['1']) {
+    if (keyboard['1'])
         toggleCamera = 1;
-        cockpitCamera();
-
-    } else if (keyboard['2']) {
-        toggleCamera = 2;
-        cannonCamera();
-        
-    } else if (keyboard['3']) {
-        toggleCamera = 3;
-        
-    }
+    else
+        if (keyboard['2'])
+            toggleCamera = 2;
+        else
+            if (keyboard['3'])
+                toggleCamera = 3;
     
     // R
     if (keyboard['r']) {
@@ -533,23 +531,45 @@ void cannonCamera() {
     //cameraLook[1] = player->getCy() + 2 * player->getRadius() * cos(thetaRad) * sin(fiRad);
     //cameraLook[2] = player->getCz() + 2 * player->getRadius() * sin(thetaRad);
 
-    up[0] = 0;
-    up[1] = 0;
-    up[2] = 1;
+    // up[0] = 0;
+    // up[1] = 0;
+    // up[2] = 1;
 }
 
 void thirdPersonalCamera() {
-    GLfloat fiRad = player->getAngle() * M_PI / 180;
-    GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+    // GLfloat fiRad = player->getAngle() * M_PI / 180;
+    // GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
+// 
+    // cameraEye[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
+    // cameraEye[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
+    // cameraEye[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
+// 
+    // cameraLook[0] = player->getCx();
+    // cameraLook[1] = player->getCy();
+    // cameraLook[2] = player->getCz();
+// 
+    // up[0] = 0;
+    // up[1] = 0;
+    // up[2] = 1;
 
-    cameraEye[0] = player->getCx() + player->getRadius() * cos(thetaRad + M_PI / 4) * cos(fiRad);
-    cameraEye[1] = player->getCy() + player->getRadius() * cos(thetaRad + M_PI / 4) * sin(fiRad);
-    cameraEye[2] = player->getCz() + player->getRadius() * sin(thetaRad + M_PI / 4);
+    GLfloat distance = player->getRadius() * 5;
+    GLfloat playerFi = player->getAngle() * M_PI/180;
 
+    GLfloat fi = tpsAngleFi * M_PI / 180 + playerFi + M_PI;
+    GLfloat theta = tpsAngleTheta * M_PI / 180;
+
+    GLfloat cameraStepX = distance * cos((theta)) * cos(fi);
+    GLfloat cameraStepY = distance * cos((theta)) * sin(fi);
+    GLfloat cameraStepZ = distance * sin((theta));
+
+    cameraEye[0] = player->getCx() + cameraStepX;
+    cameraEye[1] = player->getCy() + cameraStepY;
+    cameraEye[2] = player->getCz() + cameraStepZ;
+    
     cameraLook[0] = player->getCx();
     cameraLook[1] = player->getCy();
     cameraLook[2] = player->getCz();
-
+    
     up[0] = 0;
     up[1] = 0;
     up[2] = 1;
