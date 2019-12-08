@@ -92,16 +92,16 @@ void Player::move(GLfloat mul, GLfloat dt) {
 void Player::drawProjectiles(GLuint projTexture) {
     for (auto p : this->projectiles) {
         glPushMatrix();
-            glTranslatef(p->getCx(), p->getCy(), p->getCz());
+            // glTranslatef(p->getCx(), p->getCy(), p->getCz());
             // glRotatef(p->getAngle(), .0, .0, 1.0);
             // glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
-            // glTranslatef(p->airplaneX, p->airplaneY, p->airplaneZ);
-            // glRotatef(p->airplaneFi, 0.0, 0.0, 1.0);
-            // glRotatef(-p->airplaneTheta, 0.0, 1.0, 0.0);
-            // glTranslatef(this->radius, 0.0, 0.0);
-            // glRotatef(p->cannonFi, 0.0, 0.0, 1.0);
-            // glRotatef(-p->cannonTheta, 0.0,1.0,0.0);
-            // glTranslatef(CANNON_LENGTH, 0.0, 0.0);
+            glTranslatef(p->airplaneX, p->airplaneY, p->airplaneZ);
+            glRotatef(p->airplaneFi, 0.0, 0.0, 1.0);
+            glRotatef(-p->airplaneTheta, 0.0, 1.0, 0.0);
+            glTranslatef(this->radius, 0.0, 0.0);
+            glRotatef(p->cannonFi, 0.0, 0.0, 1.0);
+            glRotatef(-p->cannonTheta, 0.0,1.0,0.0);
+            glTranslatef(CANNON_LENGTH, 0.0, 0.0);
             p->draw(projTexture);
         glPopMatrix();
     }
@@ -117,17 +117,26 @@ void Player::updateProjectiles(GLfloat dt) {
 
     for (auto p : this->projectiles) {
         bool canUpdate = true;
-        GLfloat projectileFiRad = p->getAngle() * M_PI / 180;
-        GLfloat projectileThetaRad = p->getAngleTheta() * M_PI / 180;
-        
-        GLfloat step = p->getSpeed() * dt;
-
-        GLfloat my = p->getCy() + step * cos(projectileThetaRad) * sin(projectileFiRad);
-        GLfloat mx = p->getCx() + step * cos(projectileThetaRad) * cos(projectileFiRad);
-        GLfloat mz = p->getCz() + step * sin(projectileThetaRad);
+        //GLfloat projectileFiRad = p->getAngle() * M_PI / 180;
+        //GLfloat projectileThetaRad = p->getAngleTheta() * M_PI / 180;
+        //
+        //GLfloat step = p->getSpeed() * dt;
+//
+        //GLfloat my = p->getCy() + step * cos(projectileThetaRad) * sin(projectileFiRad);
+        //GLfloat mx = p->getCx() + step * cos(projectileThetaRad) * cos(projectileFiRad);
+        //GLfloat mz = p->getCz() + step * sin(projectileThetaRad);
 
         // Se o projetil encostar na borda, ele sera removido da lista de projeteis
         // disparados pelo player em questao
+
+        GLfloat dy = cos((p->airplaneTheta + p->cannonTheta) * M_PI / 180) * sin((p->airplaneFi + p->cannonFi) * M_PI / 180)  * p->getSpeed() * dt;
+        GLfloat dx = cos((p->airplaneTheta + p->cannonTheta) * M_PI / 180) * cos((p->airplaneFi + p->cannonFi) * M_PI / 180)  * p->getSpeed() * dt;
+        GLfloat dz = sin((p->airplaneTheta + p->cannonTheta) * M_PI / 180) * p->getSpeed() * dt;
+
+        GLfloat mx = p->airplaneX += dx;
+        GLfloat my = p->airplaneY += dy;
+        GLfloat mz = p->airplaneZ += dz;
+
         GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
         if (distanceFromBorder > arena->getRadius()) {
