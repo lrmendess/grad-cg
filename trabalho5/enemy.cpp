@@ -328,7 +328,7 @@ void Enemy::drawCockpit() {
     glColor3f(0.0, 0.0, 0.0);
     
     glPushMatrix();
-        glTranslatef(this->radius * .5, .0, .0);
+        glTranslatef(this->radius * .5, .0, this->radius / 12);
         glScalef(.375, .125, .25);
 
         glutSolidSphere(this->radius, 20, 20);
