@@ -319,7 +319,7 @@ void idle(void) {
     // MOVIMENTACAO DOS INIMIGOS
     for (auto a : airEnemies) {
         if (!a->isDead()) {
-            if ((currentTime - a->getLastMovementTime()) >= 2.0) {
+            if ((currentTime - a->getLastMovementTime()) >= 1.0) {
                 a->setMovementType(rand() % 5);
                 a->setLastMovementTime(currentTime);
             }
@@ -329,13 +329,12 @@ void idle(void) {
                 groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
             }
 
-            if (a->getCz() >= arena->getRadius() * .9 - 50) {
+            if (a->getCz() >= arena->getRadius() * .9 - 10) {
                 a->setMovementType(4);
                 a->setLastMovementTime(currentTime);
             }
             
-            if (a->getCz() <= groundEnemyHeight + 50) {
-                printf("oi");
+            if (a->getCz() <= groundEnemyHeight + 10) {
                 a->setMovementType(3);
                 a->setLastMovementTime(currentTime);
             }
