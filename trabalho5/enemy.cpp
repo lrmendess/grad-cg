@@ -119,9 +119,11 @@ void Enemy::updateProjectiles(GLfloat dt) {
 
         GLfloat distanceFromPlayer = d2p3d(mx, my, mz, player->getCx(), player->getCy(), player->getCz());
 
+        extern GLboolean collisionEnabled;
+
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(p);
-        } else if(distanceFromPlayer <= player->getRadius() && player->isFlying()) {
+        } else if(distanceFromPlayer <= player->getRadius() && player->isFlying() && collisionEnabled) {
             player->kill();
         } else {
             p->setCx(mx);
@@ -133,7 +135,7 @@ void Enemy::updateProjectiles(GLfloat dt) {
     // Sendo removido da lista e tendo sua memoria liberada, ele nao sera mais desenhado
     for (auto p : forRemove) {
         this->projectiles.remove(p);
-        delete(p);
+        // delete(p);
     }
 }
 

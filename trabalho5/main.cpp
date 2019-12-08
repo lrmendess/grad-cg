@@ -61,6 +61,7 @@ GLfloat cameraMouseX = 0;
 GLfloat cameraMouseY = 0;
 
 GLboolean lockTpsCamera = true;
+GLboolean collisionEnabled = true;
 
 GLuint arenaTexture1;
 GLuint arenaTexture1_night;
@@ -348,6 +349,10 @@ void idle(void) {
         toggleCamera = 3;
     }
     
+    if (keyboard['c']) {
+        collisionEnabled = !collisionEnabled;
+    }
+
     // R
     if (keyboard['r']) {
         player->reset();
@@ -435,9 +440,9 @@ void idle(void) {
         }
 
         if (!keyboard['s'] && !keyboard['w']) {
-            if (player->getAngleTheta() > 2) {
+            if (player->getAngleTheta() > 5) {
                 player->moveZ(-90, diffTime);
-            } else if (player->getAngleTheta() < -2) {
+            } else if (player->getAngleTheta() < -5) {
                 player->moveZ(90, diffTime);
             } else {
                 player->setAngleTheta(.0);
@@ -456,9 +461,9 @@ void idle(void) {
                     }
                 }
             } else {
-                if (player->getAngleTheta() > 2) {
+                if (player->getAngleTheta() > 5) {
                     player->moveZ(-120, diffTime);
-                } else if (player->getAngleTheta() < -2) {
+                } else if (player->getAngleTheta() < -5) {
                     player->moveZ(120, diffTime);
                 } else {
                     player->setAngleTheta(.0);

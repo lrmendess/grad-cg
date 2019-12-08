@@ -64,19 +64,23 @@ void Player::move(GLfloat mul, GLfloat dt) {
         my = cx * sin(beta) + cy * cos(beta);
     }
 
-    for (auto enemy : arena->getAirEnemies()) {
-        if (!enemy->isDead()) {
-            GLfloat distanceFromEnemy = d2p3d(mx, my, mz, enemy->getCx(), enemy->getCy(), enemy->getCz());
+    extern GLboolean collisionEnabled;
 
-            GLfloat safetyDistance = enemy->getRadius() + this->radius;
-            if ((distanceFromEnemy <= safetyDistance) && this->flying) {
-                this->dead = true;
-                return;
+    if (collisionEnabled) {
+        for (auto enemy : arena->getAirEnemies()) {
+            if (!enemy->isDead()) {
+                GLfloat distanceFromEnemy = d2p3d(mx, my, mz, enemy->getCx(), enemy->getCy(), enemy->getCz());
+
+                GLfloat safetyDistance = enemy->getRadius() + this->radius;
+                if ((distanceFromEnemy <= safetyDistance) && this->flying) {
+                    this->dead = true;
+                    return;
+                }
             }
         }
     }
 
-    this->propellerAngle += this->speed / 8;
+    this->propellerAngle += this->speed / 4;
     this->cy = my;
     this->cx = mx;
 
@@ -146,18 +150,22 @@ void Player::updateProjectiles(GLfloat dt) {
 
         GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
+        extern GLboolean collisionEnabled;
+
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(p);
         } else {
-            for (auto enemy : arena->getAirEnemies()) {
-                if (!enemy->isDead()) {
-                    GLfloat distanceFromEnemy = d2p3d(mx, my, mz, enemy->getCx(), enemy->getCy(), enemy->getCz());
+            if (collisionEnabled) {
+                for (auto enemy : arena->getAirEnemies()) {
+                    if (!enemy->isDead()) {
+                        GLfloat distanceFromEnemy = d2p3d(mx, my, mz, enemy->getCx(), enemy->getCy(), enemy->getCz());
 
-                    if (distanceFromEnemy <= enemy->getRadius()) {
-                        enemy->kill();
-                        forRemove.push_back(p);
-                        canUpdate = false;
-                        break;
+                        if (distanceFromEnemy <= enemy->getRadius()) {
+                            enemy->kill();
+                            forRemove.push_back(p);
+                            canUpdate = false;
+                            break;
+                        }
                     }
                 }
             }
@@ -318,7 +326,7 @@ void Player::takeOffAirplane(GLint currentTime, GLfloat diffTime) {
         oldTime = currentTime;
     }
 
-    this->propellerAngle += this->speed / 8;
+    this->propellerAngle += this->speed / 4;
 }
 
 void Player::drawWings() {
