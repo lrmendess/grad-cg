@@ -16,7 +16,8 @@ void cannonCamera();
 void thirdPersonalCamera();
 void bombCamera();
 
-void renderBitmapString(float x, float y, void *font, string str);
+void printText(GLfloat x, GLfloat y, void *font, string text);
+void renderBitmapString(GLfloat x, GLfloat y, void *font, string str);
 GLuint loadTexture(const char* filename);
 
 void init(void);
@@ -104,7 +105,8 @@ int main(int argc, char** argv) {
     /* Glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
-    glutInitWindowSize(2 * arena->getRadius(), 2 * arena->getRadius());
+    //glutInitWindowSize(2 * arena->getRadius(), 2 * arena->getRadius());
+    glutInitWindowSize(500, 500);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Ace Combat: Poor Edition");
 
@@ -227,21 +229,27 @@ void display(void) {
 
     arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
-    if (player->getPoints() == arena->getGroundEnemies().size()) {
-        string result("WIN");
-        renderBitmapString(-20.0, -5.0, GLUT_BITMAP_TIMES_ROMAN_24, result);
-    } else if (player->isDead()) {
-        string result("LOSE");
-        renderBitmapString(-20.0, -5.0, GLUT_BITMAP_TIMES_ROMAN_24, result);
-    }
-    
-    string totalGroundEnemies(to_string(arena->getGroundEnemies().size() - player->getPoints()));
-    string score("Destroyed: " 
-            + to_string(player->getPoints()) 
-            + " | Remaining: " 
-            + totalGroundEnemies);
+    glDisable(GL_LIGHTING);
+        glPushMatrix();
+            glLoadIdentity();
+            
+            if (player->getPoints() == arena->getGroundEnemies().size()) {
+                string result("WIN");        
+                printText(-20.0, 0.0, GLUT_BITMAP_HELVETICA_18, result);
+            } else if (player->isDead()) {
+                string result("LOSE");
+                printText(-25.0, 0.0, GLUT_BITMAP_HELVETICA_18, result);
+            }
+            
+            string totalGroundEnemies(to_string(arena->getGroundEnemies().size() - player->getPoints()));
+            string score("Destroyed: " 
+                    + to_string(player->getPoints()) 
+                    + " | Remaining: " 
+                    + totalGroundEnemies);
 
-    renderBitmapString(0.0, arena->getRadius() - 30, GLUT_BITMAP_TIMES_ROMAN_24, score);
+            printText(85.0, 230.0, GLUT_BITMAP_HELVETICA_12, score);
+        glPopMatrix();
+    glEnable(GL_LIGHTING);
 
     /* Nao esperar! */
     glutSwapBuffers();
@@ -511,7 +519,18 @@ void thirdPersonalCamera() {
     up[2] = 1;
 }
 
-void renderBitmapString(float x, float y, void *font, string str) {
+void printText(GLfloat x, GLfloat y, void *font, string text) {
+    glMatrixMode(GL_PROJECTION);
+    glPushMatrix();
+        glLoadIdentity();
+        glOrtho(-250, 250, -250, 250, -1, 1);
+        glColor3f(0.0, 0.0, 0.0);
+        renderBitmapString(x, y, font, text);    
+    glPopMatrix();
+    glMatrixMode(GL_MODELVIEW);
+}
+
+void renderBitmapString(GLfloat x, GLfloat y, void *font, string str) {
     glRasterPos2f(x,y);
 
     for (string::iterator c = (&str)->begin(); c != (&str)->end(); ++c)  {
