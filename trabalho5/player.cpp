@@ -80,13 +80,19 @@ void Player::move(GLfloat mul, GLfloat dt) {
     this->cy = my;
     this->cx = mx;
 
-    GLfloat groundEnemyHeight = .0;
-    if (arena->getGroundEnemies().size() > 0) {
-        groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
-    }
+    // GLfloat groundEnemyHeight = .0;
+    // if (arena->getGroundEnemies().size() > 0) {
+    //     groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
+    // } else {
+    //     groundEnemyHeight = this->radius;
+    // }
 
-    if (mz <= arena->getRadius() * .9 && mz > groundEnemyHeight) {
+    extern GLfloat groundEnemyHeight;
+
+    if (mz <= arena->getRadius() && mz > groundEnemyHeight) {
         this->cz = mz;
+    } else {
+        this->canTilt = false;
     }
 }
 
