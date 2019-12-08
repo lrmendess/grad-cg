@@ -9,7 +9,7 @@ Player::~Player() {
 Player::Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
-    this->cz = 10;
+    this->cz = 6;
     this->radius = 2 * radius;
     this->arena = arena;
     this->startX = this->cx;

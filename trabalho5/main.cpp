@@ -29,6 +29,7 @@ void keyPress(unsigned char key, int x, int y);
 void keyUp(unsigned char key, int x, int y);
 void mouseMovement(int x, int y);
 void mouseAction(int button, int state, int x, int y);
+void mouseClickAndMove(int x, int y);
 
 bool keyboard[256];
 
@@ -50,8 +51,13 @@ GLfloat cameraEye[3];
 GLfloat cameraLook[3];
 GLfloat up[3];
 
-GLfloat tpsAngleTheta;
-GLfloat tpsAngleFi;
+GLfloat tpsAngleTheta = 60;
+GLfloat tpsAngleFi = 0;
+
+GLfloat cameraMouseX = 0;
+GLfloat cameraMouseY = 0;
+
+GLboolean lockTpsCamera = true;
 
 GLuint arenaTexture1;
 GLuint arenaTexture2;
@@ -119,6 +125,7 @@ int main(int argc, char** argv) {
     glutIdleFunc(idle);
     glutPassiveMotionFunc(mouseMovement);
     glutMouseFunc(mouseAction);
+    glutMotionFunc(mouseClickAndMove);
 
     glutMainLoop();
 
@@ -171,7 +178,7 @@ void init(void) {
     GLfloat light0_position[] = {arena->getRadius(), arena->getRadius(), arena->getRadius(), 0.0};
     GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};
     GLfloat light1_direction[] = {0.0, 0.0, 1.0};
-    GLfloat light1_angle[] = {20.0};
+    GLfloat light1_angle[] = {25.0};
 
     glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
     glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
@@ -210,8 +217,6 @@ void display(void) {
     
     /* Camera em Terceira Pessoa */    
     } else if (toggleCamera == 3) {
-        tpsAngleTheta = 60;
-        tpsAngleFi = 0;
         thirdPersonalCamera();
     }
     
@@ -278,14 +283,19 @@ void keyUp(unsigned char key, int x, int y) {
 
 void idle(void) {
     /* Mudanca de camera */
-    if (keyboard['1'])
+    if (keyboard['1']) {
         toggleCamera = 1;
-    else
-        if (keyboard['2'])
-            toggleCamera = 2;
-        else
-            if (keyboard['3'])
-                toggleCamera = 3;
+        lockTpsCamera = true;
+
+    } else if (keyboard['2']) {
+        toggleCamera = 2;
+        lockTpsCamera = true;
+
+    } else if (keyboard['3']) {
+        tpsAngleTheta = 60;
+        tpsAngleFi = 0;
+        toggleCamera = 3;
+    }
     
     // R
     if (keyboard['r']) {
@@ -459,6 +469,9 @@ void mouseMovement(int x, int y) {
 
     player->setMouseX(x);
     player->setMouseY(y);
+
+    cameraMouseX = x;
+    cameraMouseY = y;
 }
 
 void mouseAction(int button, int state, int x, int y) {
@@ -470,6 +483,33 @@ void mouseAction(int button, int state, int x, int y) {
         if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
             player->bomb(speedMultiplier);
         }
+    }
+
+    if (button == GLUT_RIGHT_BUTTON && toggleCamera == 3){
+        if (state == GLUT_DOWN)
+            lockTpsCamera = false;
+        
+        if(state == GLUT_UP)
+            lockTpsCamera = true;
+    }
+
+    cameraMouseX = x;
+    cameraMouseY = y;
+}
+
+void mouseClickAndMove(int x, int y) {
+    if(lockTpsCamera == false) {
+        GLint diffY = (y - cameraMouseY) / 2;
+        GLint newTheta = tpsAngleTheta + diffY;
+        
+        if (newTheta <= 60 && newTheta >= -60) {
+            tpsAngleTheta = newTheta;
+        }
+
+        tpsAngleFi -= (x - cameraMouseX) / 2;
+
+        cameraMouseX = x;
+        cameraMouseY = y;
     }
 }
 
