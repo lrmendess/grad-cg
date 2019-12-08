@@ -29,9 +29,9 @@ void Enemy::moveX(GLfloat angle, GLfloat dt) {
     this->angle += angle * dt;
 }
 
-void Enemy::moveZ(GLfloat angle, GLfloat dt) {
+void Enemy::moveZ(GLfloat angle, GLfloat dt) {    
     this->angleTheta += angle * dt;
-
+    
     if (this->angleTheta > 45) {
         this->angleTheta = 45;
     }
@@ -72,7 +72,13 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
 
     if (mz <= arena->getRadius() * .9 && mz > groundEnemyHeight) {
         this->cz = mz;
-    }
+    } /*else {
+        if (mz <= groundEnemyHeight) {
+            this->moveZ(this->angleTheta, dt);
+        } else {
+            this->moveZ(-this->angleTheta, dt);
+        }
+    }*/
 }
 
 void Enemy::drawProjectiles(GLuint projTexture) {
