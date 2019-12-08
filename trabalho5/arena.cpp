@@ -120,14 +120,18 @@ Arena::Arena(string path) : Circle() {
     }
 }
 
-void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTexture, GLuint airstripTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture, bool nightMode) {    
+void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture1_night, GLuint arenaTexture2, GLuint arenaTexture2_night, GLuint playerTexture, GLuint airstripTexture, GLuint airEnemiesTexture, GLuint groundEnemiesTexture, GLuint projTexture, GLuint bombTexture, bool nightMode) {    
     // Corpo do Cilindro
+    GLuint skyTexture;
+    
     if (nightMode) {
         GLfloat skyEmission[] = {0.0, 0.0, 0.0, 1.0};
         glMaterialfv(GL_FRONT, GL_EMISSION, skyEmission);
+        skyTexture = arenaTexture1_night;
     } else {
         GLfloat skyEmission[] = {1.0, 1.0, 1.0, 1.0};
         glMaterialfv(GL_FRONT, GL_EMISSION, skyEmission);
+        skyTexture = arenaTexture1;
     }
     
     GLfloat skyColor[] = {1.0, 1.0, 1.0, 1.0};
@@ -139,7 +143,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
         glPushMatrix();
             glScalef(8.0, 2.0, 1.0);
             
-            glBindTexture(GL_TEXTURE_2D, arenaTexture1);   
+            glBindTexture(GL_TEXTURE_2D, skyTexture);   
             GLUquadricObj* sky  = gluNewQuadric();
                 gluQuadricDrawStyle(sky, GLU_FILL);
                 gluQuadricNormals(sky, GLU_SMOOTH);
@@ -170,9 +174,9 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
         glEnable(GL_TEXTURE_2D);
             glMatrixMode(GL_TEXTURE);
             glPushMatrix();
-                glScalef(8.0, 2.0, 1.0);
+                glScalef(4.0, 4.0, 1.0);
                 
-                glBindTexture(GL_TEXTURE_2D, arenaTexture1);
+                glBindTexture(GL_TEXTURE_2D, skyTexture);
                 GLUquadricObj* roof = gluNewQuadric();
                     gluQuadricDrawStyle(roof, GLU_FILL);
                     gluQuadricNormals(roof, GLU_SMOOTH);
@@ -186,12 +190,16 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
     glPopMatrix();
 
     // Tampa inferior
+    GLuint groundTexture;
+    
     if (nightMode) {
         GLfloat groundEmission[] = {0.0, 0.0, 0.0, 1.0};
         glMaterialfv(GL_FRONT, GL_EMISSION, groundEmission);
+        groundTexture = arenaTexture2_night;
     } else {
         GLfloat groundEmission[] = {1.0, 1.0, 1.0, 1.0};
         glMaterialfv(GL_FRONT, GL_EMISSION, groundEmission);
+        groundTexture = arenaTexture2;
     }
     
     GLfloat groundColor[] = {1.0, 1.0, 1.0, 1.0};
@@ -203,7 +211,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
         glPushMatrix();
             glScalef(10.0, 10.0, 1.0);
             
-            glBindTexture(GL_TEXTURE_2D, arenaTexture2);
+            glBindTexture(GL_TEXTURE_2D, groundTexture);
             GLUquadricObj* ground = gluNewQuadric();
                 gluQuadricDrawStyle(ground, GLU_FILL);
                 gluQuadricNormals(ground, GLU_SMOOTH);
@@ -277,7 +285,7 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                         gluQuadricNormals(stem, GLU_SMOOTH);
                         gluQuadricTexture(stem, GLU_FALSE);
                         gluQuadricOrientation(stem, GLU_OUTSIDE);
-                        gluCylinder(stem, ge->getRadius() / 12, ge->getRadius() / 12, ge->getRadius() / 1.5, 16, 16);
+                        gluCylinder(stem, ge->getRadius() / 20, ge->getRadius() / 20, ge->getRadius() / 2, 16, 16);
                     gluDeleteQuadric(stem);
                     
                     // Bandeira
@@ -288,8 +296,8 @@ void Arena::draw(GLuint arenaTexture1, GLuint arenaTexture2, GLuint playerTextur
                     glColor3f(1.0, 0.0, 0.0);
                     
                     glPushMatrix();
-                        glTranslatef(0.0, ge->getRadius() / 8, ge->getRadius() / 1.5);
-                        glScalef(1.0, ge->getRadius() / 4, ge->getRadius() / 8);
+                        glTranslatef(0.0, ge->getRadius() / 8, ge->getRadius() / 2);
+                        glScalef(ge->getRadius() / 16, ge->getRadius() / 4, ge->getRadius() / 10);
                         
                         glutSolidCube(ge->getRadius() / 12);
                     glPopMatrix();

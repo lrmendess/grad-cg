@@ -212,7 +212,7 @@ void Player::updateBombs(GLfloat currentTime, GLfloat dt) {
 
         if (distanceFromBorder > arena->getRadius()) {
             forRemove.push_back(b);
-        } if(b->getCz() <= 0.0) {
+        } if(b->getCz() <= 0.0 + this->radius) {
             forRemove.push_back(b);
             
             for (auto enemy : arena->getGroundEnemies()) {
@@ -387,7 +387,7 @@ void Player::drawFuselage(GLuint playerTexture) {
     glColor3f(1.0, 1.0, 1.0);
     
     glPushMatrix();    
-        glTranslatef(this->radius, 0.0, 0);
+        glTranslatef(this->radius, 0.0, 0.0);
         glRotatef(90, 0.0, 1.0, 0.0);
         
         GLfloat light1_position[] = {0.0, 0.0, 0.0, 1.0};

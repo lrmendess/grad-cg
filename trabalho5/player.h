@@ -121,6 +121,8 @@ class Player {
         void setTakeOff(GLboolean value) { this->takeOff = value; }
 
         GLboolean isDead() { return dead; }
+        
+        list<Bomb*>& getBombs() { return this->bombs; };
 
         void moveX(GLfloat angle, GLfloat dt);
         void moveZ(GLfloat angle, GLfloat dt);

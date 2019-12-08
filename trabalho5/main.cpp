@@ -62,7 +62,9 @@ GLfloat cameraMouseY = 0;
 GLboolean lockTpsCamera = true;
 
 GLuint arenaTexture1;
+GLuint arenaTexture1_night;
 GLuint arenaTexture2;
+GLuint arenaTexture2_night;
 GLuint playerTexture;
 GLuint airstripTexture;
 GLuint airEnemiesTexture;
@@ -72,9 +74,6 @@ GLuint bombTexture;
 
 int toggleCamera = 1;
 bool nightMode = false;
-bool bombDropped = false;
-
-Bomb* currentBomb;
 
 int windowWidth = 500;
 int windowHeight = 700;
@@ -142,7 +141,7 @@ int main(int argc, char** argv) {
 
 void init(void) {
     /* Seleciona cor de fundo */
-    glClearColor(1, 1, 1, 0);
+    glClearColor(0, 0, 0, 0);
     
     /* Inicializar matriz de texturas */
     glMatrixMode(GL_TEXTURE);
@@ -156,13 +155,15 @@ void init(void) {
     
     /* Carrega todas as texturas */
     arenaTexture1 = loadTexture("textures/sky.bmp");
+    arenaTexture1_night = loadTexture("textures/nightclouds.bmp");
     arenaTexture2 = loadTexture("textures/sand.bmp");
+    arenaTexture2_night = loadTexture("textures/darksand.bmp");
     playerTexture = loadTexture("textures/greencamo.bmp");
     airstripTexture = loadTexture("textures/road.bmp");
     airEnemiesTexture = loadTexture("textures/redcamo.bmp");
     groundEnemiesTexture = loadTexture("textures/wood.bmp");
-    projTexture = loadTexture("textures/sun1.bmp");
-    bombTexture = loadTexture("textures/sun1.bmp");
+    projTexture = loadTexture("textures/metal.bmp");
+    bombTexture = loadTexture("textures/hazard.bmp");
     
     /* Inicializa iluminacao */
     glEnable(GL_LIGHTING);
@@ -247,7 +248,7 @@ void display(void) {
         up[0], up[1], up[2]
     );
 
-    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
+    arena->draw(arenaTexture1, arenaTexture1_night, arenaTexture2, arenaTexture2_night, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
     // Textos na tela e minimapa
     glDisable(GL_LIGHTING);
@@ -283,13 +284,16 @@ void display(void) {
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     
-    if (bombDropped) {
-
-    } else {
-        gluLookAt(0,0,100, 0,0,0, 0,1,0);
+    if(player->getBombs().size() > 0) {
+        Bomb* droppedBomb = player->getBombs().front();
+        gluLookAt(
+            droppedBomb->getCx(), droppedBomb->getCy(), droppedBomb->getCz(),
+            droppedBomb->getCx(), droppedBomb->getCy(), 0.0,
+            0.0, 1.0, 0.0
+        );
+        
+        arena->draw(arenaTexture1, arenaTexture1_night, arenaTexture2, arenaTexture2_night, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
     }
-
-    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
     /* Nao esperar! */
     glutSwapBuffers();
@@ -561,8 +565,7 @@ void switchViewportCamera(int cam) {
     if (cam == 0) {
         gluPerspective(90, windowWidth / windowWidth, 1, arena->getRadius() * 5);
     } else if (cam == 1) {
-        //glOrtho(-250, 250, -100, 100, -1, 1);
-        gluPerspective(90, windowWidth / (windowHeight - windowWidth), 1, arena->getRadius() * 5);
+        gluPerspective(60, windowWidth / (windowHeight - windowWidth), arena->getPlayer()->getRadius() / 4, arena->getRadius() * 5);
     }
 }
 
