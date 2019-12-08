@@ -11,6 +11,7 @@
 using namespace std;
 using namespace tinyxml2;
 
+void switchViewportCamera(int cam);
 void cockpitCamera();
 void cannonCamera();
 void thirdPersonalCamera();
@@ -23,6 +24,7 @@ GLuint loadTexture(const char* filename);
 
 void init(void);
 void display(void);
+void reshape(int width, int height);
 void idle(void);
 
 void keyPress(unsigned char key, int x, int y);
@@ -70,6 +72,12 @@ GLuint bombTexture;
 
 int toggleCamera = 1;
 bool nightMode = false;
+bool bombDropped = false;
+
+Bomb* currentBomb;
+
+int windowWidth = 500;
+int windowHeight = 700;
 
 int main(int argc, char** argv) {
     srand(time(NULL));
@@ -112,14 +120,14 @@ int main(int argc, char** argv) {
     /* Glut */
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH);
-    //glutInitWindowSize(2 * arena->getRadius(), 2 * arena->getRadius());
-    glutInitWindowSize(500, 500);
+    glutInitWindowSize(windowWidth, windowHeight);
     glutInitWindowPosition(100, 100);
     glutCreateWindow("Ace Combat: Poor Edition");
 
     init();
 
     glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
     glutKeyboardFunc(keyPress);
     glutKeyboardUpFunc(keyUp);
     glutIdleFunc(idle);
@@ -141,11 +149,10 @@ void init(void) {
     glLoadIdentity();
 
     /* Inicializar sistema de viz */
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
+//    glMatrixMode(GL_PROJECTION);
+//    glLoadIdentity();
 
-    GLfloat aspectRatio = ((GLfloat) arena->getRadius() * 2) / ((GLfloat) arena->getRadius() * 2);
-    gluPerspective(90, aspectRatio, 1, arena->getRadius() * 5);
+//    gluPerspective(90, windowWidth / windowWidth, 1, arena->getRadius() * 5);
     
     /* Carrega todas as texturas */
     arenaTexture1 = loadTexture("textures/sky.bmp");
@@ -204,6 +211,11 @@ void init(void) {
 void display(void) {
     /* Limpar todos os pixels */
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    
+    /*************************** Janela Principal *****************************/
+    glViewport(0, 0, windowWidth, windowWidth);
+    switchViewportCamera(0);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -228,7 +240,7 @@ void display(void) {
         glEnable(GL_LIGHT0);
         glDisable(GL_LIGHT1);
     }
-
+    
     gluLookAt(
         cameraEye[0], cameraEye[1], cameraEye[2],
         cameraLook[0], cameraLook[1], cameraLook[2],
@@ -263,9 +275,36 @@ void display(void) {
         glPopMatrix();
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
+    
+    /**************************** Janela da bomba *****************************/
+    glViewport(0, windowWidth, windowWidth, (windowHeight - windowWidth));
+    switchViewportCamera(1);
+    
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    
+    if (bombDropped) {
+
+    } else {
+        gluLookAt(0,0,100, 0,0,0, 0,1,0);
+    }
+
+    arena->draw(arenaTexture1, arenaTexture2, playerTexture, airstripTexture, airEnemiesTexture, groundEnemiesTexture, projTexture, bombTexture, nightMode);
 
     /* Nao esperar! */
     glutSwapBuffers();
+}
+
+void reshape(int width, int height) {
+    windowWidth = width;
+    windowHeight = height;
+    
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    gluPerspective(90, windowWidth / windowWidth, 1, arena->getRadius() * 5);
+    
+    glMatrixMode(GL_MODELVIEW);
 }
 
 void keyPress(unsigned char key, int x, int y) {
@@ -513,6 +552,18 @@ void mouseClickAndMove(int x, int y) {
     }
 }
 
+void switchViewportCamera(int cam) {
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    
+    if (cam == 0) {
+        gluPerspective(90, windowWidth / windowWidth, 1, arena->getRadius() * 5);
+    } else if (cam == 1) {
+        //glOrtho(-250, 250, -100, 100, -1, 1);
+        gluPerspective(90, windowWidth / (windowHeight - windowWidth), 1, arena->getRadius() * 5);
+    }
+}
+
 void cockpitCamera() {
     GLfloat fiRad = player->getAngle() * M_PI / 180;
     GLfloat thetaRad = player->getAngleTheta() * M_PI / 180;
@@ -612,6 +663,10 @@ void thirdPersonalCamera() {
     up[0] = 0;
     up[1] = 0;
     up[2] = 1;
+}
+
+void bombCamera() {
+    
 }
 
 void minimap() {
