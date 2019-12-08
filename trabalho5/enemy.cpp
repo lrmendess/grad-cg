@@ -61,7 +61,7 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
         my = cx * sin(beta) + cy * cos(beta);
     }
 
-    this->propellerAngle += this->speed / 8;
+    this->propellerAngle += this->speed / 4;
     this->cy = my;
     this->cx = mx;
 
