@@ -9,12 +9,14 @@ Enemy::~Enemy() {
 Enemy::Enemy(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius) {
     this->cx = cx;
     this->cy = cy;
-    this->cz = arena->getRadius() / 2;
+    this->cz = arena->getRadius() / 2.5;
     this->radius = radius;
     this->arena = arena;
 
     this->startX = cx;
     this->startY = cy;
+    this->startZ = this->cz;
+    this->cannonLength = CANNON_LENGTH;
 
     // Angulo inicial
     this->angle = (180 / M_PI) * atan2(
@@ -43,13 +45,11 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
     GLfloat fiRad = this->angle * M_PI / 180;
     GLfloat thetaRad = this->angleTheta * M_PI / 180;
 
-    GLfloat stepX = mul * this->speed * dt * cos(M_PI / 4) * cos(M_PI / 4);
-    GLfloat stepY = mul * this->speed * dt * cos(M_PI / 4) * sin(M_PI / 4);
-    GLfloat stepZ = mul * this->speed * dt * sin(M_PI / 4);
+    GLfloat step = mul * this->speed * dt;
 
-    GLfloat mx = this->cx + stepY * cos(thetaRad) * cos(fiRad);
-    GLfloat my = this->cy + stepX * cos(thetaRad) * sin(fiRad);
-    GLfloat mz = this->cz + stepZ * sin(thetaRad);
+    GLfloat mx = this->cx + step * cos(thetaRad) * cos(fiRad);
+    GLfloat my = this->cy + step * cos(thetaRad) * sin(fiRad);
+    GLfloat mz = this->cz + step * sin(thetaRad);
 
     GLfloat distanceFromBorder = d2p(mx, my, arena->getCx(), arena->getCy());
 
@@ -61,21 +61,16 @@ void Enemy::move(GLfloat mul, GLfloat dt) {
         my = cx * sin(beta) + cy * cos(beta);
     }
 
-    // for (auto enemy : arena->getAirEnemies()) {
-    //     GLfloat distanceFromEnemy = d2p(mx, my, enemy->getCx(), enemy->getCy());
-    // 
-    //     GLfloat safetyDistance = enemy->getRadius() + this->radius;
-    //     if (distanceFromEnemy <= safetyDistance) {
-    //         this->dead = true;
-    //         return;
-    //     }
-    // }
-
     this->propellerAngle += this->speed / 8;
     this->cy = my;
     this->cx = mx;
 
-    if (mz <= arena->getRadius() && mz >= 0) {
+    GLfloat groundEnemyHeight = .0;
+    if (arena->getGroundEnemies().size() > 0) {
+        groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
+    }
+
+    if (mz <= arena->getRadius() * .9 && mz > groundEnemyHeight) {
         this->cz = mz;
     }
 }
@@ -84,8 +79,8 @@ void Enemy::drawProjectiles(GLuint projTexture) {
     for (auto p : this->projectiles) {
         glPushMatrix();
             glTranslatef(p->getCx(), p->getCy(), p->getCz());
-            glRotatef(p->getAngle(), .0, .0, 1.0);
-            glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
+            // glRotatef(p->getAngle(), .0, .0, 1.0);
+            // glRotatef(-p->getAngleTheta(), .0, 1.0, .0);
             p->draw(projTexture);
         glPopMatrix();
     }
@@ -98,7 +93,6 @@ void Enemy::fire(GLfloat mul, GLfloat mulVelAirplane, GLfloat dt) {
         Projectile* projectile = new Projectile(this, mul, mulVelAirplane);
         projectiles.push_back(projectile);
 
-        // currentTimeFire = currentTimeFire - maxTimeFire;
         currentTimeFire = 0.0;
     }
 }
@@ -110,14 +104,12 @@ void Enemy::updateProjectiles(GLfloat dt) {
         bool canUpdate = true;
         GLfloat projectileFiRad = p->getAngle() * M_PI / 180;
         GLfloat projectileThetaRad = p->getAngleTheta() * M_PI / 180;
+        
+        GLfloat step = p->getSpeed() * dt;
 
-        GLfloat stepX = p->getSpeed() * dt * cos(M_PI / 4) * cos(M_PI / 4);
-        GLfloat stepY = p->getSpeed() * dt * cos(M_PI / 4) * sin(M_PI / 4);
-        GLfloat stepZ = p->getSpeed() * dt * sin(M_PI / 4);
-
-        GLfloat mx = p->getCx() + stepY * cos(projectileThetaRad) * cos(projectileFiRad);
-        GLfloat my = p->getCy() + stepX * cos(projectileThetaRad) * sin(projectileFiRad);
-        GLfloat mz = p->getCz() + stepZ * sin(projectileThetaRad);
+        GLfloat my = p->getCy() + step * cos(projectileThetaRad) * sin(projectileFiRad);
+        GLfloat mx = p->getCx() + step * cos(projectileThetaRad) * cos(projectileFiRad);
+        GLfloat mz = p->getCz() + step * sin(projectileThetaRad);
 
         // Se o projetil encostar na borda, ele sera removido da lista de projeteis
         // disparados pelo player em questao
@@ -183,7 +175,7 @@ void Enemy::drawCannon() {
             gluQuadricNormals(cannon, GLU_SMOOTH);
             gluQuadricTexture(cannon, GLU_FALSE);
             gluQuadricOrientation(cannon, GLU_OUTSIDE);
-            gluCylinder(cannon, this->radius / 12, this->radius / 12, this->radius / 2, 16, 16);
+            gluCylinder(cannon, this->radius / 12, this->radius / 12, this->cannonLength, 16, 16);
         gluDeleteQuadric(cannon);
     glPopMatrix();
 }
