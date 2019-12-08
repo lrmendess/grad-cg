@@ -46,6 +46,7 @@ GLfloat enemySpeedMultiplier;
 GLfloat enemyFireFreq;
 GLfloat oldTimeTakeOff;
 GLfloat oldTimeFlying;
+GLfloat groundEnemyHeight;
 
 GLfloat cameraEye[3];
 GLfloat cameraLook[3];
@@ -107,6 +108,13 @@ int main(int argc, char** argv) {
 
     for (auto g : arena->getGroundEnemies()) {
         groundEnemies.push_back(g);
+    }
+
+    groundEnemyHeight = .0;
+    if (arena->getGroundEnemies().size() > 0) {
+        groundEnemyHeight = arena->getGroundEnemies().front()->getRadius() * 2;
+    } else {
+        groundEnemyHeight = player->getRadius() * 1.5;
     }
     
     /* Glut */
@@ -392,12 +400,27 @@ void idle(void) {
                 player->setAngleTheta(.0);
             }
         } else {
-            if (keyboard['w']) {
-                player->moveZ(90, diffTime);
-            }
+            if (player->canTilt == true) {
+                if (keyboard['w']) {
+                    if ((player->getCz() + player->getRadius()) <= arena->getRadius()) {
+                        player->moveZ(90, diffTime);
+                    }
+                }
 
-            if (keyboard['s']) {
-                player->moveZ(-90, diffTime);
+                if (keyboard['s']) {                    
+                    if ((player->getCz() - player->getRadius()) >= groundEnemyHeight) {
+                        player->moveZ(-90, diffTime);
+                    }
+                }
+            } else {
+                if (player->getAngleTheta() > 2) {
+                    player->moveZ(-120, diffTime);
+                } else if (player->getAngleTheta() < -2) {
+                    player->moveZ(120, diffTime);
+                } else {
+                    player->setAngleTheta(.0);
+                    player->canTilt = true;
+                }
             }
         }
 

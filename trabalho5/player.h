@@ -73,6 +73,8 @@ class Player {
         GLboolean bombIsAvaliable = true;
         
     public:
+        GLboolean canTilt = true;
+
         ~Player();
         Player(Arena* arena, GLfloat cx, GLfloat cy, GLfloat radius);
 
