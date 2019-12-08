@@ -232,6 +232,7 @@ void display(void) {
 
     // Textos na tela e minimapa
     glDisable(GL_LIGHTING);
+    glDisable(GL_DEPTH_TEST);
         glPushMatrix();
             glLoadIdentity();
             
@@ -253,6 +254,7 @@ void display(void) {
             
             minimap();
         glPopMatrix();
+    glEnable(GL_DEPTH_TEST);
     glEnable(GL_LIGHTING);
 
     /* Nao esperar! */
