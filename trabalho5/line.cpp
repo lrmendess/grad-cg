@@ -23,34 +23,39 @@ void Line::drawSolidLine(GLuint airstripTexture) {
         glPushMatrix();
             glTranslatef(x1, y1, 0.0);
             glRotatef(angle, 0.0, 0.0, 1.0);
+            
+            glMatrixMode(GL_TEXTURE);
+            glPushMatrix();
+                glScalef(0.1, 1.0, 1.0);
 
-            glBindTexture(GL_TEXTURE_2D, airstripTexture);
-            glColor3f(1.0, 1.0, 1.0);
+                glBindTexture(GL_TEXTURE_2D, airstripTexture);
+                glColor3f(1.0, 1.0, 1.0);
 
-            glBegin(GL_QUAD_STRIP);
-                glNormal3f(0.0, 0.0, 1.0);
-                glTexCoord2f(0.0, 0.0);
-                glVertex3f(-6 * dist / 50, -30.0, 0.1);
-                
-                glNormal3f(0.0, 0.0, 1.0);
-                glTexCoord2f(0.0, 1.0);
-                glVertex3f(-6 * dist / 50, 30.0, 0.1);
-                    
-                int tex = 0;
-                    
-                for (int i = -5 * dist / 50; i <= dist; i += dist / 50) {
+                glBegin(GL_QUAD_STRIP);
                     glNormal3f(0.0, 0.0, 1.0);
-                    glTexCoord2f(1.0 + tex, 0.0);
-                    glVertex3f(i, -30.0, 0.1);
+                    glTexCoord2f(0.0, 0.0);
+                    glVertex3f(-6 * dist / 50, -30.0, 0.1);
                     
                     glNormal3f(0.0, 0.0, 1.0);
-                    glTexCoord2f(1.0 + tex, 1.0);
-                    glVertex3f(i, 30.0, 0.1);
-                    
-                    tex++;
-                }
-            glEnd();
+                    glTexCoord2f(0.0, 1.0);
+                    glVertex3f(-6 * dist / 50, 30.0, 0.1);
+                        
+                    int tex = 0;
+                        
+                    for (int i = -5 * dist / 50; i <= dist; i += dist / 50) {
+                        glNormal3f(0.0, 0.0, 1.0);
+                        glTexCoord2f(1.0 + tex, 0.0);
+                        glVertex3f(i, -30.0, 0.1);
+                        
+                        glNormal3f(0.0, 0.0, 1.0);
+                        glTexCoord2f(1.0 + tex, 1.0);
+                        glVertex3f(i, 30.0, 0.1);
+                        
+                        tex++;
+                    }
+                glEnd();
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
         glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
     glDisable(GL_TEXTURE_2D);
 }
