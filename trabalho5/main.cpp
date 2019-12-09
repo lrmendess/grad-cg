@@ -61,6 +61,8 @@ GLfloat cameraMouseY = 0;
 
 GLboolean lockTpsCamera = true;
 GLboolean collisionEnabled = true;
+GLboolean lightingEnabled = true;
+GLboolean nightMode = false;
 
 GLuint arenaTexture1;
 GLuint arenaTexture1_night;
@@ -74,7 +76,6 @@ GLuint projTexture;
 GLuint bombTexture;
 
 int toggleCamera = 1;
-bool nightMode = false;
 
 int windowWidth = 500;
 int windowHeight = 700;
@@ -225,6 +226,13 @@ void display(void) {
     glViewport(0, 0, windowWidth, windowWidth);
     switchViewportCamera(0);
     
+    /* Habilitar/Desabilitar iluminacao */
+    if (lightingEnabled) {
+        glEnable(GL_LIGHTING);
+    } else {
+        glDisable(GL_LIGHTING);
+    }
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
@@ -265,7 +273,7 @@ void display(void) {
             glLoadIdentity();
             
             if (player->getPoints() == arena->getGroundEnemies().size()) {
-                string result("WIN");        
+                string result("WIN");
                 printText(-20.0, 0.0, GLUT_BITMAP_HELVETICA_18, result);
             } else if (player->isDead()) {
                 string result("LOSE");
@@ -280,6 +288,16 @@ void display(void) {
 
             printText(85.0, 230.0, GLUT_BITMAP_HELVETICA_12, score);
             
+            if (not lightingEnabled) {
+                string lighting("LIGHTING DISABLED");
+                printText(-240.0, 230.0, GLUT_BITMAP_HELVETICA_12, lighting);
+            }
+            
+            if (not collisionEnabled) {
+                string collision("COLLISION DISABLED");
+                printText(-240.0, 210.0, GLUT_BITMAP_HELVETICA_12, collision);
+            }
+            
             minimap();
         glPopMatrix();
     glEnable(GL_DEPTH_TEST);
@@ -288,6 +306,13 @@ void display(void) {
     /**************************** Janela da bomba *****************************/
     glViewport(0, windowWidth, windowWidth, (windowHeight - windowWidth));
     switchViewportCamera(1);
+    
+    /* Habilitar/Desabilitar iluminacao */
+    if (lightingEnabled) {
+        glEnable(GL_LIGHTING);
+    } else {
+        glDisable(GL_LIGHTING);
+    }
     
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
@@ -328,6 +353,16 @@ void keyPress(unsigned char key, int x, int y) {
     if (key == 'n') {
         nightMode = not nightMode;
     }
+    
+    /* Desabilitar colisoes */
+    if (keyboard['k']) {
+        collisionEnabled = not collisionEnabled;
+    }
+    
+    /* Desabilitar iluminacao */
+    if (keyboard['l']) {
+        lightingEnabled = not lightingEnabled;
+    }
 }
 
 void keyUp(unsigned char key, int x, int y) {
@@ -348,10 +383,6 @@ void idle(void) {
         tpsAngleTheta = 60;
         tpsAngleFi = 0;
         toggleCamera = 3;
-    }
-    
-    if (keyboard['c']) {
-        collisionEnabled = !collisionEnabled;
     }
 
     // R
